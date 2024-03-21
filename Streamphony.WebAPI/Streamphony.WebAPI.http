@@ -1,0 +1,6 @@
+@Streamphony.WebAPI_HostAddress = http://localhost:5207
+
+GET {{Streamphony.WebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
