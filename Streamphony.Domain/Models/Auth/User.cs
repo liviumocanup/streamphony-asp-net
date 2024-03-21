@@ -1,56 +1,34 @@
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Streamphony.Domain.Models
 {
     public class User : IdentityUser<Guid>
     {
-        private string _artistName;
+        [Required(ErrorMessage = "Artist name is required.")]
+        [StringLength(100, MinimumLength = 1, ErrorMessage = "Artist name must be between 1 and 100 characters.")]
+        public string ArtistName { get; set; }
 
-        public string ArtistName
+        [Required]
+        public DateTime DateOfBirth
         {
-            get => _artistName;
+            get => _dateOfBirth;
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
+                if (value > DateTime.UtcNow)
                 {
-                    throw new ArgumentException("ArtistName cannot be null or empty.");
+                    throw new ArgumentException("DateOfBirth cannot be in the future.");
                 }
-                _artistName = value;
+                _dateOfBirth = value;
             }
         }
+
+        [Url(ErrorMessage = "The Profile picture URL must be a valid URL.")]
         public string ProfilePictureUrl { get; set; }
 
-        public ICollection<Song> UploadedSongs { get; set; }
-        public ICollection<Album> Albums { get; set; }
-
-        public void AddUploadedSong(Song song)
-        {
-            if (song == null) throw new ArgumentNullException(nameof(song));
-            // Additional business logic can be enforced here
-            UploadedSongs.Add(song);
-        }
-
-        public void RemoveUploadedSong(Song song)
-        {
-            if (song == null) throw new ArgumentNullException(nameof(song));
-            // Additional business logic can be enforced here
-            UploadedSongs.Remove(song);
-        }
-
-        public void AddAlbum(Album album)
-        {
-            if (album == null) throw new ArgumentNullException(nameof(album));
-            // Additional business logic can be enforced here
-            Albums.Add(album);
-        }
-
-        public void RemoveAlbum(Album album)
-        {
-            if (album == null) throw new ArgumentNullException(nameof(album));
-            // Additional business logic can be enforced here
-            Albums.Remove(album);
-        }
+        public ICollection<Song> UploadedSongs { get; set; } = new HashSet<Song>();
+        public ICollection<Album> Albums { get; set; } = new HashSet<Album>();
     }
 }
