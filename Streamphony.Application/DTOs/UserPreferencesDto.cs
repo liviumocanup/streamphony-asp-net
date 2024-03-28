@@ -1,9 +1,11 @@
-public class UserPreferencesDto
+namespace Streamphony.Application.DTOs
 {
-    public Guid Id { get; set; }
-    public Guid UserId { get; set; }
-    public ICollection<GenreDto> PreferredGenres { get; set; }
-    public bool DarkMode { get; set; }
-    public string Language { get; set; }
-    // Include User details if needed
+    public class UserPreferencesDto
+    {
+        public Guid Id { get; set; }
+        public Guid UserId { get; set; }
+        public ICollection<GenreDto> PreferredGenres { get; set; }
+        public bool DarkMode { get; set; }
+        public string Language { get; set; }
+    }
 }

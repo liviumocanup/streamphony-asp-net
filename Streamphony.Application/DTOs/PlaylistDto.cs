@@ -1,8 +1,11 @@
-public class PlaylistDto
+namespace Streamphony.Application.DTOs
 {
-    public Guid Id { get; set; }
-    public string Title { get; set; }
-    public bool IsPublic { get; set; }
-    public Guid OwnerId { get; set; }
-    public HashSet<SongDto> Songs { get; set; }
+    public class PlaylistDto
+    {
+        public Guid Id { get; set; }
+        public string Title { get; set; }
+        public bool IsPublic { get; set; }
+        public Guid OwnerId { get; set; }
+        public HashSet<SongDto> Songs { get; set; }
+    }
 }

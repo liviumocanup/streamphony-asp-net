@@ -1,6 +1,9 @@
-public class GenreDto
+namespace Streamphony.Application.DTOs
 {
-    public Guid Id { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
+    public class GenreDto
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+    }
 }
