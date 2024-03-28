@@ -7,7 +7,7 @@ namespace Streamphony.Domain.Models
     {
         public Comment()
         {
-            Date = DateTime.Now;
+            CreatedDate = DateTime.Now;
         }
 
         [Required]

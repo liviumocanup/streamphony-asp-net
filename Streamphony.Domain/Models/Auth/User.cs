@@ -1,12 +1,12 @@
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
+// using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace Streamphony.Domain.Models
 {
-    public class User : IdentityUser<Guid>
+    public class User : BaseEntity
     {
+        private DateTime _dateOfBirth;
+
         [Required(ErrorMessage = "Artist name is required.")]
         [StringLength(100, MinimumLength = 1, ErrorMessage = "Artist name must be between 1 and 100 characters.")]
         public string ArtistName { get; set; }
@@ -29,6 +29,6 @@ namespace Streamphony.Domain.Models
         public string ProfilePictureUrl { get; set; }
 
         public ICollection<Song> UploadedSongs { get; set; } = new HashSet<Song>();
-        public ICollection<Album> Albums { get; set; } = new HashSet<Album>();
+        // public ICollection<Album> Albums { get; set; } = new HashSet<Album>();
     }
 }

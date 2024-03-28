@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -18,9 +17,9 @@ namespace Streamphony.Domain.Models
 
         public Guid OwnerId { get; set; }
         public User Owner { get; set; }
-        public ICollection<Contributor> Contributors { get; set; } = new HashSet<Contributor>();
-        public Guid GenreId { get; set; }
-        public Genre Genre { get; set; }
-        public Album Album { get; set; }
+        // public ICollection<Contributor> Contributors { get; set; } = new HashSet<Contributor>();
+        // public Guid GenreId { get; set; }
+        // public Genre Genre { get; set; }
+        // public Album Album { get; set; }
     }
 }

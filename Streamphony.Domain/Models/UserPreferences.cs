@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace Streamphony.Domain.Models
 {
     public class UserPreferences : BaseEntity
@@ -9,6 +6,6 @@ namespace Streamphony.Domain.Models
         public User User { get; set; }
         public ICollection<Genre> PreferredGenres { get; set; } = new HashSet<Genre>();
         public bool DarkMode { get; set; } = false;
-        public string Language { get; set; };
+        public string Language { get; set; } = "en";
     }
 }
