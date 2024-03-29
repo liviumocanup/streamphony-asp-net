@@ -15,7 +15,7 @@ namespace Streamphony.Domain.Models
 
         public DateTime ReleaseDate { get; set; }
         public Guid OwnerId { get; set; }
-        public User Owner { get; set; }
+        public User Owner { get; set; } = default!;
         public ICollection<User> Artists { get; set; } = new HashSet<User>();
         public ICollection<Song> Songs { get; set; } = new HashSet<Song>();
 

@@ -29,13 +29,14 @@ namespace Streamphony.Application.Services
 
                 await _repository.SaveChangesAsync();
 
-                await _loggingService.LogAsync($"CreateUserAsync called for {user.Id} - success");
+                await _loggingService.LogAsync($"id {user.Id} - success");
 
                 return _mapper.Map<UserDto>(user);
             }
             catch (Exception ex)
             {
-                await _loggingService.LogAsync($"CreateUserAsync called for {userDto.Id} - failure: {ex.Message}");
+                string errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                await _loggingService.LogAsync($"id {userDto.Id} - failure: {errorMessage}");
                 throw;
             }
         }
@@ -44,7 +45,7 @@ namespace Streamphony.Application.Services
         {
             var users = await _repository.GetAll<User>();
 
-            await _loggingService.LogAsync($"GetAllUsersAsync called - success");
+            await _loggingService.LogAsync($"success");
 
             return _mapper.Map<IEnumerable<UserDto>>(users);
         }
@@ -53,7 +54,7 @@ namespace Streamphony.Application.Services
         {
             var user = await _repository.GetById<User>(id);
 
-            await _loggingService.LogAsync($"GetUserByIdAsync called for {id} - success");
+            await _loggingService.LogAsync($"id {id} - success");
 
             return _mapper.Map<UserDto>(user);
         }
