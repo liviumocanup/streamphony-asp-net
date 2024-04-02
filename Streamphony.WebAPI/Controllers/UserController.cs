@@ -24,9 +24,9 @@ namespace Streamphony.WebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDto>> GetUserById(Guid id)
         {
-            var user = await _userService.GetUserByIdAsync(id);
-            if (user == null) return NotFound("User not found.");
-            return Ok(user);
+            var userDto = await _userService.GetUserByIdAsync(id);
+            if (userDto == null) return NotFound("User not found.");
+            return Ok(userDto);
         }
 
         [HttpPost]

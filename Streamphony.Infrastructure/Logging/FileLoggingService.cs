@@ -1,19 +1,24 @@
 using System.Runtime.CompilerServices;
 using Streamphony.Application.Interfaces;
+using System.IO.Abstractions;
 
-namespace Streamphony.Application.Services
+namespace Streamphony.Infrastructure.Logging
 {
     public class FileLoggingService : ILoggingService
     {
-        private readonly string _logDirectoryPath = Path.Combine(Directory.GetCurrentDirectory(), "Logs");
+        private readonly IFileSystem _fileSystem;
+        private readonly string _logDirectoryPath;
         private readonly IDateTimeProvider _dateTimeProvider;
 
-        public FileLoggingService(IDateTimeProvider dateTimeProvider)
+        public FileLoggingService(IDateTimeProvider dateTimeProvider, IFileSystem fileSystem)
         {
             _dateTimeProvider = dateTimeProvider;
-            if (!Directory.Exists(_logDirectoryPath))
+            _fileSystem = fileSystem;
+            _logDirectoryPath = Path.Combine(_fileSystem.Directory.GetCurrentDirectory(), "Logs");
+
+            if (!_fileSystem.Directory.Exists(_logDirectoryPath))
             {
-                Directory.CreateDirectory(_logDirectoryPath);
+                _fileSystem.Directory.CreateDirectory(_logDirectoryPath);
             }
         }
 
@@ -25,8 +30,7 @@ namespace Streamphony.Application.Services
 
             var logMessage = $"{currentDateTime:yyyy-MM-dd HH:mm:ss} - {methodName} called: {message}{Environment.NewLine}";
 
-            await File.AppendAllTextAsync(filePath, logMessage);
+            await _fileSystem.File.AppendAllTextAsync(filePath, logMessage);
         }
     }
-
 }

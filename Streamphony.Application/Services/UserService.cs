@@ -53,10 +53,17 @@ namespace Streamphony.Application.Services
         public async Task<UserDto> GetUserByIdAsync(Guid id)
         {
             var user = await _repository.GetById<User>(id);
-
-            await _loggingService.LogAsync($"id {id} - success");
+            if (user != null)
+            {
+                await _loggingService.LogAsync($"id {id} - success");
+            }
+            else
+            {
+                await _loggingService.LogAsync($"id {id} - failure: not found");
+            }
 
             return _mapper.Map<UserDto>(user);
         }
+
     }
 }
