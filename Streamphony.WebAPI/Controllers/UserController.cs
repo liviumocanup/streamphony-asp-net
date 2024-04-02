@@ -1,30 +1,33 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Streamphony.Application.DTOs;
-using Streamphony.Application.Interfaces;
+using Streamphony.Application.App.Users.Commands;
+using Streamphony.Application.App.Users.Queries;
+using Streamphony.Application.App.Users.Responses;
+using Streamphony.Application.Users.Queries;
 
 namespace Streamphony.WebAPI.Controllers
 {
     [Route("api/users")]
-    public class UserController : AppBaseController
+    public class UserController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly IMediator _mediator;
 
-        public UserController(IUserService userService)
+        public UserController(IMediator mediator)
         {
-            _userService = userService;
+            _mediator = mediator;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsers()
         {
-            var users = await _userService.GetAllUsersAsync();
+            var users = await _mediator.Send(new GetAllUsers());
             return Ok(users);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDto>> GetUserById(Guid id)
         {
-            var userDto = await _userService.GetUserByIdAsync(id);
+            var userDto = await _mediator.Send(new GetUserById(id));
             if (userDto == null) return NotFound("User not found.");
             return Ok(userDto);
         }
@@ -32,7 +35,7 @@ namespace Streamphony.WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<UserDto>> CreateUser(UserDto userDto)
         {
-            var createdUserDto = await _userService.CreateUserAsync(userDto);
+            var createdUserDto = await _mediator.Send(new CreateUser(userDto));
             return CreatedAtAction(nameof(GetUserById), new { id = createdUserDto.Id }, createdUserDto);
         }
     }

@@ -1,5 +1,4 @@
-using Streamphony.Domain.Models;
-using Streamphony.Application.DTOs;
+using Streamphony.Application.App.Users.Responses;
 
 namespace Streamphony.Application.Interfaces
 {

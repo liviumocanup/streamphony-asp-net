@@ -1,6 +1,7 @@
 using AutoMapper;
 using Streamphony.Application.DTOs;
 using Streamphony.Domain.Models;
+using Streamphony.Application.App.Users.Responses;
 
 namespace Streamphony.Application.Common.Mappings
 {

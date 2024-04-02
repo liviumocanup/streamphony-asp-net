@@ -1,4 +1,4 @@
-namespace Streamphony.Application.DTOs
+namespace Streamphony.Application.App.Users.Responses
 {
     public class UserDto
     {
