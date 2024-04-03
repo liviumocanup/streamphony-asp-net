@@ -6,12 +6,11 @@ namespace Streamphony.Domain.Models
 {
     public class Album : BaseEntity
     {
-        [Required(ErrorMessage = "Album title is required.")]
         [StringLength(100, MinimumLength = 1, ErrorMessage = "Album title must be between 1 and 100 characters.")]
-        public string Title { get; set; }
+        public required string Title { get; set; }
 
         [Url(ErrorMessage = "The Cover image URL must be a valid URL.")]
-        public string CoverImageUrl { get; set; }
+        public string? CoverImageUrl { get; set; }
 
         public DateTime ReleaseDate { get; set; }
         public Guid OwnerId { get; set; }
