@@ -3,18 +3,33 @@ using Microsoft.AspNetCore.Mvc;
 using Streamphony.Application.App.Users.Commands;
 using Streamphony.Application.App.Users.Queries;
 using Streamphony.Application.App.Users.Responses;
-using Streamphony.Application.Users.Queries;
 
 namespace Streamphony.WebAPI.Controllers
 {
     [Route("api/users")]
-    public class UserController : ControllerBase
+    public class UserController(IMediator mediator) : AppBaseController
     {
-        private readonly IMediator _mediator;
+        private readonly IMediator _mediator = mediator;
 
-        public UserController(IMediator mediator)
+        [HttpPost]
+        public async Task<ActionResult<UserDto>> CreateUser(UserDto userDto)
         {
-            _mediator = mediator;
+            var createdUserDto = await _mediator.Send(new CreateUser(userDto));
+            return CreatedAtAction(nameof(GetUserById), new { id = createdUserDto.Id }, createdUserDto);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<UserDto>> UpdateUser(UserDto userDto)
+        {
+            try
+            {
+                var updatedUserDto = await _mediator.Send(new UpdateUser(userDto));
+                return Ok(updatedUserDto);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound($"User with ID {userDto.Id} not found.");
+            }
         }
 
         [HttpGet]
@@ -32,11 +47,12 @@ namespace Streamphony.WebAPI.Controllers
             return Ok(userDto);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<UserDto>> CreateUser(UserDto userDto)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(Guid id)
         {
-            var createdUserDto = await _mediator.Send(new CreateUser(userDto));
-            return CreatedAtAction(nameof(GetUserById), new { id = createdUserDto.Id }, createdUserDto);
+            var result = await _mediator.Send(new DeleteUser(id));
+            if (!result) return NotFound($"User with ID {id} not found.");
+            return Ok();
         }
     }
 }
