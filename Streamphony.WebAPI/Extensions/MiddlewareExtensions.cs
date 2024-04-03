@@ -1,5 +1,3 @@
-using Microsoft.OpenApi.Models;
-
 namespace Streamphony.WebAPI.Extensions
 {
     public static class MiddlewareExtensions

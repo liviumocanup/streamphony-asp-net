@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Streamphony.Domain.Tests", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Streamphony.Infrastructure.Tests", "Tests\Streamphony.Infrastructure.Tests\Streamphony.Infrastructure.Tests.csproj", "{D11B5B89-02CE-4456-AD45-52C42495EA25}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Streamphony.ConsolePresentation", "Streamphony.ConsolePresentation\Streamphony.ConsolePresentation.csproj", "{872B0682-4B40-4E41-9DF4-75E18CC3A414}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +58,10 @@ Global
 		{D11B5B89-02CE-4456-AD45-52C42495EA25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D11B5B89-02CE-4456-AD45-52C42495EA25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D11B5B89-02CE-4456-AD45-52C42495EA25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{872B0682-4B40-4E41-9DF4-75E18CC3A414}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{872B0682-4B40-4E41-9DF4-75E18CC3A414}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{872B0682-4B40-4E41-9DF4-75E18CC3A414}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{872B0682-4B40-4E41-9DF4-75E18CC3A414}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FF534034-0442-4E3A-969B-572619759D51} = {42A11A56-2C09-416C-840F-5538B4AAD270}

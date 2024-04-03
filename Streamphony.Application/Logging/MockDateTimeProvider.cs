@@ -1,6 +1,6 @@
 using Streamphony.Application.Interfaces;
 
-namespace Streamphony.Application.Services
+namespace Streamphony.Application.Logging
 {
     public class MockDateTimeProvider : IDateTimeProvider
     {
