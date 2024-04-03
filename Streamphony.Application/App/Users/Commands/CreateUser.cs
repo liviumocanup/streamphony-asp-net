@@ -11,11 +11,11 @@ public record CreateUser(UserDto UserDto) : IRequest<UserDto>;
 
 public class CreateUserHandler : IRequestHandler<CreateUser, UserDto>
 {
-    private readonly IRepository _repository;
+    private readonly IRepository<User> _repository;
     private readonly IMapper _mapper;
     private readonly ILoggingService _loggingService;
 
-    public CreateUserHandler(IRepository repository, IMapper mapper, ILoggingService loggingService)
+    public CreateUserHandler(IRepository<User> repository, IMapper mapper, ILoggingService loggingService)
     {
         _repository = repository;
         _mapper = mapper;
@@ -30,15 +30,14 @@ public class CreateUserHandler : IRequestHandler<CreateUser, UserDto>
 
             _repository.Add(userEntity);
             await _repository.SaveChangesAsync();
-
-            await _loggingService.LogAsync($"User id {userEntity.Id} - success", nameof(CreateUser));
+            await _loggingService.LogAsync($"User id {userEntity.Id} - success");
 
             return _mapper.Map<UserDto>(userEntity);
         }
         catch (Exception ex)
         {
             string errorMessage = ex.InnerException?.Message ?? ex.Message;
-            await _loggingService.LogAsync($"Creation failure: {errorMessage}", nameof(CreateUser));
+            await _loggingService.LogAsync($"Creation failure: {errorMessage}");
             throw;
         }
     }

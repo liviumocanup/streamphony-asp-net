@@ -3,15 +3,15 @@ using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.Interfaces.Repositories
 {
-    public interface IRepository
+    public interface IRepository<TEntity> where TEntity : BaseEntity
     {
-        Task<TEntity> GetById<TEntity>(Guid id) where TEntity : BaseEntity;
-        Task<TEntity> GetByIdWithInclude<TEntity>(Guid id, params Expression<Func<TEntity, object>>[] includeProperties) where TEntity : BaseEntity;
-        Task<List<TEntity>> GetAll<TEntity>() where TEntity : BaseEntity;
+        Task<TEntity> GetById(Guid id);
+        Task<TEntity> GetByIdWithInclude(Guid id, params Expression<Func<TEntity, object>>[] includeProperties);
+        Task<List<TEntity>> GetAll();
         Task SaveChangesAsync();
-        void Add<TEntity>(TEntity entity) where TEntity : BaseEntity;
-        Task<TEntity> Delete<TEntity>(Guid id) where TEntity : BaseEntity;
-        // Task<PaginatedResult<TDto>> GetPagedData<TEntity, TDto>(PagedRequest pagedRequest) where TEntity : BaseEntity
-        //                                                                                      where TDto : class;
+        void Add(TEntity entity);
+        Task<TEntity> Delete(Guid id);
+        void Update(TEntity entity);
+        // Task<PaginatedResult<TDto>> GetPagedData<TDto>(PagedRequest pagedRequest) where TDto : class;
     }
 }

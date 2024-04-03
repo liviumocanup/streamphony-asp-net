@@ -8,20 +8,14 @@ namespace Streamphony.Application.App.Users.Queries;
 
 public class GetAllUsers() : IRequest<IEnumerable<UserDto>>;
 
-public class GetAllUsersHandler : IRequestHandler<GetAllUsers, IEnumerable<UserDto>>
+public class GetAllUsersHandler(IRepository<User> repository, IMapper mapper) : IRequestHandler<GetAllUsers, IEnumerable<UserDto>>
 {
-    private readonly IRepository _repository;
-    private readonly IMapper _mapper;
-
-    public GetAllUsersHandler(IRepository repository, IMapper mapper)
-    {
-        _repository = repository;
-        _mapper = mapper;
-    }
+    private readonly IRepository<User> _repository = repository;
+    private readonly IMapper _mapper = mapper;
 
     public async Task<IEnumerable<UserDto>> Handle(GetAllUsers request, CancellationToken cancellationToken)
     {
-        var users = await _repository.GetAll<User>();
+        var users = await _repository.GetAll();
 
         return _mapper.Map<IEnumerable<UserDto>>(users);
     }
