@@ -8,7 +8,10 @@ namespace Streamphony.Application.Common.Mappings
     {
         public MappingProfile()
         {
-            CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<User, UserDto>()
+                .ForMember(dest => dest.Username, opt => opt.Ignore())
+                .ForMember(dest => dest.Email, opt => opt.Ignore())
+                .ReverseMap();
             CreateMap<Song, SongDto>().ReverseMap();
         }
     }

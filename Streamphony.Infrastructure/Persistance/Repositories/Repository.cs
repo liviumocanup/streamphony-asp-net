@@ -21,9 +21,10 @@ namespace Streamphony.Infrastructure.Persistence.Repositories
             return await _context.Set<TEntity>().ToListAsync();
         }
 
-        public async Task<TEntity> GetById<TEntity>(Guid id) where TEntity : BaseEntity
+        // cancellation token
+        public async Task<TEntity> GetById<TEntity>(Guid id /*, CancellationToken cancellationToken = default*/) where TEntity : BaseEntity
         {
-            return await _context.FindAsync<TEntity>(id);
+            return await _context.FindAsync<TEntity>(id /*, cancellationToken*/);
         }
 
         public async Task<TEntity> GetByIdWithInclude<TEntity>(Guid id, params Expression<Func<TEntity, object>>[] includeProperties) where TEntity : BaseEntity
