@@ -1,43 +1,50 @@
 using AutoMapper;
 using MediatR;
+using Streamphony.Application.Abstractions;
+using Streamphony.Application.Abstractions.Logging;
 using Streamphony.Application.App.Users.Responses;
-using Streamphony.Application.Interfaces;
-using Streamphony.Application.Interfaces.Repositories;
 using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.App.Users.Commands;
 
-public record CreateUser(UserDto UserDto) : IRequest<UserDto>;
+public record CreateUser(UserCreationDto UserCreationDto) : IRequest<UserDto>;
 
 public class CreateUserHandler : IRequestHandler<CreateUser, UserDto>
 {
-    private readonly IRepository<User> _repository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly ILoggingService _loggingService;
 
-    public CreateUserHandler(IRepository<User> repository, IMapper mapper, ILoggingService loggingService)
+    public CreateUserHandler(IUnitOfWork unitOfWork, IMapper mapper, ILoggingService loggingService)
     {
-        _repository = repository;
+        _unitOfWork = unitOfWork;
         _mapper = mapper;
         _loggingService = loggingService;
     }
 
     public async Task<UserDto> Handle(CreateUser request, CancellationToken cancellationToken)
     {
+        var userEntity = _mapper.Map<User>(request.UserCreationDto);
+
+        if (await _unitOfWork.UserRepository.GetByUsername(userEntity.Username) != null)
+            throw new Exception($"User with username {userEntity.Username} already exists");
+
         try
         {
-            var userEntity = _mapper.Map<User>(request.UserDto);
+            await _unitOfWork.BeginTransactionAsync();
+            var userDb = await _unitOfWork.UserRepository.Add(userEntity);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitTransactionAsync();
 
-            _repository.Add(userEntity);
-            await _repository.SaveChangesAsync();
-            await _loggingService.LogAsync($"User id {userEntity.Id} - success");
+            await _loggingService.LogAsync($"User id {userDb.Id} - success");
 
-            return _mapper.Map<UserDto>(userEntity);
+            return _mapper.Map<UserDto>(userDb);
         }
         catch (Exception ex)
         {
-            string errorMessage = ex.InnerException?.Message ?? ex.Message;
-            await _loggingService.LogAsync($"Creation failure: {errorMessage}");
+            await _unitOfWork.RollbackTransactionAsync();
+
+            await _loggingService.LogAsync($"Creation failure: ", ex);
             throw;
         }
     }

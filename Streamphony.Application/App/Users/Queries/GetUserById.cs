@@ -1,22 +1,23 @@
 using AutoMapper;
 using MediatR;
+using Streamphony.Application.Abstractions;
 using Streamphony.Application.App.Users.Responses;
-using Streamphony.Application.Interfaces.Repositories;
-using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.App.Users.Queries;
 
-public record GetUserById(Guid Id) : IRequest<UserDto>;
+public record GetUserById(Guid Id) : IRequest<UserDetailsDto>;
 
-public class GetUserByIdHandler(IRepository<User> repository, IMapper mapper) : IRequestHandler<GetUserById, UserDto>
+public class GetUserByIdHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<GetUserById, UserDetailsDto>
 {
-    private readonly IRepository<User> _repository = repository;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IMapper _mapper = mapper;
 
-    public async Task<UserDto> Handle(GetUserById request, CancellationToken cancellationToken)
+    public async Task<UserDetailsDto> Handle(GetUserById request, CancellationToken cancellationToken)
     {
-        var user = await _repository.GetById(request.Id);
+        var user = await _unitOfWork.UserRepository.GetByIdWithInclude(request.Id, user => user.UploadedSongs, user => user.Preferences, user => user.OwnedAlbums);
 
-        return _mapper.Map<UserDto>(user);
+        if (user == null) return null!;
+
+        return _mapper.Map<UserDetailsDto>(user);
     }
 }

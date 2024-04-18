@@ -1,35 +1,38 @@
 using MediatR;
-using Streamphony.Application.Interfaces;
-using Streamphony.Application.Interfaces.Repositories;
-using Streamphony.Domain.Models;
+using Streamphony.Application.Abstractions;
+using Streamphony.Application.Abstractions.Logging;
 
 namespace Streamphony.Application.App.Songs.Commands;
 
 public record DeleteSong(Guid Id) : IRequest<bool>;
 
-public class DeleteSongHandler(IRepository<Song> repository, ILoggingService loggingService) : IRequestHandler<DeleteSong, bool>
+public class DeleteSongHandler(IUnitOfWork unitOfWork, ILoggingService loggingService) : IRequestHandler<DeleteSong, bool>
 {
-    private readonly IRepository<Song> _repository = repository;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ILoggingService _loggingService = loggingService;
 
     public async Task<bool> Handle(DeleteSong request, CancellationToken cancellationToken)
     {
-        Guid id = request.Id;
+        var songToDelete = await _unitOfWork.SongRepository.GetById(request.Id);
+        if (songToDelete == null) return false;
+
         try
         {
-            var songToDelete = await _repository.GetById(id);
-            if (songToDelete == null) return false;
+            await _unitOfWork.BeginTransactionAsync();
+            await _unitOfWork.SongRepository.Delete(songToDelete.Id);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitTransactionAsync();
 
-            await _repository.Delete(id);
-            await _repository.SaveChangesAsync();
-            await _loggingService.LogAsync($"Song id {id} - deleted successfully");
-
-            return true;
+            await _loggingService.LogAsync($"Song id {songToDelete.Id} - deleted successfully");
         }
         catch (Exception ex)
         {
-            await _loggingService.LogAsync($"Error deleting song id {id}: {ex.Message}");
+            await _unitOfWork.RollbackTransactionAsync();
+
+            await _loggingService.LogAsync($"Error deleting song id {songToDelete.Id}: ", ex);
             throw;
         }
+
+        return true;
     }
 }
