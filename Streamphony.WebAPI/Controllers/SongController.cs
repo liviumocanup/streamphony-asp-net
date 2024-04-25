@@ -12,13 +12,28 @@ namespace Streamphony.WebAPI.Controllers
         private readonly IMediator _mediator = mediator;
 
         [HttpPost]
-        public async Task<ActionResult<SongDto>> CreateSong(SongDto songDto)
+        public async Task<ActionResult<SongDto>> CreateSong(SongCreationDto songDto)
         {
             var createdSongDto = await _mediator.Send(new CreateSong(songDto));
             return CreatedAtAction(nameof(GetSongById), new { id = createdSongDto.Id }, createdSongDto);
         }
 
+        [HttpPut]
+        public async Task<ActionResult<SongDto>> UpdateSong(SongDto songDto)
+        {
+            try
+            {
+                var updatedSongDto = await _mediator.Send(new UpdateSong(songDto));
+                return Ok(updatedSongDto);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteSong(Guid id)
         {
             var result = await _mediator.Send(new DeleteSong(id));

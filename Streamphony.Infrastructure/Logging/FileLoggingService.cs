@@ -1,5 +1,5 @@
 using System.Runtime.CompilerServices;
-using Streamphony.Application.Interfaces;
+using Streamphony.Application.Abstractions.Logging;
 using System.IO.Abstractions;
 
 namespace Streamphony.Infrastructure.Logging
@@ -29,6 +29,18 @@ namespace Streamphony.Infrastructure.Logging
             var filePath = Path.Combine(_logDirectoryPath, fileName);
 
             var logMessage = $"{currentDateTime:yyyy-MM-dd HH:mm:ss} - {methodName} called: {message}{Environment.NewLine}";
+
+            await _fileSystem.File.AppendAllTextAsync(filePath, logMessage);
+        }
+
+        public async Task LogAsync(string message, Exception ex, [CallerMemberName] string methodName = "")
+        {
+            var currentDateTime = _dateTimeProvider.Now;
+            var fileName = $"Logs_{currentDateTime:yyyy-MM-dd}.txt";
+            var filePath = Path.Combine(_logDirectoryPath, fileName);
+
+            string errorMessage = ex.InnerException?.Message ?? ex.Message;
+            var logMessage = $"{currentDateTime:yyyy-MM-dd HH:mm:ss} - {methodName} called: {message}{errorMessage}{Environment.NewLine}";
 
             await _fileSystem.File.AppendAllTextAsync(filePath, logMessage);
         }

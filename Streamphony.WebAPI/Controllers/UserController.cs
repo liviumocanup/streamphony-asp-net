@@ -12,7 +12,7 @@ namespace Streamphony.WebAPI.Controllers
         private readonly IMediator _mediator = mediator;
 
         [HttpPost]
-        public async Task<ActionResult<UserDto>> CreateUser(UserDto userDto)
+        public async Task<ActionResult<UserDto>> CreateUser(UserCreationDto userDto)
         {
             var createdUserDto = await _mediator.Send(new CreateUser(userDto));
             return CreatedAtAction(nameof(GetUserById), new { id = createdUserDto.Id }, createdUserDto);
@@ -40,7 +40,7 @@ namespace Streamphony.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserDto>> GetUserById(Guid id)
+        public async Task<ActionResult<UserDetailsDto>> GetUserById(Guid id)
         {
             var userDto = await _mediator.Send(new GetUserById(id));
             if (userDto == null) return NotFound("User not found.");

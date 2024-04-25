@@ -46,7 +46,7 @@ dotnet ef database update --project ../Streamphony.Infrastructure/Streamphony.In
 ## Migration Commands
 You can generate the migrations from `Streamphony.WebAPI` by using the following commands:
 ```bash
-dotnet ef migrations add InitialCreate -o Persistance/Migrations --project ../Streamphony.Infrastructure/Streamphony.Infrastructure.csproj --startup-project .
+dotnet ef migrations add InitialCreate -o Persistence/Migrations --project ../Streamphony.Infrastructure/Streamphony.Infrastructure.csproj --startup-project .
 ```
 
 And in order to drop the Database, run:

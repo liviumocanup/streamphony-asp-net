@@ -1,15 +1,14 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.IO.Abstractions;
-using Streamphony.Domain.Models;
-using Streamphony.Application.Interfaces;
-using Streamphony.Application.Interfaces.Repositories;
-using Streamphony.Application.Common.Mappings;
-using Streamphony.Application.Logging;
-using Streamphony.Infrastructure.Persistence.Context;
-using Streamphony.Infrastructure.Persistence.Repositories;
-using Streamphony.Infrastructure.Logging;
+using Streamphony.Application.Abstractions;
+using Streamphony.Application.Abstractions.Logging;
+using Streamphony.Application.Abstractions.Repositories;
 using Streamphony.Application.App.Users.Queries;
+using Streamphony.Application.Common.Mappings;
+using Streamphony.Infrastructure.Logging;
+using Streamphony.Infrastructure.Persistence.Contexts;
+using Streamphony.Infrastructure.Persistence.Repositories;
 
 namespace Streamphony.WebAPI.Extensions
 {
@@ -20,14 +19,19 @@ namespace Streamphony.WebAPI.Extensions
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddScoped<IRepository<User>, Repository<User>>();
-            services.AddScoped<IRepository<Song>, Repository<Song>>();
+            services.AddMediatR(typeof(GetAllUsersHandler).Assembly);
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ISongRepository, SongRepository>();
+            services.AddScoped<IAlbumRepository, AlbumRepository>();
+            services.AddScoped<IGenreRepository, GenreRepository>();
+            services.AddScoped<IUserPreferenceRepository, UserPreferenceRepository>();
+
             services.AddAutoMapper(typeof(MappingProfile).Assembly);
             services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
             services.AddSingleton<IFileSystem, FileSystem>();
             services.AddScoped<ILoggingService, FileLoggingService>();
 
-            services.AddMediatR(typeof(GetAllUsersHandler).Assembly);
 
             return services;
         }
