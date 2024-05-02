@@ -8,7 +8,9 @@ namespace Streamphony.Infrastructure.Persistence.Repositories
     {
         private readonly ApplicationDbContext _context;
 
-        public UnitOfWork(ApplicationDbContext context, IUserRepository userRepository, ISongRepository songRepository, IAlbumRepository albumRepository, IGenreRepository genreRepository, IUserPreferenceRepository userPreferenceRepository)
+        public UnitOfWork(ApplicationDbContext context, IUserRepository userRepository, 
+            ISongRepository songRepository, IAlbumRepository albumRepository, 
+            IGenreRepository genreRepository, IUserPreferenceRepository userPreferenceRepository)
         {
             _context = context;
             UserRepository = userRepository;

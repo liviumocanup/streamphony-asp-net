@@ -12,12 +12,12 @@ builder.Services.AddApplicationServices(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwaggerDocumentation();
 }
 
+app.UseRequestTiming();
 app.UseHttpsRedirection();
 app.MapControllers();
 

@@ -1,14 +1,9 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace Streamphony.Domain.Models
 {
     public class Song : BaseEntity
     {
         public required string Title { get; set; }
-
         public TimeSpan Duration { get; set; }
-
-        [Url(ErrorMessage = "The URL must be a valid URL.")]
         public required string Url { get; set; }
 
         public Guid OwnerId { get; set; }
