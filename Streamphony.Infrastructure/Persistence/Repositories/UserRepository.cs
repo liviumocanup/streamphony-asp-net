@@ -9,8 +9,8 @@ public class UserRepository(ApplicationDbContext context) : Repository<User>(con
 {
     private readonly ApplicationDbContext _context = context;
 
-    public async Task<User?> GetByUsername(string username)
+    public async Task<User?> GetByUsername(string username, CancellationToken cancellationToken)
     {
-        return await _context.Users.FirstOrDefaultAsync(user => user.Username == username);
+        return await _context.Users.FirstOrDefaultAsync(user => user.Username == username, cancellationToken);
     }
 }

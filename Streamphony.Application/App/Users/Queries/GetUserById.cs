@@ -14,7 +14,7 @@ public class GetUserByIdHandler(IUnitOfWork unitOfWork, IMapper mapper) : IReque
 
     public async Task<UserDetailsDto> Handle(GetUserById request, CancellationToken cancellationToken)
     {
-        var user = await _unitOfWork.UserRepository.GetByIdWithInclude(request.Id, user => user.UploadedSongs, user => user.Preferences, user => user.OwnedAlbums);
+        var user = await _unitOfWork.UserRepository.GetByIdWithInclude(request.Id, cancellationToken, user => user.UploadedSongs, user => user.Preferences, user => user.OwnedAlbums);
 
         if (user == null) return null!;
 

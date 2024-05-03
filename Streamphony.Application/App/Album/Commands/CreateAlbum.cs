@@ -25,17 +25,17 @@ public class CreateAlbumHandler : IRequestHandler<CreateAlbum, AlbumDto>
     public async Task<AlbumDto> Handle(CreateAlbum request, CancellationToken cancellationToken)
     {
         var albumDto = request.AlbumCreationDto;
-        if (await _unitOfWork.UserRepository.GetById(albumDto.OwnerId) == null)
+        if (await _unitOfWork.UserRepository.GetById(albumDto.OwnerId, cancellationToken) == null)
             throw new KeyNotFoundException($"User with ID {albumDto.OwnerId} not found.");
 
         var albumEntity = _mapper.Map<Album>(albumDto);
 
         try
         {
-            await _unitOfWork.BeginTransactionAsync();
-            var albumDb = await _unitOfWork.AlbumRepository.Add(albumEntity);
-            await _unitOfWork.SaveAsync();
-            await _unitOfWork.CommitTransactionAsync();
+            await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            var albumDb = await _unitOfWork.AlbumRepository.Add(albumEntity, cancellationToken);
+            await _unitOfWork.SaveAsync(cancellationToken);
+            await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
             await _loggingService.LogAsync($"Album id {albumDb.Id} - success");
 
@@ -43,7 +43,7 @@ public class CreateAlbumHandler : IRequestHandler<CreateAlbum, AlbumDto>
         }
         catch (Exception ex)
         {
-            await _unitOfWork.RollbackTransactionAsync();
+            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
 
             await _loggingService.LogAsync($"Creation failure: ", ex);
             throw;

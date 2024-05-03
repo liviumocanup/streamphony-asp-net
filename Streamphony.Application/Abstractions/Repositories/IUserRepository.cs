@@ -4,5 +4,5 @@ namespace Streamphony.Application.Abstractions.Repositories;
 
 public interface IUserRepository : IRepository<User>
 {
-    Task<User?> GetByUsername(string username);
+    Task<User?> GetByUsername(string username, CancellationToken cancellationToken);
 }

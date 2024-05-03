@@ -9,7 +9,7 @@ using Streamphony.Infrastructure.Persistence.Contexts;
 
 #nullable disable
 
-namespace Streamphony.Infrastructure.Persistance.Migrations
+namespace Streamphony.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20240418090034_InitialUpdate")]

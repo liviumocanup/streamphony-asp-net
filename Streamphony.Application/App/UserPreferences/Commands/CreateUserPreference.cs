@@ -25,17 +25,17 @@ public class CreateUserPreferenceHandler : IRequestHandler<CreateUserPreference,
     public async Task<UserPreferenceDto> Handle(CreateUserPreference request, CancellationToken cancellationToken)
     {
         var userPreferenceDto = request.UserPreferenceDto;
-        if (await _unitOfWork.UserRepository.GetById(userPreferenceDto.Id) == null)
+        if (await _unitOfWork.UserRepository.GetById(userPreferenceDto.Id, cancellationToken) == null)
             throw new KeyNotFoundException($"User with ID {userPreferenceDto.Id} not found.");
 
         var userPreferenceEntity = _mapper.Map<UserPreference>(userPreferenceDto);
 
         try
         {
-            await _unitOfWork.BeginTransactionAsync();
-            var userPreferenceDb = await _unitOfWork.UserPreferenceRepository.Add(userPreferenceEntity);
-            await _unitOfWork.SaveAsync();
-            await _unitOfWork.CommitTransactionAsync();
+            await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            var userPreferenceDb = await _unitOfWork.UserPreferenceRepository.Add(userPreferenceEntity, cancellationToken);
+            await _unitOfWork.SaveAsync(cancellationToken);
+            await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
             await _loggingService.LogAsync($"UserPreference for User {userPreferenceDb.Id} - success");
 
@@ -43,7 +43,7 @@ public class CreateUserPreferenceHandler : IRequestHandler<CreateUserPreference,
         }
         catch (Exception ex)
         {
-            await _unitOfWork.RollbackTransactionAsync();
+            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
 
             await _loggingService.LogAsync($"Creation failure: ", ex);
             throw;

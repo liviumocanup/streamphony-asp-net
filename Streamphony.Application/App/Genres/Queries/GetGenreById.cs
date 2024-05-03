@@ -14,7 +14,7 @@ public class GetGenreByIdHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequ
 
     public async Task<GenreDetailsDto> Handle(GetGenreById request, CancellationToken cancellationToken)
     {
-        var genre = await _unitOfWork.GenreRepository.GetByIdWithInclude(request.Id, genre => genre.Songs);
+        var genre = await _unitOfWork.GenreRepository.GetByIdWithInclude(request.Id, cancellationToken, genre => genre.Songs);
 
         return _mapper.Map<GenreDetailsDto>(genre);
     }

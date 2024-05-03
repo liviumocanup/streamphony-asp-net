@@ -14,7 +14,7 @@ public class GetAllGenresHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequ
 
     public async Task<IEnumerable<GenreDto>> Handle(GetAllGenres request, CancellationToken cancellationToken)
     {
-        var genres = await _unitOfWork.GenreRepository.GetAll();
+        var genres = await _unitOfWork.GenreRepository.GetAll(cancellationToken);
 
         return _mapper.Map<IEnumerable<GenreDto>>(genres);
     }

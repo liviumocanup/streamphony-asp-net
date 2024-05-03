@@ -14,7 +14,7 @@ public class GetAllSongsHandler(IUnitOfWork unitOfWork, IMapper mapper) : IReque
 
     public async Task<IEnumerable<SongDto>> Handle(GetAllSongs request, CancellationToken cancellationToken)
     {
-        var songs = await _unitOfWork.SongRepository.GetAll();
+        var songs = await _unitOfWork.SongRepository.GetAll(cancellationToken);
 
         return _mapper.Map<IEnumerable<SongDto>>(songs);
     }

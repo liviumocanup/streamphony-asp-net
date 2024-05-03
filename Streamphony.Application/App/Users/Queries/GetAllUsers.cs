@@ -14,7 +14,7 @@ public class GetAllUsersHandler(IUnitOfWork unitOfWork, IMapper mapper) : IReque
 
     public async Task<IEnumerable<UserDto>> Handle(GetAllUsers request, CancellationToken cancellationToken)
     {
-        var users = await _unitOfWork.UserRepository.GetAll();
+        var users = await _unitOfWork.UserRepository.GetAll(cancellationToken);
 
         return _mapper.Map<IEnumerable<UserDto>>(users);
     }

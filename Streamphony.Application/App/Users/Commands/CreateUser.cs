@@ -26,15 +26,15 @@ public class CreateUserHandler : IRequestHandler<CreateUser, UserDto>
     {
         var userEntity = _mapper.Map<User>(request.UserCreationDto);
 
-        if (await _unitOfWork.UserRepository.GetByUsername(userEntity.Username) != null)
+        if (await _unitOfWork.UserRepository.GetByUsername(userEntity.Username, cancellationToken) != null)
             throw new Exception($"User with username {userEntity.Username} already exists");
 
         try
         {
-            await _unitOfWork.BeginTransactionAsync();
-            var userDb = await _unitOfWork.UserRepository.Add(userEntity);
-            await _unitOfWork.SaveAsync();
-            await _unitOfWork.CommitTransactionAsync();
+            await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            var userDb = await _unitOfWork.UserRepository.Add(userEntity, cancellationToken);
+            await _unitOfWork.SaveAsync(cancellationToken);
+            await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
             await _loggingService.LogAsync($"User id {userDb.Id} - success");
 
@@ -42,7 +42,7 @@ public class CreateUserHandler : IRequestHandler<CreateUser, UserDto>
         }
         catch (Exception ex)
         {
-            await _unitOfWork.RollbackTransactionAsync();
+            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
 
             await _loggingService.LogAsync($"Creation failure: ", ex);
             throw;

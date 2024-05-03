@@ -8,8 +8,8 @@ namespace Streamphony.Infrastructure.Persistence.Repositories
     {
         private readonly ApplicationDbContext _context;
 
-        public UnitOfWork(ApplicationDbContext context, IUserRepository userRepository, 
-            ISongRepository songRepository, IAlbumRepository albumRepository, 
+        public UnitOfWork(ApplicationDbContext context, IUserRepository userRepository,
+            ISongRepository songRepository, IAlbumRepository albumRepository,
             IGenreRepository genreRepository, IUserPreferenceRepository userPreferenceRepository)
         {
             _context = context;
@@ -20,24 +20,24 @@ namespace Streamphony.Infrastructure.Persistence.Repositories
             UserPreferenceRepository = userPreferenceRepository;
         }
 
-        public async Task SaveAsync()
+        public async Task SaveAsync(CancellationToken cancellationToken)
         {
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task BeginTransactionAsync()
+        public async Task BeginTransactionAsync(CancellationToken cancellationToken)
         {
-            await _context.Database.BeginTransactionAsync();
+            await _context.Database.BeginTransactionAsync(cancellationToken);
         }
 
-        public async Task CommitTransactionAsync()
+        public async Task CommitTransactionAsync(CancellationToken cancellationToken)
         {
-            await _context.Database.CommitTransactionAsync();
+            await _context.Database.CommitTransactionAsync(cancellationToken);
         }
 
-        public async Task RollbackTransactionAsync()
+        public async Task RollbackTransactionAsync(CancellationToken cancellationToken)
         {
-            await _context.Database.RollbackTransactionAsync();
+            await _context.Database.RollbackTransactionAsync(cancellationToken);
         }
 
         public IUserRepository UserRepository { get; }

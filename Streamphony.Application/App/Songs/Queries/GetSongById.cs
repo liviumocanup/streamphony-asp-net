@@ -14,7 +14,7 @@ public class GetSongByIdHandler(IUnitOfWork unitOfWork, IMapper mapper) : IReque
 
     public async Task<SongDto> Handle(GetSongById request, CancellationToken cancellationToken)
     {
-        var song = await _unitOfWork.SongRepository.GetById(request.Id);
+        var song = await _unitOfWork.SongRepository.GetById(request.Id, cancellationToken);
 
         return _mapper.Map<SongDto>(song);
     }

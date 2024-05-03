@@ -16,21 +16,21 @@ public class UpdateGenreHandler(IUnitOfWork unitOfWork, IMapper mapper) : IReque
     {
         var genreDto = request.GenreDto;
 
-        var genre = await _unitOfWork.GenreRepository.GetById(genreDto.Id) ??
+        var genre = await _unitOfWork.GenreRepository.GetById(genreDto.Id, cancellationToken) ??
                 throw new KeyNotFoundException($"Genre with ID {genreDto.Id} not found.");
 
         try
         {
-            await _unitOfWork.BeginTransactionAsync();
+            await _unitOfWork.BeginTransactionAsync(cancellationToken);
             _mapper.Map(genreDto, genre);
-            await _unitOfWork.SaveAsync();
-            await _unitOfWork.CommitTransactionAsync();
+            await _unitOfWork.SaveAsync(cancellationToken);
+            await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
             return _mapper.Map<GenreDto>(genre);
         }
         catch (Exception)
         {
-            await _unitOfWork.RollbackTransactionAsync();
+            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
             throw;
         }
     }

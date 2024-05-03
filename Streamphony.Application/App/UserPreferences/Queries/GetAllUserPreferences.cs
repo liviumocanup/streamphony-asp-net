@@ -14,7 +14,7 @@ public class GetAllUserPreferencesHandler(IUnitOfWork unitOfWork, IMapper mapper
 
     public async Task<IEnumerable<UserPreferenceDto>> Handle(GetAllUserPreferences request, CancellationToken cancellationToken)
     {
-        var userPreferences = await _unitOfWork.UserPreferenceRepository.GetAll();
+        var userPreferences = await _unitOfWork.UserPreferenceRepository.GetAll(cancellationToken);
 
         return _mapper.Map<IEnumerable<UserPreferenceDto>>(userPreferences);
     }

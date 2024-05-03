@@ -17,21 +17,21 @@ public class CreateGenreHandler(IUnitOfWork unitOfWork, IMapper mapper) : IReque
     {
         var genreEntity = _mapper.Map<Genre>(request.GenreCreationDto);
 
-        if (await _unitOfWork.GenreRepository.GetByName(genreEntity.Name) != null)
+        if (await _unitOfWork.GenreRepository.GetByName(genreEntity.Name, cancellationToken) != null)
             throw new Exception($"Genre with name {genreEntity.Name} already exists");
 
         try
         {
-            await _unitOfWork.BeginTransactionAsync();
-            var genreDb = await _unitOfWork.GenreRepository.Add(genreEntity);
-            await _unitOfWork.SaveAsync();
-            await _unitOfWork.CommitTransactionAsync();
+            await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            var genreDb = await _unitOfWork.GenreRepository.Add(genreEntity, cancellationToken);
+            await _unitOfWork.SaveAsync(cancellationToken);
+            await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
             return _mapper.Map<GenreDto>(genreDb);
         }
         catch (Exception)
         {
-            await _unitOfWork.RollbackTransactionAsync();
+            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
             throw;
         }
     }

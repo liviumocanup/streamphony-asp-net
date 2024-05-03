@@ -14,7 +14,7 @@ public class GetUserPreferenceByIdHandler(IUnitOfWork unitOfWork, IMapper mapper
 
     public async Task<UserPreferenceDto> Handle(GetUserPreferenceById request, CancellationToken cancellationToken)
     {
-        var userPreference = await _unitOfWork.UserPreferenceRepository.GetById(request.Id);
+        var userPreference = await _unitOfWork.UserPreferenceRepository.GetById(request.Id, cancellationToken);
 
         return _mapper.Map<UserPreferenceDto>(userPreference);
     }
