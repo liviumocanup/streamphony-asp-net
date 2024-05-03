@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Streamphony.WebAPI.Controllers
+namespace Streamphony.WebAPI.Controllers;
+
+[ApiController]
+public abstract class AppBaseController : ControllerBase
 {
-    [ApiController]
-    public abstract class AppBaseController : ControllerBase
-    {
-    }
 }

@@ -1,9 +1,8 @@
-namespace Streamphony.Domain.Models
+namespace Streamphony.Domain.Models;
+
+public enum ArtistRole
 {
-    public enum ArtistRole
-    {
-        Performer,
-        Writer,
-        Producer
-    }
+    Performer,
+    Writer,
+    Producer
 }
