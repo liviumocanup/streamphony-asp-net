@@ -7,7 +7,6 @@ using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Logging;
 using Streamphony.Application.Abstractions.Repositories;
 using Streamphony.Application.App.Users.Queries;
-using Streamphony.Application.Common.Mappings;
 using Streamphony.Infrastructure.Logging;
 using Streamphony.Infrastructure.Persistence.Contexts;
 using Streamphony.Infrastructure.Persistence.Repositories;
@@ -31,7 +30,9 @@ public static class ServiceExtensions
         services.AddScoped<IGenreRepository, GenreRepository>();
         services.AddScoped<IUserPreferenceRepository, UserPreferenceRepository>();
 
-        services.AddAutoMapper(typeof(MappingProfile).Assembly);
+        // services.AddAutoMapper(typeof(MappingProfile).Assembly);
+        // services.AddScoped<Application.Abstractions.Mapping.IMapper, AutoMapperService>();
+        services.AddScoped<Application.Abstractions.Mapping.IMapper, Infrastructure.Mapping.MapsterMapper>();
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         services.AddSingleton<IFileSystem, FileSystem>();
         services.AddScoped<ILoggingService, FileLoggingService>();

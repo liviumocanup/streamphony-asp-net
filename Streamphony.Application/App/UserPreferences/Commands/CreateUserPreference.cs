@@ -1,7 +1,7 @@
-using AutoMapper;
 using MediatR;
 using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Logging;
+using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.App.UserPreferences.Responses;
 using Streamphony.Domain.Models;
 

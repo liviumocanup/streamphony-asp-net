@@ -1,6 +1,6 @@
 using MediatR;
-using AutoMapper;
 using Streamphony.Application.Abstractions;
+using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.App.Albums.Responses;
 
 namespace Streamphony.Application.App.Albums.Queries;

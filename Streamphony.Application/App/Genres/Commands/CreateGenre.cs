@@ -1,6 +1,6 @@
-using AutoMapper;
 using MediatR;
 using Streamphony.Application.Abstractions;
+using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.App.Genres.Responses;
 using Streamphony.Domain.Models;
 

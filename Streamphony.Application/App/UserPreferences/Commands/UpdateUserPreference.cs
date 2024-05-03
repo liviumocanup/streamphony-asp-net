@@ -1,6 +1,6 @@
-using AutoMapper;
 using MediatR;
 using Streamphony.Application.Abstractions;
+using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.App.UserPreferences.Responses;
 
 namespace Streamphony.Application.App.UserPreferences.Commands;
