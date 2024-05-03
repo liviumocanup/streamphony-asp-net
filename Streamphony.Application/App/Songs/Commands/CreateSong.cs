@@ -1,7 +1,7 @@
-using AutoMapper;
 using MediatR;
 using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Logging;
+using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.App.Songs.Responses;
 using Streamphony.Domain.Models;
 
@@ -25,17 +25,17 @@ public class CreateSongHandler : IRequestHandler<CreateSong, SongDto>
     public async Task<SongDto> Handle(CreateSong request, CancellationToken cancellationToken)
     {
         var songDto = request.SongCreationDto;
-        if (await _unitOfWork.UserRepository.GetById(songDto.OwnerId) == null)
+        if (await _unitOfWork.UserRepository.GetById(songDto.OwnerId, cancellationToken) == null)
             throw new KeyNotFoundException($"User with ID {songDto.OwnerId} not found.");
 
         var songEntity = _mapper.Map<Song>(songDto);
 
         try
         {
-            await _unitOfWork.BeginTransactionAsync();
-            var songDb = await _unitOfWork.SongRepository.Add(songEntity);
-            await _unitOfWork.SaveAsync();
-            await _unitOfWork.CommitTransactionAsync();
+            await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            var songDb = await _unitOfWork.SongRepository.Add(songEntity, cancellationToken);
+            await _unitOfWork.SaveAsync(cancellationToken);
+            await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
             await _loggingService.LogAsync($"Song id {songDb.Id} - success");
 
@@ -43,7 +43,7 @@ public class CreateSongHandler : IRequestHandler<CreateSong, SongDto>
         }
         catch (Exception ex)
         {
-            await _unitOfWork.RollbackTransactionAsync();
+            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
 
             await _loggingService.LogAsync($"Creation failure: ", ex);
             throw;

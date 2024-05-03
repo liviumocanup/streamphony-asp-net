@@ -1,6 +1,6 @@
 using MediatR;
-using AutoMapper;
 using Streamphony.Application.Abstractions;
+using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.App.Albums.Responses;
 
 namespace Streamphony.Application.App.Albums.Queries;
@@ -14,7 +14,7 @@ public class GetAllAlbumsHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequ
 
     public async Task<IEnumerable<AlbumDto>> Handle(GetAllAlbums request, CancellationToken cancellationToken)
     {
-        var albums = await _unitOfWork.AlbumRepository.GetAll();
+        var albums = await _unitOfWork.AlbumRepository.GetAll(cancellationToken);
 
         return _mapper.Map<IEnumerable<AlbumDto>>(albums);
     }

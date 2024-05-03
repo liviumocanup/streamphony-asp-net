@@ -1,6 +1,6 @@
-using AutoMapper;
 using MediatR;
 using Streamphony.Application.Abstractions;
+using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.App.Songs.Responses;
 
 namespace Streamphony.Application.App.Songs.Queries;
@@ -14,7 +14,7 @@ public class GetSongByIdHandler(IUnitOfWork unitOfWork, IMapper mapper) : IReque
 
     public async Task<SongDto> Handle(GetSongById request, CancellationToken cancellationToken)
     {
-        var song = await _unitOfWork.SongRepository.GetById(request.Id);
+        var song = await _unitOfWork.SongRepository.GetById(request.Id, cancellationToken);
 
         return _mapper.Map<SongDto>(song);
     }

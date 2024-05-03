@@ -1,7 +1,7 @@
-using AutoMapper;
 using MediatR;
 using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Logging;
+using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.App.Users.Responses;
 
 namespace Streamphony.Application.App.Users.Commands;
@@ -24,15 +24,15 @@ public class UpdateUserHandler : IRequestHandler<UpdateUser, UserDto>
     public async Task<UserDto> Handle(UpdateUser request, CancellationToken cancellationToken)
     {
         var userDto = request.UserDto;
-        var user = await _unitOfWork.UserRepository.GetById(userDto.Id) ??
+        var user = await _unitOfWork.UserRepository.GetById(userDto.Id, cancellationToken) ??
                     throw new KeyNotFoundException($"User with ID {userDto.Id} not found.");
 
         try
         {
-            await _unitOfWork.BeginTransactionAsync();
+            await _unitOfWork.BeginTransactionAsync(cancellationToken);
             _mapper.Map(userDto, user);
-            await _unitOfWork.SaveAsync();
-            await _unitOfWork.CommitTransactionAsync();
+            await _unitOfWork.SaveAsync(cancellationToken);
+            await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
             await _loggingService.LogAsync($"User id {user.Id} - updated");
 
@@ -40,7 +40,7 @@ public class UpdateUserHandler : IRequestHandler<UpdateUser, UserDto>
         }
         catch (Exception ex)
         {
-            await _unitOfWork.RollbackTransactionAsync();
+            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
 
             await _loggingService.LogAsync($"Error updating user id {userDto.Id}: ", ex);
             throw;

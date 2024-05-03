@@ -4,10 +4,10 @@ namespace Streamphony.Application.Abstractions;
 
 public interface IUnitOfWork
 {
-    Task SaveAsync();
-    Task BeginTransactionAsync();
-    Task CommitTransactionAsync();
-    Task RollbackTransactionAsync();
+    Task SaveAsync(CancellationToken cancellationToken);
+    Task BeginTransactionAsync(CancellationToken cancellationToken);
+    Task CommitTransactionAsync(CancellationToken cancellationToken);
+    Task RollbackTransactionAsync(CancellationToken cancellationToken);
 
     public ISongRepository SongRepository { get; }
     public IUserRepository UserRepository { get; }

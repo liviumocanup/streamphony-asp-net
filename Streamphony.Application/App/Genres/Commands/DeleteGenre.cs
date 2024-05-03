@@ -11,18 +11,18 @@ public class DeleteGenreHandler(IUnitOfWork unitOfWork) : IRequestHandler<Delete
 
     public async Task<bool> Handle(DeleteGenre request, CancellationToken cancellationToken)
     {
-        if (await _unitOfWork.GenreRepository.GetById(request.Id) == null) return false;
+        if (await _unitOfWork.GenreRepository.GetById(request.Id, cancellationToken) == null) return false;
 
         try
         {
-            await _unitOfWork.BeginTransactionAsync();
-            await _unitOfWork.GenreRepository.Delete(request.Id);
-            await _unitOfWork.SaveAsync();
-            await _unitOfWork.CommitTransactionAsync();
+            await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            await _unitOfWork.GenreRepository.Delete(request.Id, cancellationToken);
+            await _unitOfWork.SaveAsync(cancellationToken);
+            await _unitOfWork.CommitTransactionAsync(cancellationToken);
         }
         catch (Exception e)
         {
-            await _unitOfWork.RollbackTransactionAsync();
+            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
 
             Console.WriteLine(e.Message);
             return false;

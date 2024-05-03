@@ -13,21 +13,21 @@ public class DeleteAlbumHandler(IUnitOfWork unitOfWork, ILoggingService loggingS
 
     public async Task<bool> Handle(DeleteAlbum request, CancellationToken cancellationToken)
     {
-        var albumToDelete = await _unitOfWork.AlbumRepository.GetById(request.Id);
+        var albumToDelete = await _unitOfWork.AlbumRepository.GetById(request.Id, cancellationToken);
         if (albumToDelete == null) return false;
 
         try
         {
-            await _unitOfWork.BeginTransactionAsync();
-            await _unitOfWork.AlbumRepository.Delete(albumToDelete.Id);
-            await _unitOfWork.SaveAsync();
-            await _unitOfWork.CommitTransactionAsync();
+            await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            await _unitOfWork.AlbumRepository.Delete(albumToDelete.Id, cancellationToken);
+            await _unitOfWork.SaveAsync(cancellationToken);
+            await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
             await _loggingService.LogAsync($"Album id {albumToDelete.Id} - deleted successfully");
         }
         catch (Exception ex)
         {
-            await _unitOfWork.RollbackTransactionAsync();
+            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
 
             await _loggingService.LogAsync($"Error deleting album id {albumToDelete.Id}: ", ex);
             throw;

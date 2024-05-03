@@ -9,8 +9,8 @@ public class GenreRepository(ApplicationDbContext context) : Repository<Genre>(c
 {
     private readonly ApplicationDbContext _context = context;
 
-    public async Task<Genre?> GetByName(string name)
+    public async Task<Genre?> GetByName(string name, CancellationToken cancellationToken)
     {
-        return await _context.Genres.FirstOrDefaultAsync(genre => genre.Name == name);
+        return await _context.Genres.FirstOrDefaultAsync(genre => genre.Name == name, cancellationToken);
     }
 }

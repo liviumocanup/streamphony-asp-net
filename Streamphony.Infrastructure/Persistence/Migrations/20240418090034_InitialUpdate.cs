@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Streamphony.Infrastructure.Persistance.Migrations
+namespace Streamphony.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
     public partial class InitialUpdate : Migration

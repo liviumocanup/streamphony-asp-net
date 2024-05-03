@@ -9,10 +9,10 @@ public class SongRepository(ApplicationDbContext context) : Repository<Song>(con
 {
     private readonly ApplicationDbContext _context = context;
 
-    public void DeleteWhere(Expression<Func<Song, bool>> predicate)
+    public async Task DeleteWhere(Expression<Func<Song, bool>> predicate, CancellationToken cancellationToken)
     {
         var songs = _context.Songs.Where(predicate);
         _context.Songs.RemoveRange(songs);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 }

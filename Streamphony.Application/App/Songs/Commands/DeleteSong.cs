@@ -13,21 +13,21 @@ public class DeleteSongHandler(IUnitOfWork unitOfWork, ILoggingService loggingSe
 
     public async Task<bool> Handle(DeleteSong request, CancellationToken cancellationToken)
     {
-        var songToDelete = await _unitOfWork.SongRepository.GetById(request.Id);
+        var songToDelete = await _unitOfWork.SongRepository.GetById(request.Id, cancellationToken);
         if (songToDelete == null) return false;
 
         try
         {
-            await _unitOfWork.BeginTransactionAsync();
-            await _unitOfWork.SongRepository.Delete(songToDelete.Id);
-            await _unitOfWork.SaveAsync();
-            await _unitOfWork.CommitTransactionAsync();
+            await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            await _unitOfWork.SongRepository.Delete(songToDelete.Id, cancellationToken);
+            await _unitOfWork.SaveAsync(cancellationToken);
+            await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
             await _loggingService.LogAsync($"Song id {songToDelete.Id} - deleted successfully");
         }
         catch (Exception ex)
         {
-            await _unitOfWork.RollbackTransactionAsync();
+            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
 
             await _loggingService.LogAsync($"Error deleting song id {songToDelete.Id}: ", ex);
             throw;

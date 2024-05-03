@@ -11,43 +11,42 @@ public class Repository<T>(ApplicationDbContext context) : IRepository<T> where 
 {
     private readonly ApplicationDbContext _context = context;
 
-    public async Task<List<T>> GetAll()
+    public async Task<List<T>> GetAll(CancellationToken cancellationToken)
     {
-        return await _context.Set<T>().ToListAsync();
+        return await _context.Set<T>().ToListAsync(cancellationToken);
     }
 
-    // cancellation token
-    public async Task<T?> GetById(Guid id /*, CancellationToken cancellationToken = default*/)
+    public async Task<T?> GetById(Guid id, CancellationToken cancellationToken)
     {
-        return await _context.FindAsync<T>(id /*, cancellationToken*/);
+        return await _context.FindAsync<T>([id], cancellationToken: cancellationToken);
     }
 
-    public async Task<T?> GetByIdWithInclude(Guid id, params Expression<Func<T, object>>[] includeProperties)
+    public async Task<T?> GetByIdWithInclude(Guid id, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties)
     {
         var query = IncludeProperties(includeProperties);
-        return (await query.FirstOrDefaultAsync(entity => entity.Id == id))!;
+        return await query.FirstOrDefaultAsync(entity => entity.Id == id, cancellationToken);
     }
 
-    public async Task<T> Add(T entity)
+    public async Task<T> Add(T entity, CancellationToken cancellationToken)
     {
         _context.Set<T>().Add(entity);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
         return entity;
     }
 
-    public async Task Delete(Guid id)
+    public async Task Delete(Guid id, CancellationToken cancellationToken)
     {
-        var entity = await _context.Set<T>().FindAsync(id) ??
+        var entity = await _context.Set<T>().FindAsync([id], cancellationToken: cancellationToken) ??
                         throw new ArgumentException($"Object of type {typeof(T)} with id {id} not found");
 
         _context.Set<T>().Remove(entity);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<T> Update(T entity)
+    public async Task<T> Update(T entity, CancellationToken cancellationToken)
     {
         _context.Set<T>().Update(entity);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
         return entity;
     }
 

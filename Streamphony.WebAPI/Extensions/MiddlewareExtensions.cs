@@ -1,3 +1,5 @@
+using Streamphony.WebAPI.Middlewares;
+
 namespace Streamphony.WebAPI.Extensions
 {
     public static class MiddlewareExtensions
@@ -7,6 +9,11 @@ namespace Streamphony.WebAPI.Extensions
             app.UseSwagger();
             app.UseSwaggerUI();
             return app;
+        }
+
+        public static IApplicationBuilder UseRequestTiming(this IApplicationBuilder app)
+        {
+            return app.UseMiddleware<RequestTimerMiddleware>();
         }
     }
 }

@@ -1,6 +1,6 @@
 using MediatR;
-using AutoMapper;
 using Streamphony.Application.Abstractions;
+using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.App.Genres.Responses;
 
 namespace Streamphony.Application.App.Genres.Queries;
@@ -14,7 +14,7 @@ public class GetAllGenresHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequ
 
     public async Task<IEnumerable<GenreDto>> Handle(GetAllGenres request, CancellationToken cancellationToken)
     {
-        var genres = await _unitOfWork.GenreRepository.GetAll();
+        var genres = await _unitOfWork.GenreRepository.GetAll(cancellationToken);
 
         return _mapper.Map<IEnumerable<GenreDto>>(genres);
     }

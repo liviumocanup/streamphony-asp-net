@@ -9,8 +9,8 @@ public class AlbumRepository(ApplicationDbContext context) : Repository<Album>(c
 {
     private readonly ApplicationDbContext _context = context;
 
-    public async Task<Album?> GetByTitle(string title)
+    public async Task<Album?> GetByTitle(string title, CancellationToken cancellationToken)
     {
-        return await _context.Albums.FirstOrDefaultAsync(album => album.Title == title);
+        return await _context.Albums.FirstOrDefaultAsync(album => album.Title == title, cancellationToken);
     }
 }
