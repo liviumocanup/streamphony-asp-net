@@ -4,7 +4,7 @@ using System.IO.Abstractions;
 
 namespace Streamphony.Infrastructure.Logging
 {
-    public class FileLoggingService : ILoggingService
+    public class FileLoggingService : ILoggingService, ILoggerManager
     {
         private readonly IFileSystem _fileSystem;
         private readonly string _logDirectoryPath;
@@ -43,6 +43,51 @@ namespace Streamphony.Infrastructure.Logging
             var logMessage = $"{currentDateTime:yyyy-MM-dd HH:mm:ss} - {methodName} called: {message}{errorMessage}{Environment.NewLine}";
 
             await _fileSystem.File.AppendAllTextAsync(filePath, logMessage);
+        }
+
+        public void LogError(string message, Exception ex)
+        {
+            LogAsync(message, ex).Wait();
+        }
+
+        public void LogError(string messageTemplate, params object?[]? propertyValues)
+        {
+            LogAsync(messageTemplate).Wait();
+        }
+
+        public void LogError(Exception? exception, string messageTemplate, params object?[]? propertyValues)
+        {
+            LogAsync(messageTemplate, exception!).Wait();
+        }
+
+        public void LogInformation(string message)
+        {
+            LogAsync(message).Wait();
+        }
+
+        public void LogInformation(string messageTemplate, params object?[]? propertyValues)
+        {
+            LogAsync(messageTemplate).Wait();
+        }
+
+        public void LogInformation(Exception? exception, string messageTemplate, params object?[]? propertyValues)
+        {
+            LogAsync(messageTemplate, exception!).Wait();
+        }
+
+        public void LogWarning(string message)
+        {
+            LogAsync(message).Wait();
+        }
+
+        public void LogWarning(string messageTemplate, params object?[]? propertyValues)
+        {
+            LogAsync(messageTemplate).Wait();
+        }
+
+        public void LogWarning(Exception? exception, string messageTemplate, params object?[]? propertyValues)
+        {
+            LogAsync(messageTemplate, exception!).Wait();
         }
     }
 }

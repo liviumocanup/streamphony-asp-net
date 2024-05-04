@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.IO.Abstractions;
 using FluentValidation;
+using Serilog;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Logging;
@@ -30,16 +31,27 @@ public static class ServiceExtensions
         services.AddScoped<IGenreRepository, GenreRepository>();
         services.AddScoped<IUserPreferenceRepository, UserPreferenceRepository>();
 
+        // Set up for AutoMapper
         // services.AddAutoMapper(typeof(MappingProfile).Assembly);
         // services.AddScoped<Application.Abstractions.Mapping.IMapper, AutoMapperService>();
+
+        // Set up for Mapster
         services.AddScoped<Application.Abstractions.Mapping.IMapper, Infrastructure.Mapping.MapsterMapper>();
+
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         services.AddSingleton<IFileSystem, FileSystem>();
         services.AddScoped<ILoggingService, FileLoggingService>();
 
+        services.AddSingleton<ILoggerManager, SerilogManager>();
+
         services.AddValidatorsFromAssemblyContaining<UserCreationDtoValidator>();
         services.AddValidatorsFromAssemblyContaining<UserDtoValidator>();
         services.AddFluentValidationAutoValidation();
+
+        services.AddSerilog((services, lc) => lc
+            .ReadFrom.Configuration(configuration)
+            .ReadFrom.Services(services)
+            .Enrich.FromLogContext());
 
         return services;
     }

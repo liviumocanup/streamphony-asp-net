@@ -13,13 +13,12 @@ public class CreateUserHandler : IRequestHandler<CreateUser, UserDto>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
-    private readonly ILoggingService _loggingService;
-
-    public CreateUserHandler(IUnitOfWork unitOfWork, IMapper mapper, ILoggingService loggingService)
+    private readonly ILoggerManager _logger;
+    public CreateUserHandler(IUnitOfWork unitOfWork, IMapper mapper, ILoggerManager logger)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
-        _loggingService = loggingService;
+        _logger = logger;
     }
 
     public async Task<UserDto> Handle(CreateUser request, CancellationToken cancellationToken)
@@ -36,7 +35,7 @@ public class CreateUserHandler : IRequestHandler<CreateUser, UserDto>
             await _unitOfWork.SaveAsync(cancellationToken);
             await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
-            await _loggingService.LogAsync($"User id {userDb.Id} - success");
+            _logger.LogInformation($"User id {userDb.Id} - success");
 
             return _mapper.Map<UserDto>(userDb);
         }
@@ -44,7 +43,7 @@ public class CreateUserHandler : IRequestHandler<CreateUser, UserDto>
         {
             await _unitOfWork.RollbackTransactionAsync(cancellationToken);
 
-            await _loggingService.LogAsync($"Creation failure: ", ex);
+            _logger.LogInformation("Creation failure: {ex}", ex);
             throw;
         }
     }
