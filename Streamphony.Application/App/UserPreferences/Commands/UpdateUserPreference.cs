@@ -7,10 +7,10 @@ namespace Streamphony.Application.App.UserPreferences.Commands;
 
 public record UpdateUserPreference(UserPreferenceDto UserPreferenceDto) : IRequest<UserPreferenceDto>;
 
-public class UpdateUserPreferenceHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<UpdateUserPreference, UserPreferenceDto>
+public class UpdateUserPreferenceHandler(IUnitOfWork unitOfWork, IMappingProvider mapper) : IRequestHandler<UpdateUserPreference, UserPreferenceDto>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly IMapper _mapper = mapper;
+    private readonly IMappingProvider _mapper = mapper;
 
     public async Task<UserPreferenceDto> Handle(UpdateUserPreference request, CancellationToken cancellationToken)
     {

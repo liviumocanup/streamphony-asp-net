@@ -1,5 +1,6 @@
 using FluentValidation;
 using Streamphony.Application.App.Users.Responses;
+using Streamphony.Infrastructure.Extensions;
 
 namespace Streamphony.Infrastructure.Persistence.Validators.CreationDTOs;
 

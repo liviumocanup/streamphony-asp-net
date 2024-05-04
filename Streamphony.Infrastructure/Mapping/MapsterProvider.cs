@@ -1,13 +1,14 @@
 using Mapster;
+using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Infrastructure.Mapping.Profiles;
 
 namespace Streamphony.Infrastructure.Mapping;
 
-public class MapsterMapper : Application.Abstractions.Mapping.IMapper
+public class MapsterProvider : IMappingProvider
 {
     private readonly TypeAdapterConfig _config;
 
-    public MapsterMapper()
+    public MapsterProvider()
     {
         _config = MapsterConfig.GlobalConfig;
     }

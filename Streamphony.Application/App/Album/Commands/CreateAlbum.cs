@@ -12,14 +12,14 @@ public record CreateAlbum(AlbumCreationDto AlbumCreationDto) : IRequest<AlbumDto
 public class CreateAlbumHandler : IRequestHandler<CreateAlbum, AlbumDto>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
-    private readonly ILoggingService _loggingService;
+    private readonly IMappingProvider _mapper;
+    private readonly ILoggingProvider _logger;
 
-    public CreateAlbumHandler(IUnitOfWork unitOfWork, IMapper mapper, ILoggingService loggingService)
+    public CreateAlbumHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingProvider logger)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
-        _loggingService = loggingService;
+        _logger = logger;
     }
 
     public async Task<AlbumDto> Handle(CreateAlbum request, CancellationToken cancellationToken)
@@ -37,7 +37,7 @@ public class CreateAlbumHandler : IRequestHandler<CreateAlbum, AlbumDto>
             await _unitOfWork.SaveAsync(cancellationToken);
             await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
-            await _loggingService.LogAsync($"Album id {albumDb.Id} - success");
+            _logger.LogInformation("Successfully created {EntityType} with Id {EntityId}.", nameof(Album), albumDb.Id);
 
             return _mapper.Map<AlbumDto>(albumDb);
         }
@@ -45,7 +45,7 @@ public class CreateAlbumHandler : IRequestHandler<CreateAlbum, AlbumDto>
         {
             await _unitOfWork.RollbackTransactionAsync(cancellationToken);
 
-            await _loggingService.LogAsync($"Creation failure: ", ex);
+            _logger.LogError("Failed to create {EntityType}. Error: {Error}", nameof(Album), ex.ToString());
             throw;
         }
     }

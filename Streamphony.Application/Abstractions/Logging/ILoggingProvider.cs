@@ -1,6 +1,6 @@
 ﻿namespace Streamphony.Application.Abstractions.Logging;
 
-public interface ILoggerManager
+public interface ILoggingProvider
 {
     void LogInformation(string message);
     void LogInformation(string messageTemplate, params object?[]? propertyValues);

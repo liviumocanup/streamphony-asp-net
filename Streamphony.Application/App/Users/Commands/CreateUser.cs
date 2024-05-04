@@ -12,9 +12,9 @@ public record CreateUser(UserCreationDto UserCreationDto) : IRequest<UserDto>;
 public class CreateUserHandler : IRequestHandler<CreateUser, UserDto>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
-    private readonly ILoggerManager _logger;
-    public CreateUserHandler(IUnitOfWork unitOfWork, IMapper mapper, ILoggerManager logger)
+    private readonly IMappingProvider _mapper;
+    private readonly ILoggingProvider _logger;
+    public CreateUserHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingProvider logger)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -35,7 +35,7 @@ public class CreateUserHandler : IRequestHandler<CreateUser, UserDto>
             await _unitOfWork.SaveAsync(cancellationToken);
             await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
-            _logger.LogInformation($"User id {userDb.Id} - success");
+            _logger.LogInformation("Successfully created {EntityType} with Id {EntityId}.", nameof(User), userDb.Id);
 
             return _mapper.Map<UserDto>(userDb);
         }
@@ -43,7 +43,7 @@ public class CreateUserHandler : IRequestHandler<CreateUser, UserDto>
         {
             await _unitOfWork.RollbackTransactionAsync(cancellationToken);
 
-            _logger.LogInformation("Creation failure: {ex}", ex);
+            _logger.LogError("Failed to create {EntityType}. Error: {Error}", nameof(User), ex.ToString());
             throw;
         }
     }

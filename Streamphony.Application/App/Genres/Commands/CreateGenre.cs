@@ -8,10 +8,10 @@ namespace Streamphony.Application.App.Genres.Commands;
 
 public record CreateGenre(GenreCreationDto GenreCreationDto) : IRequest<GenreDto>;
 
-public class CreateGenreHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<CreateGenre, GenreDto>
+public class CreateGenreHandler(IUnitOfWork unitOfWork, IMappingProvider mapper) : IRequestHandler<CreateGenre, GenreDto>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly IMapper _mapper = mapper;
+    private readonly IMappingProvider _mapper = mapper;
 
     public async Task<GenreDto> Handle(CreateGenre request, CancellationToken cancellationToken)
     {

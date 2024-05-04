@@ -1,15 +1,16 @@
 using MediatR;
 using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Logging;
+using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.App.Users.Commands;
 
 public record DeleteUser(Guid Id) : IRequest<bool>;
 
-public class DeleteUserHandler(IUnitOfWork unitOfWork, ILoggingService loggingService) : IRequestHandler<DeleteUser, bool>
+public class DeleteUserHandler(IUnitOfWork unitOfWork, ILoggingProvider logger) : IRequestHandler<DeleteUser, bool>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly ILoggingService _loggingService = loggingService;
+    private readonly ILoggingProvider _logger = logger;
 
     public async Task<bool> Handle(DeleteUser request, CancellationToken cancellationToken)
     {
@@ -24,13 +25,13 @@ public class DeleteUserHandler(IUnitOfWork unitOfWork, ILoggingService loggingSe
             await _unitOfWork.SaveAsync(cancellationToken);
             await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
-            await _loggingService.LogAsync($"User id {userId} - deleted successfully");
+            _logger.LogInformation("Successfully deleted {EntityType} with Id {EntityId}.", nameof(User), userId);
         }
         catch (Exception ex)
         {
             await _unitOfWork.RollbackTransactionAsync(cancellationToken);
 
-            await _loggingService.LogAsync($"Error deleting user id {userId}: ", ex);
+            _logger.LogError("Failed to delete {EntityType}. Error: {Error}", nameof(User), ex.ToString());
             return false;
         }
 

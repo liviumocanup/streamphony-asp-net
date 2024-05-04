@@ -13,14 +13,14 @@ public record UpdateAlbum(AlbumDto AlbumDto) : IRequest<AlbumDto>;
 public class UpdateAlbumHandler : IRequestHandler<UpdateAlbum, AlbumDto>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
-    private readonly ILoggingService _loggingService;
+    private readonly IMappingProvider _mapper;
+    private readonly ILoggingProvider _logger;
 
-    public UpdateAlbumHandler(IUnitOfWork unitOfWork, IMapper mapper, ILoggingService loggingService)
+    public UpdateAlbumHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingProvider logger)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
-        _loggingService = loggingService;
+        _logger = logger;
     }
 
     public async Task<AlbumDto> Handle(UpdateAlbum request, CancellationToken cancellationToken)
@@ -39,7 +39,7 @@ public class UpdateAlbumHandler : IRequestHandler<UpdateAlbum, AlbumDto>
             await _unitOfWork.SaveAsync(cancellationToken);
             await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
-            await _loggingService.LogAsync($"Album id {album.Id} - updated");
+            _logger.LogInformation("Successfully updated {EntityType} with Id {EntityId}.", nameof(Album), album.Id);
 
             return _mapper.Map<AlbumDto>(album);
         }
@@ -47,7 +47,7 @@ public class UpdateAlbumHandler : IRequestHandler<UpdateAlbum, AlbumDto>
         {
             await _unitOfWork.RollbackTransactionAsync(cancellationToken);
 
-            await _loggingService.LogAsync($"Error updating album id {albumDto.Id}: ", ex);
+            _logger.LogError("Failed to update {EntityType}. Error: {Error}", nameof(Album), ex.ToString());
             throw;
         }
     }

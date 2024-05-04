@@ -7,10 +7,10 @@ namespace Streamphony.Application.App.Genres.Queries;
 
 public class GetAllGenres() : IRequest<IEnumerable<GenreDto>>;
 
-public class GetAllGenresHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<GetAllGenres, IEnumerable<GenreDto>>
+public class GetAllGenresHandler(IUnitOfWork unitOfWork, IMappingProvider mapper) : IRequestHandler<GetAllGenres, IEnumerable<GenreDto>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly IMapper _mapper = mapper;
+    private readonly IMappingProvider _mapper = mapper;
 
     public async Task<IEnumerable<GenreDto>> Handle(GetAllGenres request, CancellationToken cancellationToken)
     {

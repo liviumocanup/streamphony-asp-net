@@ -13,14 +13,14 @@ public record UpdateSong(SongDto SongDto) : IRequest<SongDto>;
 public class UpdateSongHandler : IRequestHandler<UpdateSong, SongDto>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
-    private readonly ILoggingService _loggingService;
+    private readonly IMappingProvider _mapper;
+    private readonly ILoggingProvider _logger;
 
-    public UpdateSongHandler(IUnitOfWork unitOfWork, IMapper mapper, ILoggingService loggingService)
+    public UpdateSongHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingProvider logger)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
-        _loggingService = loggingService;
+        _logger = logger;
     }
 
     public async Task<SongDto> Handle(UpdateSong request, CancellationToken cancellationToken)
@@ -41,7 +41,7 @@ public class UpdateSongHandler : IRequestHandler<UpdateSong, SongDto>
             await _unitOfWork.SaveAsync(cancellationToken);
             await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
-            await _loggingService.LogAsync($"Song id {song.Id} - updated");
+            _logger.LogInformation("Successfully updated {EntityType} with Id {EntityId}.", nameof(Song), song.Id);
 
             return _mapper.Map<SongDto>(song);
         }
@@ -49,7 +49,7 @@ public class UpdateSongHandler : IRequestHandler<UpdateSong, SongDto>
         {
             await _unitOfWork.RollbackTransactionAsync(cancellationToken);
 
-            await _loggingService.LogAsync($"Error updating song id {songDto.Id}: ", ex);
+            _logger.LogError("Failed to update {EntityType}. Error: {Error}", nameof(Song), ex.ToString());
             throw;
         }
     }

@@ -3,6 +3,7 @@ using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Logging;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.App.Users.Responses;
+using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.App.Users.Commands;
 
@@ -11,14 +12,14 @@ public record UpdateUser(UserDto UserDto) : IRequest<UserDto>;
 public class UpdateUserHandler : IRequestHandler<UpdateUser, UserDto>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
-    private readonly ILoggingService _loggingService;
+    private readonly IMappingProvider _mapper;
+    private readonly ILoggingProvider _logger;
 
-    public UpdateUserHandler(IUnitOfWork unitOfWork, IMapper mapper, ILoggingService loggingService)
+    public UpdateUserHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingProvider logger)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
-        _loggingService = loggingService;
+        _logger = logger;
     }
 
     public async Task<UserDto> Handle(UpdateUser request, CancellationToken cancellationToken)
@@ -34,7 +35,7 @@ public class UpdateUserHandler : IRequestHandler<UpdateUser, UserDto>
             await _unitOfWork.SaveAsync(cancellationToken);
             await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
-            await _loggingService.LogAsync($"User id {user.Id} - updated");
+            _logger.LogInformation("Successfully updated {EntityType} with Id {EntityId}.", nameof(User), user.Id);
 
             return _mapper.Map<UserDto>(user);
         }
@@ -42,7 +43,7 @@ public class UpdateUserHandler : IRequestHandler<UpdateUser, UserDto>
         {
             await _unitOfWork.RollbackTransactionAsync(cancellationToken);
 
-            await _loggingService.LogAsync($"Error updating user id {userDto.Id}: ", ex);
+            _logger.LogError("Failed to update {EntityType}. Error: {Error}", nameof(User), ex.ToString());
             throw;
         }
     }

@@ -25,6 +25,7 @@ public class DeleteGenreHandler(IUnitOfWork unitOfWork) : IRequestHandler<Delete
             await _unitOfWork.RollbackTransactionAsync(cancellationToken);
 
             Console.WriteLine(e.Message);
+            //TODO: Log error
             return false;
         }
 

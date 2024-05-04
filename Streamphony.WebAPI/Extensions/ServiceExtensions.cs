@@ -13,6 +13,8 @@ using Streamphony.Infrastructure.Persistence.Contexts;
 using Streamphony.Infrastructure.Persistence.Repositories;
 using Streamphony.Infrastructure.Persistence.Validators.DTOs;
 using Streamphony.Infrastructure.Persistence.Validators.CreationDTOs;
+using Streamphony.Application.Abstractions.Mapping;
+using Streamphony.Infrastructure.Mapping;
 
 namespace Streamphony.WebAPI.Extensions;
 
@@ -36,13 +38,13 @@ public static class ServiceExtensions
         // services.AddScoped<Application.Abstractions.Mapping.IMapper, AutoMapperService>();
 
         // Set up for Mapster
-        services.AddScoped<Application.Abstractions.Mapping.IMapper, Infrastructure.Mapping.MapsterMapper>();
+        services.AddScoped<IMappingProvider, MapsterProvider>();
 
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         services.AddSingleton<IFileSystem, FileSystem>();
         services.AddScoped<ILoggingService, FileLoggingService>();
 
-        services.AddSingleton<ILoggerManager, SerilogManager>();
+        services.AddSingleton<ILoggingProvider, SerilogProvider>();
 
         services.AddValidatorsFromAssemblyContaining<UserCreationDtoValidator>();
         services.AddValidatorsFromAssemblyContaining<UserDtoValidator>();

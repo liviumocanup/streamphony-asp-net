@@ -4,7 +4,7 @@ using System.IO.Abstractions;
 
 namespace Streamphony.Infrastructure.Logging
 {
-    public class FileLoggingService : ILoggingService, ILoggerManager
+    public class FileLoggingService : ILoggingService, ILoggingProvider
     {
         private readonly IFileSystem _fileSystem;
         private readonly string _logDirectoryPath;

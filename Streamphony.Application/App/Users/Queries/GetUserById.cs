@@ -7,10 +7,10 @@ namespace Streamphony.Application.App.Users.Queries;
 
 public record GetUserById(Guid Id) : IRequest<UserDetailsDto>;
 
-public class GetUserByIdHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<GetUserById, UserDetailsDto>
+public class GetUserByIdHandler(IUnitOfWork unitOfWork, IMappingProvider mapper) : IRequestHandler<GetUserById, UserDetailsDto>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly IMapper _mapper = mapper;
+    private readonly IMappingProvider _mapper = mapper;
 
     public async Task<UserDetailsDto> Handle(GetUserById request, CancellationToken cancellationToken)
     {

@@ -7,10 +7,10 @@ namespace Streamphony.Application.App.Genres.Commands;
 
 public record UpdateGenre(GenreDto GenreDto) : IRequest<GenreDto>;
 
-public class UpdateGenreHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<UpdateGenre, GenreDto>
+public class UpdateGenreHandler(IUnitOfWork unitOfWork, IMappingProvider mapper) : IRequestHandler<UpdateGenre, GenreDto>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly IMapper _mapper = mapper;
+    private readonly IMappingProvider _mapper = mapper;
 
     public async Task<GenreDto> Handle(UpdateGenre request, CancellationToken cancellationToken)
     {

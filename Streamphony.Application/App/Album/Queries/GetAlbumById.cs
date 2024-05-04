@@ -7,10 +7,10 @@ namespace Streamphony.Application.App.Albums.Queries;
 
 public record GetAlbumById(Guid Id) : IRequest<AlbumDetailsDto>;
 
-public class GetAlbumByIdHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<GetAlbumById, AlbumDetailsDto>
+public class GetAlbumByIdHandler(IUnitOfWork unitOfWork, IMappingProvider mapper) : IRequestHandler<GetAlbumById, AlbumDetailsDto>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly IMapper _mapper = mapper;
+    private readonly IMappingProvider _mapper = mapper;
 
     public async Task<AlbumDetailsDto> Handle(GetAlbumById request, CancellationToken cancellationToken)
     {

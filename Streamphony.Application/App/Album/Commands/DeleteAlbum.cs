@@ -1,15 +1,16 @@
 using MediatR;
 using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Logging;
+using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.App.Albums.Commands;
 
 public record DeleteAlbum(Guid Id) : IRequest<bool>;
 
-public class DeleteAlbumHandler(IUnitOfWork unitOfWork, ILoggingService loggingService) : IRequestHandler<DeleteAlbum, bool>
+public class DeleteAlbumHandler(IUnitOfWork unitOfWork, ILoggingProvider logger) : IRequestHandler<DeleteAlbum, bool>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly ILoggingService _loggingService = loggingService;
+    private readonly ILoggingProvider _logger = logger;
 
     public async Task<bool> Handle(DeleteAlbum request, CancellationToken cancellationToken)
     {
@@ -23,13 +24,13 @@ public class DeleteAlbumHandler(IUnitOfWork unitOfWork, ILoggingService loggingS
             await _unitOfWork.SaveAsync(cancellationToken);
             await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
-            await _loggingService.LogAsync($"Album id {albumToDelete.Id} - deleted successfully");
+            _logger.LogInformation("Successfully deleted {EntityType} with Id {EntityId}.", nameof(Album), albumToDelete.Id);
         }
         catch (Exception ex)
         {
             await _unitOfWork.RollbackTransactionAsync(cancellationToken);
 
-            await _loggingService.LogAsync($"Error deleting album id {albumToDelete.Id}: ", ex);
+            _logger.LogError("Failed to delete {EntityType}. Error: {Error}", nameof(Album), ex.ToString());
             throw;
         }
 

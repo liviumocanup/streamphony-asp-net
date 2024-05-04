@@ -1,15 +1,16 @@
 using MediatR;
 using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Logging;
+using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.App.Songs.Commands;
 
 public record DeleteSong(Guid Id) : IRequest<bool>;
 
-public class DeleteSongHandler(IUnitOfWork unitOfWork, ILoggingService loggingService) : IRequestHandler<DeleteSong, bool>
+public class DeleteSongHandler(IUnitOfWork unitOfWork, ILoggingProvider logger) : IRequestHandler<DeleteSong, bool>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly ILoggingService _loggingService = loggingService;
+    private readonly ILoggingProvider _logger = logger;
 
     public async Task<bool> Handle(DeleteSong request, CancellationToken cancellationToken)
     {
@@ -23,13 +24,13 @@ public class DeleteSongHandler(IUnitOfWork unitOfWork, ILoggingService loggingSe
             await _unitOfWork.SaveAsync(cancellationToken);
             await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
-            await _loggingService.LogAsync($"Song id {songToDelete.Id} - deleted successfully");
+            _logger.LogInformation("Successfully deleted {EntityType} with Id {EntityId}.", nameof(Song), songToDelete.Id);
         }
         catch (Exception ex)
         {
             await _unitOfWork.RollbackTransactionAsync(cancellationToken);
 
-            await _loggingService.LogAsync($"Error deleting song id {songToDelete.Id}: ", ex);
+            _logger.LogError("Failed to delete {EntityType}. Error: {Error}", nameof(Song), ex.ToString());
             throw;
         }
 

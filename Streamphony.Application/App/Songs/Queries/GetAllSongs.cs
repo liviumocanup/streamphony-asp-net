@@ -7,10 +7,10 @@ namespace Streamphony.Application.App.Songs.Queries;
 
 public class GetAllSongs() : IRequest<IEnumerable<SongDto>>;
 
-public class GetAllSongsHandler(IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<GetAllSongs, IEnumerable<SongDto>>
+public class GetAllSongsHandler(IUnitOfWork unitOfWork, IMappingProvider mapper) : IRequestHandler<GetAllSongs, IEnumerable<SongDto>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly IMapper _mapper = mapper;
+    private readonly IMappingProvider _mapper = mapper;
 
     public async Task<IEnumerable<SongDto>> Handle(GetAllSongs request, CancellationToken cancellationToken)
     {

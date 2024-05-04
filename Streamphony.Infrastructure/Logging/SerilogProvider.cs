@@ -3,7 +3,7 @@ using Streamphony.Application.Abstractions.Logging;
 
 namespace Streamphony.Infrastructure.Logging;
 
-public class SerilogManager : ILoggerManager
+public class SerilogProvider : ILoggingProvider
 {
     public void LogInformation(string message)
     {

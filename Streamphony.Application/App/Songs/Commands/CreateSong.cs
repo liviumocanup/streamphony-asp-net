@@ -12,14 +12,14 @@ public record CreateSong(SongCreationDto SongCreationDto) : IRequest<SongDto>;
 public class CreateSongHandler : IRequestHandler<CreateSong, SongDto>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
-    private readonly ILoggingService _loggingService;
+    private readonly IMappingProvider _mapper;
+    private readonly ILoggingProvider _logger;
 
-    public CreateSongHandler(IUnitOfWork unitOfWork, IMapper mapper, ILoggingService loggingService)
+    public CreateSongHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingProvider logger)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
-        _loggingService = loggingService;
+        _logger = logger;
     }
 
     public async Task<SongDto> Handle(CreateSong request, CancellationToken cancellationToken)
@@ -37,7 +37,7 @@ public class CreateSongHandler : IRequestHandler<CreateSong, SongDto>
             await _unitOfWork.SaveAsync(cancellationToken);
             await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
-            await _loggingService.LogAsync($"Song id {songDb.Id} - success");
+            _logger.LogInformation("Successfully created {EntityType} with Id {EntityId}.", nameof(Song), songDb.Id);
 
             return _mapper.Map<SongDto>(songDb);
         }
@@ -45,7 +45,7 @@ public class CreateSongHandler : IRequestHandler<CreateSong, SongDto>
         {
             await _unitOfWork.RollbackTransactionAsync(cancellationToken);
 
-            await _loggingService.LogAsync($"Creation failure: ", ex);
+            _logger.LogError("Failed to create {EntityType}. Error: {Error}", nameof(Song), ex.ToString());
             throw;
         }
     }

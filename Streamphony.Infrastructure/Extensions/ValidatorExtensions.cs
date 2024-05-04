@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Streamphony.Infrastructure;
+namespace Streamphony.Infrastructure.Extensions;
 
 public static class ValidatorExtensions
 {

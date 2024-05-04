@@ -1,8 +1,11 @@
+using AutoMapper;
+using Streamphony.Application.Abstractions.Mapping;
+
 namespace Streamphony.Infrastructure.Mapping;
 
-public class AutoMapperService(AutoMapper.IMapper mapper) : Application.Abstractions.Mapping.IMapper
+public class AutoMapperProvider(IMapper mapper) : IMappingProvider
 {
-    private readonly AutoMapper.IMapper _mapper = mapper;
+    private readonly IMapper _mapper = mapper;
 
     public TDestination Map<TDestination>(object? source)
     {

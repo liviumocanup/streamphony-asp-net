@@ -12,14 +12,14 @@ public record CreateUserPreference(UserPreferenceDto UserPreferenceDto) : IReque
 public class CreateUserPreferenceHandler : IRequestHandler<CreateUserPreference, UserPreferenceDto>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
-    private readonly ILoggingService _loggingService;
+    private readonly IMappingProvider _mapper;
+    private readonly ILoggingProvider _logger;
 
-    public CreateUserPreferenceHandler(IUnitOfWork unitOfWork, IMapper mapper, ILoggingService loggingService)
+    public CreateUserPreferenceHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingProvider logger)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
-        _loggingService = loggingService;
+        _logger = logger;
     }
 
     public async Task<UserPreferenceDto> Handle(CreateUserPreference request, CancellationToken cancellationToken)
@@ -37,7 +37,7 @@ public class CreateUserPreferenceHandler : IRequestHandler<CreateUserPreference,
             await _unitOfWork.SaveAsync(cancellationToken);
             await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
-            await _loggingService.LogAsync($"UserPreference for User {userPreferenceDb.Id} - success");
+            _logger.LogInformation("Successfully created {EntityType} with Id {EntityId}.", nameof(UserPreference), userPreferenceDb.Id);
 
             return _mapper.Map<UserPreferenceDto>(userPreferenceDb);
         }
@@ -45,7 +45,7 @@ public class CreateUserPreferenceHandler : IRequestHandler<CreateUserPreference,
         {
             await _unitOfWork.RollbackTransactionAsync(cancellationToken);
 
-            await _loggingService.LogAsync($"Creation failure: ", ex);
+            _logger.LogError("Failed to create {EntityType}. Error: {Error}", nameof(UserPreference), ex.ToString());
             throw;
         }
     }
