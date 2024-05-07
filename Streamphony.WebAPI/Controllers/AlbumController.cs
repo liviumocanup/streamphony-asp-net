@@ -24,15 +24,8 @@ public class AlbumController(IMediator mediator) : AppBaseController
     [ValidateModel]
     public async Task<ActionResult<AlbumDto>> UpdateAlbum(AlbumDto albumDto)
     {
-        try
-        {
-            var updatedAlbumDto = await _mediator.Send(new UpdateAlbum(albumDto));
-            return Ok(updatedAlbumDto);
-        }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
+        var updatedAlbumDto = await _mediator.Send(new UpdateAlbum(albumDto));
+        return Ok(updatedAlbumDto);
     }
 
     [HttpGet]
@@ -46,15 +39,13 @@ public class AlbumController(IMediator mediator) : AppBaseController
     public async Task<ActionResult<AlbumDto>> GetAlbumById(Guid id)
     {
         var albumDto = await _mediator.Send(new GetAlbumById(id));
-        if (albumDto == null) return NotFound("Album not found.");
         return Ok(albumDto);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAlbum(Guid id)
     {
-        var result = await _mediator.Send(new DeleteAlbum(id));
-        if (!result) return NotFound($"Album with ID {id} not found.");
-        return Ok();
+        await _mediator.Send(new DeleteAlbum(id));
+        return NoContent();
     }
 }

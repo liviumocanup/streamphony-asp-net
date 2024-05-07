@@ -15,6 +15,8 @@ using Streamphony.Infrastructure.Persistence.Validators.DTOs;
 using Streamphony.Infrastructure.Persistence.Validators.CreationDTOs;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Infrastructure.Mapping;
+using Streamphony.Application.Abstractions.Services;
+using Streamphony.Application.Services;
 
 namespace Streamphony.WebAPI.Extensions;
 
@@ -26,30 +28,38 @@ public static class ServiceExtensions
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
         services.AddMediatR(typeof(GetAllUsersHandler).Assembly);
+
+        // Repository and UnitOfWork registration
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ISongRepository, SongRepository>();
         services.AddScoped<IAlbumRepository, AlbumRepository>();
         services.AddScoped<IGenreRepository, GenreRepository>();
         services.AddScoped<IUserPreferenceRepository, UserPreferenceRepository>();
+        services.AddTransient<IValidationService, ValidationService>();
 
-        // Set up for AutoMapper
+        // Mapping provider with Mapster
+        services.AddScoped<IMappingProvider, MapsterProvider>();
+        // Mapping provider with AutoMapper
         // services.AddAutoMapper(typeof(MappingProfile).Assembly);
         // services.AddScoped<Application.Abstractions.Mapping.IMapper, AutoMapperService>();
-
-        // Set up for Mapster
-        services.AddScoped<IMappingProvider, MapsterProvider>();
 
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         services.AddSingleton<IFileSystem, FileSystem>();
         services.AddScoped<ILoggingService, FileLoggingService>();
 
+        // Logging provider with Serilog
         services.AddSingleton<ILoggingProvider, SerilogProvider>();
 
+        // Validation service registration
+        services.AddScoped<IValidationService, ValidationService>();
+
+        // Fluent Validation setup
         services.AddValidatorsFromAssemblyContaining<UserCreationDtoValidator>();
         services.AddValidatorsFromAssemblyContaining<UserDtoValidator>();
         services.AddFluentValidationAutoValidation();
 
+        // Serilog configuration
         services.AddSerilog((services, lc) => lc
             .ReadFrom.Configuration(configuration)
             .ReadFrom.Services(services)

@@ -1,10 +1,13 @@
 using MediatR;
+using Streamphony.Domain.Models;
 using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Logging;
 using Streamphony.Application.Abstractions.Mapping;
-using Streamphony.Application.Abstractions.Repositories;
+using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.App.Albums.Responses;
-using Streamphony.Domain.Models;
+using Streamphony.Application.Exceptions;
+using Streamphony.Application.Services;
+
 
 namespace Streamphony.Application.App.Albums.Commands;
 
@@ -15,46 +18,39 @@ public class UpdateAlbumHandler : IRequestHandler<UpdateAlbum, AlbumDto>
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMappingProvider _mapper;
     private readonly ILoggingProvider _logger;
+    private readonly IValidationService _validationService;
 
-    public UpdateAlbumHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingProvider logger)
+    public UpdateAlbumHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingProvider logger, IValidationService validationService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _logger = logger;
+        _validationService = validationService;
     }
 
     public async Task<AlbumDto> Handle(UpdateAlbum request, CancellationToken cancellationToken)
     {
         var albumDto = request.AlbumDto;
-        var album = await GetEntityById(_unitOfWork.AlbumRepository, albumDto.Id, cancellationToken);
-        var user = await GetEntityById(_unitOfWork.UserRepository, albumDto.OwnerId, cancellationToken);
+        var duplicateTitleForOtherAlbums = _unitOfWork.AlbumRepository.GetByOwnerIdAndTitleWhereIdNotEqual;
 
-        if (!user.OwnedAlbums.Any(a => a.Id == albumDto.Id))
-            throw new KeyNotFoundException($"User with ID {albumDto.OwnerId} does not own album with ID {albumDto.Id}");
+        var album = await _validationService.GetExistingEntity(_unitOfWork.AlbumRepository, albumDto.Id, cancellationToken);
+        await ValidateOwnership(albumDto, cancellationToken);
+        await _validationService.EnsureUserUniquePropertyExceptId(duplicateTitleForOtherAlbums, album.OwnerId, nameof(albumDto.Title), albumDto.Title, albumDto.Id, cancellationToken);
 
-        try
-        {
-            await _unitOfWork.BeginTransactionAsync(cancellationToken);
-            _mapper.Map(albumDto, album);
-            await _unitOfWork.SaveAsync(cancellationToken);
-            await _unitOfWork.CommitTransactionAsync(cancellationToken);
+        _mapper.Map(albumDto, album);
+        await _unitOfWork.SaveAsync(cancellationToken);
 
-            _logger.LogInformation("Successfully updated {EntityType} with Id {EntityId}.", nameof(Album), album.Id);
-
-            return _mapper.Map<AlbumDto>(album);
-        }
-        catch (Exception ex)
-        {
-            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
-
-            _logger.LogError("Failed to update {EntityType}. Error: {Error}", nameof(Album), ex.ToString());
-            throw;
-        }
+        _logger.LogInformation("{LogAction} success for {EntityType} with Id {EntityId}.", LogAction.Update, nameof(Album), album.Id);
+        return _mapper.Map<AlbumDto>(album);
     }
 
-    private static async Task<T> GetEntityById<T>(IRepository<T> repository, Guid entityId, CancellationToken cancellationToken) where T : BaseEntity
+    private async Task ValidateOwnership(AlbumDto albumDto, CancellationToken cancellationToken)
     {
-        return await repository.GetById(entityId, cancellationToken) ??
-                throw new KeyNotFoundException($"{typeof(T).Name} with ID {entityId} not found.");
+        var user = await _validationService.GetExistingEntity(_unitOfWork.UserRepository, albumDto.OwnerId, cancellationToken, LogAction.Get);
+
+        if (!user.OwnedAlbums.Any(album => album.Id == albumDto.Id))
+        {
+            _validationService.LogAndThrowNotAuthorizedException(nameof(Album), albumDto.Id, nameof(User), albumDto.OwnerId);
+        }
     }
 }

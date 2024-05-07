@@ -1,21 +1,34 @@
 using MediatR;
+using Streamphony.Domain.Models;
 using Streamphony.Application.Abstractions;
+using Streamphony.Application.Abstractions.Logging;
 using Streamphony.Application.Abstractions.Mapping;
+using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.App.Albums.Responses;
+using Streamphony.Application.Services;
 
 namespace Streamphony.Application.App.Albums.Queries;
 
 public record GetAlbumById(Guid Id) : IRequest<AlbumDetailsDto>;
 
-public class GetAlbumByIdHandler(IUnitOfWork unitOfWork, IMappingProvider mapper) : IRequestHandler<GetAlbumById, AlbumDetailsDto>
+public class GetAlbumByIdHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingProvider logger, IValidationService validationService) : IRequestHandler<GetAlbumById, AlbumDetailsDto>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IMappingProvider _mapper = mapper;
+    private readonly ILoggingProvider _logger = logger;
+    private readonly IValidationService _validationService = validationService;
 
     public async Task<AlbumDetailsDto> Handle(GetAlbumById request, CancellationToken cancellationToken)
     {
-        var album = await _unitOfWork.AlbumRepository.GetByIdWithInclude(request.Id, cancellationToken, album => album.Songs);
+        var album = await _validationService.GetExistingEntityWithInclude<Album>(
+            _unitOfWork.AlbumRepository.GetByIdWithInclude,
+            request.Id,
+            LogAction.Get,
+            cancellationToken,
+            album => album.Songs
+        );
 
+        _logger.LogInformation("{LogAction} success for {EntityType} with Id '{EntityId}'.", LogAction.Get, nameof(Album), album.Id);
         return _mapper.Map<AlbumDetailsDto>(album);
     }
 }
