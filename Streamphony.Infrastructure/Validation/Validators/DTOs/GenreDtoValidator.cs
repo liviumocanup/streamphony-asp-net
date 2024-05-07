@@ -1,8 +1,8 @@
 using FluentValidation;
 using Streamphony.Application.App.Genres.Responses;
-using Streamphony.Infrastructure.Persistence.Validators.CreationDTOs;
+using Streamphony.Infrastructure.Validation.Validators.CreationDTOs;
 
-namespace Streamphony.Infrastructure.Persistence.Validators.DTOs;
+namespace Streamphony.Infrastructure.Validation.Validators.DTOs;
 
 public class GenreDtoValidator : AbstractValidator<GenreDto>
 {

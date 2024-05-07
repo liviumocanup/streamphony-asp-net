@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Streamphony.Domain.Models;
 
-namespace Streamphony.Infrastructure.Persistence.Configurations;
+namespace Streamphony.Infrastructure.Validation.Configurations;
 
 public class UserConfig : IEntityTypeConfiguration<User>
 {

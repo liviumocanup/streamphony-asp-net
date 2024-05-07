@@ -1,7 +1,6 @@
 using MediatR;
 using Streamphony.Domain.Models;
 using Streamphony.Application.Abstractions;
-using Streamphony.Application.Abstractions.Logging;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.App.Albums.Responses;
@@ -15,10 +14,10 @@ public class CreateAlbumHandler : IRequestHandler<CreateAlbum, AlbumDto>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMappingProvider _mapper;
-    private readonly ILoggingProvider _logger;
+    private readonly ILoggingService _logger;
     private readonly IValidationService _validationService;
 
-    public CreateAlbumHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingProvider logger, IValidationService validationService)
+    public CreateAlbumHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingService logger, IValidationService validationService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -38,7 +37,7 @@ public class CreateAlbumHandler : IRequestHandler<CreateAlbum, AlbumDto>
         var albumDb = await _unitOfWork.AlbumRepository.Add(albumEntity, cancellationToken);
         await _unitOfWork.SaveAsync(cancellationToken);
 
-        _logger.LogInformation("{LogAction} success for {EntityType} with Id '{EntityId}'.", LogAction.Create, nameof(Album), albumDb.Id);
+        _logger.LogSuccess(nameof(Album), albumDb.Id);
         return _mapper.Map<AlbumDto>(albumDb);
     }
 }

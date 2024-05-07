@@ -1,11 +1,9 @@
 using MediatR;
 using Streamphony.Domain.Models;
 using Streamphony.Application.Abstractions;
-using Streamphony.Application.Abstractions.Logging;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.App.Songs.Responses;
-using Streamphony.Application.Services;
 
 namespace Streamphony.Application.App.Songs.Commands;
 
@@ -15,10 +13,10 @@ public class CreateSongHandler : IRequestHandler<CreateSong, SongDto>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMappingProvider _mapper;
-    private readonly ILoggingProvider _logger;
+    private readonly ILoggingService _logger;
     private readonly IValidationService _validationService;
 
-    public CreateSongHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingProvider logger, IValidationService validationService)
+    public CreateSongHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingService logger, IValidationService validationService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -40,7 +38,7 @@ public class CreateSongHandler : IRequestHandler<CreateSong, SongDto>
         var songDb = await _unitOfWork.SongRepository.Add(songEntity, cancellationToken);
         await _unitOfWork.SaveAsync(cancellationToken);
 
-        _logger.LogInformation("{LogAction} success for {EntityType} with Id '{EntityId}'.", LogAction.Create, nameof(Song), songDb.Id);
+        _logger.LogSuccess(nameof(Song), songDb.Id);
         return _mapper.Map<SongDto>(songDb);
     }
 }

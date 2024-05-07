@@ -1,11 +1,9 @@
 using MediatR;
 using Streamphony.Domain.Models;
 using Streamphony.Application.Abstractions;
-using Streamphony.Application.Abstractions.Logging;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.App.Albums.Responses;
-using Streamphony.Application.Exceptions;
 using Streamphony.Application.Services;
 
 
@@ -17,10 +15,10 @@ public class UpdateAlbumHandler : IRequestHandler<UpdateAlbum, AlbumDto>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMappingProvider _mapper;
-    private readonly ILoggingProvider _logger;
+    private readonly ILoggingService _logger;
     private readonly IValidationService _validationService;
 
-    public UpdateAlbumHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingProvider logger, IValidationService validationService)
+    public UpdateAlbumHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingService logger, IValidationService validationService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -40,7 +38,7 @@ public class UpdateAlbumHandler : IRequestHandler<UpdateAlbum, AlbumDto>
         _mapper.Map(albumDto, album);
         await _unitOfWork.SaveAsync(cancellationToken);
 
-        _logger.LogInformation("{LogAction} success for {EntityType} with Id {EntityId}.", LogAction.Update, nameof(Album), album.Id);
+        _logger.LogSuccess(nameof(Album), album.Id, LogAction.Update);
         return _mapper.Map<AlbumDto>(album);
     }
 
@@ -50,7 +48,7 @@ public class UpdateAlbumHandler : IRequestHandler<UpdateAlbum, AlbumDto>
 
         if (!user.OwnedAlbums.Any(album => album.Id == albumDto.Id))
         {
-            _validationService.LogAndThrowNotAuthorizedException(nameof(Album), albumDto.Id, nameof(User), albumDto.OwnerId);
+            _logger.LogAndThrowNotAuthorizedException(nameof(Album), albumDto.Id, nameof(User), albumDto.OwnerId);
         }
     }
 }

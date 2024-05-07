@@ -22,6 +22,4 @@ public interface IValidationService
     Task EnsureUniquePropertyExceptId<TEntity, TProperty>(Func<TProperty, Guid, CancellationToken, Task<IEnumerable<TEntity>>> getEntitiesFunc, string propertyName, TProperty propertyValue, Guid entityId, CancellationToken cancellationToken, LogAction logAction = LogAction.Update);
     Task EnsureUserUniqueProperty<TEntity, TProperty>(Func<Guid, TProperty, CancellationToken, Task<TEntity?>> getEntityFunc, Guid ownerId, string propertyName, TProperty propertyValue, CancellationToken cancellationToken, LogAction logAction = LogAction.Create);
     Task EnsureUserUniquePropertyExceptId<TEntity, TProperty>(Func<Guid, TProperty, Guid, CancellationToken, Task<IEnumerable<TEntity>>> getEntitiesFunc, Guid ownerId, string propertyName, TProperty propertyValue, Guid entityId, CancellationToken cancellationToken, LogAction logAction = LogAction.Update);
-    void LogAndThrowNotAuthorizedException(string entityName, Guid entityId, string navName, Guid navId, LogAction logAction = LogAction.Update);
-    void LogAndThrowDuplicateException<T>(string entityName, string propertyName, T propertyValue, LogAction logAction = LogAction.Update);
 }

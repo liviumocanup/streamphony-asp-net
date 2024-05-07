@@ -1,7 +1,6 @@
 using MediatR;
 using Streamphony.Domain.Models;
 using Streamphony.Application.Abstractions;
-using Streamphony.Application.Abstractions.Logging;
 using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.Services;
 
@@ -9,10 +8,10 @@ namespace Streamphony.Application.App.UserPreferences.Commands;
 
 public record DeleteUserPreference(Guid Id) : IRequest<bool>;
 
-public class DeleteUserPreferenceHandler(IUnitOfWork unitOfWork, ILoggingProvider logger, IValidationService validationService) : IRequestHandler<DeleteUserPreference, bool>
+public class DeleteUserPreferenceHandler(IUnitOfWork unitOfWork, ILoggingService logger, IValidationService validationService) : IRequestHandler<DeleteUserPreference, bool>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly ILoggingProvider _logger = logger;
+    private readonly ILoggingService _logger = logger;
     private readonly IValidationService _validationService = validationService;
 
     public async Task<bool> Handle(DeleteUserPreference request, CancellationToken cancellationToken)
@@ -23,7 +22,7 @@ public class DeleteUserPreferenceHandler(IUnitOfWork unitOfWork, ILoggingProvide
         await _unitOfWork.UserPreferenceRepository.Delete(request.Id, cancellationToken);
         await _unitOfWork.SaveAsync(cancellationToken);
 
-        _logger.LogInformation("{LogAction} success for {EntityType} with Id '{EntityId}'.", LogAction.Delete, nameof(UserPreference), userPreferenceId);
+        _logger.LogSuccess(nameof(UserPreference), userPreferenceId, LogAction.Delete);
         return true;
     }
 }

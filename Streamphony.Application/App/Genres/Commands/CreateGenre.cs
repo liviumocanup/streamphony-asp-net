@@ -1,7 +1,6 @@
 using MediatR;
 using Streamphony.Domain.Models;
 using Streamphony.Application.Abstractions;
-using Streamphony.Application.Abstractions.Logging;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.App.Genres.Responses;
@@ -11,11 +10,11 @@ namespace Streamphony.Application.App.Genres.Commands;
 
 public record CreateGenre(GenreCreationDto GenreCreationDto) : IRequest<GenreDto>;
 
-public class CreateGenreHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingProvider logger, IValidationService validationService) : IRequestHandler<CreateGenre, GenreDto>
+public class CreateGenreHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingService logger, IValidationService validationService) : IRequestHandler<CreateGenre, GenreDto>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IMappingProvider _mapper = mapper;
-    private readonly ILoggingProvider _logger = logger;
+    private readonly ILoggingService _logger = logger;
     private readonly IValidationService _validationService = validationService;
 
     public async Task<GenreDto> Handle(CreateGenre request, CancellationToken cancellationToken)
@@ -29,7 +28,7 @@ public class CreateGenreHandler(IUnitOfWork unitOfWork, IMappingProvider mapper,
         var genreDb = await _unitOfWork.GenreRepository.Add(genreEntity, cancellationToken);
         await _unitOfWork.SaveAsync(cancellationToken);
 
-        _logger.LogInformation("{LogAction} success for {EntityType} with Id '{EntityId}'.", LogAction.Create, nameof(Genre), genreDb.Id);
+        _logger.LogSuccess(nameof(Genre), genreDb.Id);
         return _mapper.Map<GenreDto>(genreDb);
     }
 }

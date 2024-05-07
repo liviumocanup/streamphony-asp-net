@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Streamphony.Domain.Models;
-using Streamphony.Infrastructure.Persistence.Configurations;
+using Streamphony.Infrastructure.Validation.Configurations;
 
 namespace Streamphony.Infrastructure.Persistence.Contexts;
 

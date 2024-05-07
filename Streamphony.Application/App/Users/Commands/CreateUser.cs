@@ -1,7 +1,6 @@
 using MediatR;
 using Streamphony.Domain.Models;
 using Streamphony.Application.Abstractions;
-using Streamphony.Application.Abstractions.Logging;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.App.Users.Responses;
@@ -15,9 +14,9 @@ public class CreateUserHandler : IRequestHandler<CreateUser, UserDto>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMappingProvider _mapper;
-    private readonly ILoggingProvider _logger;
+    private readonly ILoggingService _logger;
     private readonly IValidationService _validationService;
-    public CreateUserHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingProvider logger, IValidationService validationService)
+    public CreateUserHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingService logger, IValidationService validationService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -35,23 +34,22 @@ public class CreateUserHandler : IRequestHandler<CreateUser, UserDto>
         var userDb = await _unitOfWork.UserRepository.Add(userEntity, cancellationToken);
         await _unitOfWork.SaveAsync(cancellationToken);
 
-        _logger.LogInformation("{LogAction} success for {EntityType} with Id '{EntityId}'.", LogAction.Create, nameof(User), userDb.Id);
+        _logger.LogSuccess(nameof(User), userDb.Id);
         return _mapper.Map<UserDto>(userDb);
     }
 
     private async Task EnsureUniqueUsernameAndEmail(string username, string email, CancellationToken cancellationToken)
     {
-        var conflictingUsers = await _unitOfWork.UserRepository.GetByUsernameOrEmail(username, email, cancellationToken);
-        var user = conflictingUsers.FirstOrDefault();
-        if (user != null)
+        var conflictingUser = await _unitOfWork.UserRepository.GetByUsernameOrEmail(username, email, cancellationToken);
+        if (conflictingUser != null)
         {
-            if (user.Username == username)
+            if (conflictingUser.Username == username)
             {
-                _validationService.LogAndThrowDuplicateException(nameof(User), "Username", username, LogAction.Create);
+                _logger.LogAndThrowDuplicateException(nameof(User), "Username", username, LogAction.Create);
             }
-            if (user.Email == email)
+            if (conflictingUser.Email == email)
             {
-                _validationService.LogAndThrowDuplicateException(nameof(User), "Email", email, LogAction.Create);
+                _logger.LogAndThrowDuplicateException(nameof(User), "Email", email, LogAction.Create);
             }
         }
     }
