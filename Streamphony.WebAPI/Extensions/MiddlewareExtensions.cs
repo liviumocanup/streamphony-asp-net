@@ -15,4 +15,9 @@ public static class MiddlewareExtensions
     {
         return app.UseMiddleware<RequestTimerMiddleware>();
     }
+
+    public static IApplicationBuilder UseDbTransaction(this IApplicationBuilder app)
+    {
+        return app.UseMiddleware<RequestTimerMiddleware>();
+    }
 }

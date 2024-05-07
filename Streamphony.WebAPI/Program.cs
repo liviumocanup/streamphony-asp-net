@@ -30,6 +30,7 @@ if (app.Environment.IsDevelopment())
 
 // app.UseRequestTiming();
 app.UseHttpsRedirection();
+app.UseDbTransaction();
 app.MapControllers();
 
 app.Run();
