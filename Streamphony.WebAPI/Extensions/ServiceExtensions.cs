@@ -39,9 +39,6 @@ public static class ServiceExtensions
 
         // Mapping provider with Mapster
         services.AddScoped<IMappingProvider, MapsterProvider>();
-        // Mapping provider with AutoMapper
-        // services.AddAutoMapper(typeof(MappingProfile).Assembly);
-        // services.AddScoped<Application.Abstractions.Mapping.IMapper, AutoMapperService>();
 
         // Logging provider with Serilog
         services.AddSingleton<ILoggingProvider, SerilogProvider>();

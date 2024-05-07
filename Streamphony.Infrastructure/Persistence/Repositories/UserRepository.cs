@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Streamphony.Application.Abstractions.Repositories;
 using Streamphony.Domain.Models;
+using Streamphony.Application.Abstractions.Repositories;
 using Streamphony.Infrastructure.Persistence.Contexts;
 
 namespace Streamphony.Infrastructure.Persistence.Repositories;

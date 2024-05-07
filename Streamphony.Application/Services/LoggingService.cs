@@ -1,7 +1,7 @@
+using Streamphony.Domain.Models;
 using Streamphony.Application.Abstractions.Logging;
 using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.Exceptions;
-using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.Services;
 
