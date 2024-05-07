@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-
 using Streamphony.Domain.Models;
 using Streamphony.Application.Abstractions.Repositories;
 using Streamphony.Infrastructure.Persistence.Contexts;

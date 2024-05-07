@@ -6,4 +6,6 @@ namespace Streamphony.Application.Abstractions.Repositories;
 public interface ISongRepository : IRepository<Song>
 {
     Task DeleteWhere(Expression<Func<Song, bool>> predicate, CancellationToken cancellationToken);
+    Task<Song?> GetByOwnerIdAndTitle(Guid ownerId, string title, CancellationToken cancellationToken);
+    Task<IEnumerable<Song>> GetByOwnerIdAndTitleWhereIdNotEqual(Guid ownerId, string title, Guid songId, CancellationToken cancellationToken);
 }

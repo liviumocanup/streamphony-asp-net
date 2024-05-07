@@ -1,10 +1,10 @@
 using MediatR;
-using Streamphony.Application.Abstractions;
-using Streamphony.Application.Abstractions.Logging;
-using Streamphony.Application.Abstractions.Mapping;
-using Streamphony.Application.Abstractions.Repositories;
-using Streamphony.Application.App.Songs.Responses;
 using Streamphony.Domain.Models;
+using Streamphony.Application.Abstractions;
+using Streamphony.Application.Abstractions.Mapping;
+using Streamphony.Application.Abstractions.Services;
+using Streamphony.Application.App.Songs.Responses;
+using Streamphony.Application.Services;
 
 namespace Streamphony.Application.App.Songs.Commands;
 
@@ -13,50 +13,43 @@ public record UpdateSong(SongDto SongDto) : IRequest<SongDto>;
 public class UpdateSongHandler : IRequestHandler<UpdateSong, SongDto>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
-    private readonly ILoggingService _loggingService;
+    private readonly IMappingProvider _mapper;
+    private readonly ILoggingService _logger;
+    private readonly IValidationService _validationService;
 
-    public UpdateSongHandler(IUnitOfWork unitOfWork, IMapper mapper, ILoggingService loggingService)
+    public UpdateSongHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingService logger, IValidationService validationService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
-        _loggingService = loggingService;
+        _logger = logger;
+        _validationService = validationService;
     }
 
     public async Task<SongDto> Handle(UpdateSong request, CancellationToken cancellationToken)
     {
         var songDto = request.SongDto;
-        var song = await GetEntityById(_unitOfWork.SongRepository, songDto.Id, cancellationToken);
-        var user = await GetEntityById(_unitOfWork.UserRepository, songDto.OwnerId, cancellationToken);
+        var duplicateTitleForOtherSongs = _unitOfWork.SongRepository.GetByOwnerIdAndTitleWhereIdNotEqual;
 
-        if (songDto.GenreId != null) await GetEntityById(_unitOfWork.GenreRepository, songDto.GenreId.Value, cancellationToken);
-        if (songDto.AlbumId != null) await GetEntityById(_unitOfWork.AlbumRepository, songDto.AlbumId.Value, cancellationToken);
-        if (!user.UploadedSongs.Any(a => a.Id == songDto.Id))
-            throw new KeyNotFoundException($"User with ID {songDto.OwnerId} does not own song with ID {songDto.Id}");
+        var song = await _validationService.GetExistingEntity(_unitOfWork.SongRepository, songDto.Id, cancellationToken);
+        await ValidateOwnership(songDto, cancellationToken);
+        await _validationService.AssertNavigationEntityExists<Song, Genre>(_unitOfWork.GenreRepository, songDto.GenreId, cancellationToken, LogAction.Update);
+        await _validationService.AssertNavigationEntityExists<Song, Album>(_unitOfWork.AlbumRepository, songDto.AlbumId, cancellationToken, LogAction.Update);
+        await _validationService.EnsureUserUniquePropertyExceptId(duplicateTitleForOtherSongs, songDto.OwnerId, nameof(songDto.Title), songDto.Title, songDto.Id, cancellationToken);
 
-        try
-        {
-            await _unitOfWork.BeginTransactionAsync(cancellationToken);
-            _mapper.Map(songDto, song);
-            await _unitOfWork.SaveAsync(cancellationToken);
-            await _unitOfWork.CommitTransactionAsync(cancellationToken);
+        _mapper.Map(songDto, song);
+        await _unitOfWork.SaveAsync(cancellationToken);
 
-            await _loggingService.LogAsync($"Song id {song.Id} - updated");
-
-            return _mapper.Map<SongDto>(song);
-        }
-        catch (Exception ex)
-        {
-            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
-
-            await _loggingService.LogAsync($"Error updating song id {songDto.Id}: ", ex);
-            throw;
-        }
+        _logger.LogSuccess(nameof(Song), song.Id, LogAction.Update);
+        return _mapper.Map<SongDto>(song);
     }
 
-    private static async Task<T> GetEntityById<T>(IRepository<T> repository, Guid entityId, CancellationToken cancellationToken) where T : BaseEntity
+    private async Task ValidateOwnership(SongDto songDto, CancellationToken cancellationToken)
     {
-        return await repository.GetById(entityId, cancellationToken) ??
-                throw new KeyNotFoundException($"{typeof(T).Name} with ID {entityId} not found.");
+        var user = await _validationService.GetExistingEntity(_unitOfWork.UserRepository, songDto.OwnerId, cancellationToken, LogAction.Get);
+
+        if (!user.UploadedSongs.Any(song => song.Id == songDto.Id))
+        {
+            _logger.LogAndThrowNotAuthorizedException(nameof(Song), songDto.Id, nameof(User), songDto.OwnerId);
+        }
     }
 }

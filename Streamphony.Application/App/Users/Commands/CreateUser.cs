@@ -1,9 +1,10 @@
 using MediatR;
-using Streamphony.Application.Abstractions;
-using Streamphony.Application.Abstractions.Logging;
-using Streamphony.Application.Abstractions.Mapping;
-using Streamphony.Application.App.Users.Responses;
 using Streamphony.Domain.Models;
+using Streamphony.Application.Abstractions;
+using Streamphony.Application.Abstractions.Mapping;
+using Streamphony.Application.Abstractions.Services;
+using Streamphony.Application.App.Users.Responses;
+using Streamphony.Application.Services;
 
 namespace Streamphony.Application.App.Users.Commands;
 
@@ -12,40 +13,44 @@ public record CreateUser(UserCreationDto UserCreationDto) : IRequest<UserDto>;
 public class CreateUserHandler : IRequestHandler<CreateUser, UserDto>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
-    private readonly ILoggingService _loggingService;
-
-    public CreateUserHandler(IUnitOfWork unitOfWork, IMapper mapper, ILoggingService loggingService)
+    private readonly IMappingProvider _mapper;
+    private readonly ILoggingService _logger;
+    private readonly IValidationService _validationService;
+    public CreateUserHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingService logger, IValidationService validationService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
-        _loggingService = loggingService;
+        _logger = logger;
+        _validationService = validationService;
     }
 
     public async Task<UserDto> Handle(CreateUser request, CancellationToken cancellationToken)
     {
-        var userEntity = _mapper.Map<User>(request.UserCreationDto);
+        var userDto = request.UserCreationDto;
 
-        if (await _unitOfWork.UserRepository.GetByUsername(userEntity.Username, cancellationToken) != null)
-            throw new Exception($"User with username {userEntity.Username} already exists");
+        await EnsureUniqueUsernameAndEmail(userDto.Username, userDto.Email, cancellationToken);
 
-        try
+        var userEntity = _mapper.Map<User>(userDto);
+        var userDb = await _unitOfWork.UserRepository.Add(userEntity, cancellationToken);
+        await _unitOfWork.SaveAsync(cancellationToken);
+
+        _logger.LogSuccess(nameof(User), userDb.Id);
+        return _mapper.Map<UserDto>(userDb);
+    }
+
+    private async Task EnsureUniqueUsernameAndEmail(string username, string email, CancellationToken cancellationToken)
+    {
+        var conflictingUser = await _unitOfWork.UserRepository.GetByUsernameOrEmail(username, email, cancellationToken);
+        if (conflictingUser != null)
         {
-            await _unitOfWork.BeginTransactionAsync(cancellationToken);
-            var userDb = await _unitOfWork.UserRepository.Add(userEntity, cancellationToken);
-            await _unitOfWork.SaveAsync(cancellationToken);
-            await _unitOfWork.CommitTransactionAsync(cancellationToken);
-
-            await _loggingService.LogAsync($"User id {userDb.Id} - success");
-
-            return _mapper.Map<UserDto>(userDb);
-        }
-        catch (Exception ex)
-        {
-            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
-
-            await _loggingService.LogAsync($"Creation failure: ", ex);
-            throw;
+            if (conflictingUser.Username == username)
+            {
+                _logger.LogAndThrowDuplicateException(nameof(User), "Username", username, LogAction.Create);
+            }
+            if (conflictingUser.Email == email)
+            {
+                _logger.LogAndThrowDuplicateException(nameof(User), "Email", email, LogAction.Create);
+            }
         }
     }
 }

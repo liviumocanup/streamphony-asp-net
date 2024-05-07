@@ -1,38 +1,28 @@
 using MediatR;
+using Streamphony.Domain.Models;
 using Streamphony.Application.Abstractions;
-using Streamphony.Application.Abstractions.Logging;
+using Streamphony.Application.Abstractions.Services;
+using Streamphony.Application.Services;
 
 namespace Streamphony.Application.App.Albums.Commands;
 
-public record DeleteAlbum(Guid Id) : IRequest<bool>;
+public record DeleteAlbum(Guid Id) : IRequest<Unit>;
 
-public class DeleteAlbumHandler(IUnitOfWork unitOfWork, ILoggingService loggingService) : IRequestHandler<DeleteAlbum, bool>
+public class DeleteAlbumHandler(IUnitOfWork unitOfWork, ILoggingService logger, IValidationService validationService) : IRequestHandler<DeleteAlbum, Unit>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly ILoggingService _loggingService = loggingService;
+    private readonly ILoggingService _logger = logger;
+    private readonly IValidationService _validationService = validationService;
 
-    public async Task<bool> Handle(DeleteAlbum request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(DeleteAlbum request, CancellationToken cancellationToken)
     {
-        var albumToDelete = await _unitOfWork.AlbumRepository.GetById(request.Id, cancellationToken);
-        if (albumToDelete == null) return false;
+        var albumdId = request.Id;
+        await _validationService.AssertEntityExists(_unitOfWork.AlbumRepository, albumdId, cancellationToken);
 
-        try
-        {
-            await _unitOfWork.BeginTransactionAsync(cancellationToken);
-            await _unitOfWork.AlbumRepository.Delete(albumToDelete.Id, cancellationToken);
-            await _unitOfWork.SaveAsync(cancellationToken);
-            await _unitOfWork.CommitTransactionAsync(cancellationToken);
+        await _unitOfWork.AlbumRepository.Delete(albumdId, cancellationToken);
+        await _unitOfWork.SaveAsync(cancellationToken);
 
-            await _loggingService.LogAsync($"Album id {albumToDelete.Id} - deleted successfully");
-        }
-        catch (Exception ex)
-        {
-            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
-
-            await _loggingService.LogAsync($"Error deleting album id {albumToDelete.Id}: ", ex);
-            throw;
-        }
-
-        return true;
+        _logger.LogSuccess(nameof(Album), albumdId, LogAction.Delete);
+        return Unit.Value;
     }
 }

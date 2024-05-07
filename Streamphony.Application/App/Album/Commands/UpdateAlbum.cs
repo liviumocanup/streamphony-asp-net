@@ -1,10 +1,11 @@
 using MediatR;
-using Streamphony.Application.Abstractions;
-using Streamphony.Application.Abstractions.Logging;
-using Streamphony.Application.Abstractions.Mapping;
-using Streamphony.Application.Abstractions.Repositories;
-using Streamphony.Application.App.Albums.Responses;
 using Streamphony.Domain.Models;
+using Streamphony.Application.Abstractions;
+using Streamphony.Application.Abstractions.Mapping;
+using Streamphony.Application.Abstractions.Services;
+using Streamphony.Application.App.Albums.Responses;
+using Streamphony.Application.Services;
+
 
 namespace Streamphony.Application.App.Albums.Commands;
 
@@ -13,48 +14,41 @@ public record UpdateAlbum(AlbumDto AlbumDto) : IRequest<AlbumDto>;
 public class UpdateAlbumHandler : IRequestHandler<UpdateAlbum, AlbumDto>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
-    private readonly ILoggingService _loggingService;
+    private readonly IMappingProvider _mapper;
+    private readonly ILoggingService _logger;
+    private readonly IValidationService _validationService;
 
-    public UpdateAlbumHandler(IUnitOfWork unitOfWork, IMapper mapper, ILoggingService loggingService)
+    public UpdateAlbumHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingService logger, IValidationService validationService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
-        _loggingService = loggingService;
+        _logger = logger;
+        _validationService = validationService;
     }
 
     public async Task<AlbumDto> Handle(UpdateAlbum request, CancellationToken cancellationToken)
     {
         var albumDto = request.AlbumDto;
-        var album = await GetEntityById(_unitOfWork.AlbumRepository, albumDto.Id, cancellationToken);
-        var user = await GetEntityById(_unitOfWork.UserRepository, albumDto.OwnerId, cancellationToken);
+        var duplicateTitleForOtherAlbums = _unitOfWork.AlbumRepository.GetByOwnerIdAndTitleWhereIdNotEqual;
 
-        if (!user.OwnedAlbums.Any(a => a.Id == albumDto.Id))
-            throw new KeyNotFoundException($"User with ID {albumDto.OwnerId} does not own album with ID {albumDto.Id}");
+        var album = await _validationService.GetExistingEntity(_unitOfWork.AlbumRepository, albumDto.Id, cancellationToken);
+        await ValidateOwnership(albumDto, cancellationToken);
+        await _validationService.EnsureUserUniquePropertyExceptId(duplicateTitleForOtherAlbums, album.OwnerId, nameof(albumDto.Title), albumDto.Title, albumDto.Id, cancellationToken);
 
-        try
-        {
-            await _unitOfWork.BeginTransactionAsync(cancellationToken);
-            _mapper.Map(albumDto, album);
-            await _unitOfWork.SaveAsync(cancellationToken);
-            await _unitOfWork.CommitTransactionAsync(cancellationToken);
+        _mapper.Map(albumDto, album);
+        await _unitOfWork.SaveAsync(cancellationToken);
 
-            await _loggingService.LogAsync($"Album id {album.Id} - updated");
-
-            return _mapper.Map<AlbumDto>(album);
-        }
-        catch (Exception ex)
-        {
-            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
-
-            await _loggingService.LogAsync($"Error updating album id {albumDto.Id}: ", ex);
-            throw;
-        }
+        _logger.LogSuccess(nameof(Album), album.Id, LogAction.Update);
+        return _mapper.Map<AlbumDto>(album);
     }
 
-    private static async Task<T> GetEntityById<T>(IRepository<T> repository, Guid entityId, CancellationToken cancellationToken) where T : BaseEntity
+    private async Task ValidateOwnership(AlbumDto albumDto, CancellationToken cancellationToken)
     {
-        return await repository.GetById(entityId, cancellationToken) ??
-                throw new KeyNotFoundException($"{typeof(T).Name} with ID {entityId} not found.");
+        var user = await _validationService.GetExistingEntity(_unitOfWork.UserRepository, albumDto.OwnerId, cancellationToken, LogAction.Get);
+
+        if (!user.OwnedAlbums.Any(album => album.Id == albumDto.Id))
+        {
+            _logger.LogAndThrowNotAuthorizedException(nameof(Album), albumDto.Id, nameof(User), albumDto.OwnerId);
+        }
     }
 }

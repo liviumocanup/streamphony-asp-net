@@ -1,38 +1,28 @@
 using MediatR;
+using Streamphony.Domain.Models;
 using Streamphony.Application.Abstractions;
-using Streamphony.Application.Abstractions.Logging;
+using Streamphony.Application.Abstractions.Services;
+using Streamphony.Application.Services;
 
 namespace Streamphony.Application.App.Songs.Commands;
 
 public record DeleteSong(Guid Id) : IRequest<bool>;
 
-public class DeleteSongHandler(IUnitOfWork unitOfWork, ILoggingService loggingService) : IRequestHandler<DeleteSong, bool>
+public class DeleteSongHandler(IUnitOfWork unitOfWork, ILoggingService logger, IValidationService validationService) : IRequestHandler<DeleteSong, bool>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly ILoggingService _loggingService = loggingService;
+    private readonly ILoggingService _logger = logger;
+    private readonly IValidationService _validationService = validationService;
 
     public async Task<bool> Handle(DeleteSong request, CancellationToken cancellationToken)
     {
-        var songToDelete = await _unitOfWork.SongRepository.GetById(request.Id, cancellationToken);
-        if (songToDelete == null) return false;
+        var songId = request.Id;
+        await _validationService.AssertEntityExists(_unitOfWork.SongRepository, songId, cancellationToken);
 
-        try
-        {
-            await _unitOfWork.BeginTransactionAsync(cancellationToken);
-            await _unitOfWork.SongRepository.Delete(songToDelete.Id, cancellationToken);
-            await _unitOfWork.SaveAsync(cancellationToken);
-            await _unitOfWork.CommitTransactionAsync(cancellationToken);
+        await _unitOfWork.SongRepository.Delete(songId, cancellationToken);
+        await _unitOfWork.SaveAsync(cancellationToken);
 
-            await _loggingService.LogAsync($"Song id {songToDelete.Id} - deleted successfully");
-        }
-        catch (Exception ex)
-        {
-            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
-
-            await _loggingService.LogAsync($"Error deleting song id {songToDelete.Id}: ", ex);
-            throw;
-        }
-
+        _logger.LogSuccess(nameof(Song), songId, LogAction.Delete);
         return true;
     }
 }

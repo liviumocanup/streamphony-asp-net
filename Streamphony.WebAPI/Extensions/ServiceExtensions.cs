@@ -1,17 +1,21 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.IO.Abstractions;
 using FluentValidation;
+using Serilog;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Logging;
+using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Repositories;
+using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.App.Users.Queries;
+using Streamphony.Application.Services;
 using Streamphony.Infrastructure.Logging;
+using Streamphony.Infrastructure.Mapping;
 using Streamphony.Infrastructure.Persistence.Contexts;
 using Streamphony.Infrastructure.Persistence.Repositories;
-using Streamphony.Infrastructure.Persistence.Validators.DTOs;
-using Streamphony.Infrastructure.Persistence.Validators.CreationDTOs;
+using Streamphony.Infrastructure.Validation.Validators.CreationDTOs;
+using Streamphony.Infrastructure.Validation.Validators.DTOs;
 
 namespace Streamphony.WebAPI.Extensions;
 
@@ -23,23 +27,39 @@ public static class ServiceExtensions
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
         services.AddMediatR(typeof(GetAllUsersHandler).Assembly);
+
+        // Repository and UnitOfWork registration
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ISongRepository, SongRepository>();
         services.AddScoped<IAlbumRepository, AlbumRepository>();
         services.AddScoped<IGenreRepository, GenreRepository>();
         services.AddScoped<IUserPreferenceRepository, UserPreferenceRepository>();
+        services.AddTransient<IValidationService, ValidationService>();
 
+        // Mapping provider with Mapster
+        services.AddScoped<IMappingProvider, MapsterProvider>();
+        // Mapping provider with AutoMapper
         // services.AddAutoMapper(typeof(MappingProfile).Assembly);
         // services.AddScoped<Application.Abstractions.Mapping.IMapper, AutoMapperService>();
-        services.AddScoped<Application.Abstractions.Mapping.IMapper, Infrastructure.Mapping.MapsterMapper>();
-        services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
-        services.AddSingleton<IFileSystem, FileSystem>();
-        services.AddScoped<ILoggingService, FileLoggingService>();
 
+        // Logging provider with Serilog
+        services.AddSingleton<ILoggingProvider, SerilogProvider>();
+
+        // Application Services registration
+        services.AddScoped<ILoggingService, LoggingService>();
+        services.AddScoped<IValidationService, ValidationService>();
+
+        // Fluent Validation setup
         services.AddValidatorsFromAssemblyContaining<UserCreationDtoValidator>();
         services.AddValidatorsFromAssemblyContaining<UserDtoValidator>();
         services.AddFluentValidationAutoValidation();
+
+        // Serilog configuration
+        services.AddSerilog((services, lc) => lc
+            .ReadFrom.Configuration(configuration)
+            .ReadFrom.Services(services)
+            .Enrich.FromLogContext());
 
         return services;
     }
