@@ -8,28 +8,28 @@ public class InMemoryRepository<T> : IRepository<T> where T : BaseEntity
 {
     protected readonly List<T> _entities = [];
 
-    public Task<T?> GetById(Guid id, CancellationToken cancellationToken = default)
+    public Task<T?> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var entity = _entities.FirstOrDefault(e => e.Id == id);
+        var entity = _entities.Find(e => e.Id == id);
         return Task.FromResult(entity);
     }
 
-    public Task<T?> GetByIdWithInclude(Guid id, CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includeProperties)
+    public Task<T?> GetByIdWithInclude(Guid id, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties)
     {
-        return GetById(id);
+        return GetById(id, cancellationToken);
     }
 
-    public Task<List<T>> GetAll(CancellationToken cancellationToken = default)
+    public Task<List<T>> GetAll(CancellationToken cancellationToken)
     {
         return Task.FromResult(_entities);
     }
 
-    public Task SaveChangesAsync(CancellationToken cancellationToken = default)
+    public Task SaveChangesAsync(CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
     }
 
-    public Task<T> Add(T entity, CancellationToken cancellationToken = default)
+    public Task<T> Add(T entity, CancellationToken cancellationToken)
     {
         if (entity.Id == Guid.Empty)
         {
@@ -39,16 +39,16 @@ public class InMemoryRepository<T> : IRepository<T> where T : BaseEntity
         return Task.FromResult(entity);
     }
 
-    public Task Delete(Guid id, CancellationToken cancellationToken = default)
+    public Task Delete(Guid id, CancellationToken cancellationToken)
     {
-        var entity = _entities.FirstOrDefault(e => e.Id == id) ?? throw new KeyNotFoundException($"Entity with id {id} not found");
+        var entity = _entities.Find(e => e.Id == id) ?? throw new KeyNotFoundException($"Entity with id {id} not found");
         _entities.Remove(entity);
         return Task.CompletedTask;
     }
 
-    public Task<T> Update(T entity, CancellationToken cancellationToken = default)
+    public Task<T> Update(T entity, CancellationToken cancellationToken)
     {
-        var existingEntity = _entities.FirstOrDefault(e => e.Id == entity.Id) ?? throw new KeyNotFoundException($"Entity with id {entity.Id} not found");
+        var existingEntity = _entities.Find(e => e.Id == entity.Id) ?? throw new KeyNotFoundException($"Entity with id {entity.Id} not found");
         _entities.Remove(existingEntity);
         _entities.Add(entity);
         return Task.FromResult(entity);

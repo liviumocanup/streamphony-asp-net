@@ -9,17 +9,17 @@ public class LoggingService(ILoggingProvider logger) : ILoggingService
 {
     private readonly ILoggingProvider _logger = logger;
 
-    public void LogSuccess(string entityName, LogAction logAction)
+    public void LogSuccess(string entityName, LogAction logAction = LogAction.Get)
     {
         _logger.LogInformation("{LogAction} success for all {EntityType}s.", logAction, entityName);
     }
 
-    public void LogSuccess(string entityName, Guid entityId, LogAction logAction)
+    public void LogSuccess(string entityName, Guid entityId, LogAction logAction = LogAction.Create)
     {
         _logger.LogInformation("{LogAction} success for {EntityType} with Id '{EntityId}'.", logAction, entityName, entityId);
     }
 
-    public void LogAndThrowNotAuthorizedException(string entityName, Guid entityId, string navName, Guid navId, LogAction logAction)
+    public void LogAndThrowNotAuthorizedException(string entityName, Guid entityId, string navName, Guid navId, LogAction logAction = LogAction.Update)
     {
         _logger.LogWarning("{LogAction} attempt for non-owned {EntityType} with Id '{EntityId}' by {NavigationType} with Id '{NavigationId}'.", logAction, entityName, entityId, navName, navId);
         throw new UnauthorizedException($"{navName} with Id '{navId}' does not own {entityName} with Id '{entityId}'.");
@@ -37,7 +37,7 @@ public class LoggingService(ILoggingProvider logger) : ILoggingService
         throw new NotFoundException($"{navName} with Id '{navId}' not found.");
     }
 
-    public void LogAndThrowDuplicateException<T>(string entityName, string propertyName, T propertyValue, LogAction logAction)
+    public void LogAndThrowDuplicateException<T>(string entityName, string propertyName, T propertyValue, LogAction logAction = LogAction.Update)
     {
         _logger.LogWarning("{LogAction} attempt for {EntityType} with existing {DuplicateProperty} '{PropertyValue}'.", logAction, entityName, propertyName, propertyValue);
         throw new DuplicateException($"{entityName} with {propertyName} '{propertyValue}' already exists.");

@@ -14,6 +14,4 @@ public class Song : BaseEntity
 
     public Guid? AlbumId { get; set; }
     public Album? Album { get; set; }
-
-    // public ICollection<Contributor> Contributors { get; set; } = new HashSet<Contributor>();
 }

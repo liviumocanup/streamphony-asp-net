@@ -44,7 +44,7 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                 table: "UserPreferences",
                 type: "uniqueidentifier",
                 nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
+                defaultValue: Guid.NewGuid());
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserPreferences_UserId",

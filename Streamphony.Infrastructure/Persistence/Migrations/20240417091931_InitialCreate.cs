@@ -154,7 +154,7 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Albums_Title_OwnerId",
                 table: "Albums",
-                columns: new[] { "Title", "OwnerId" },
+                columns: ["Title", "OwnerId"],
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -181,7 +181,7 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Songs_Title_OwnerId",
                 table: "Songs",
-                columns: new[] { "Title", "OwnerId" },
+                columns: ["Title", "OwnerId"],
                 unique: true);
 
             migrationBuilder.CreateIndex(

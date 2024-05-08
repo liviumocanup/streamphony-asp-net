@@ -53,3 +53,30 @@ And in order to drop the Database, run:
 ```bash
 dotnet ef database drop --project ../Streamphony.Infrastructure/Streamphony.Infrastructure.csproj --startup-project .
 ```
+
+
+## SonarQube Set Up
+
+You will need Java 17 in `PATH` in order to run SonarQube.
+
+1. Start SonarQube in Docker:
+```bash
+docker run -d --name sonarqube -p 9000:9000 sonarqube
+```
+
+* `-d` runs the container in detached mode (in the background).
+* `--name sonarqube` assigns the container a name (sonarqube).
+* `-p 9000:9000` maps port 9000 of the container to port 9000 on your host, allowing you to access the SonarQube web interface via http://localhost:9000.
+* `sonarqube` specifies the image to use. By default, this pulls the latest version of SonarQube from Docker Hub.
+
+2. Install Scanner .NET Core Global Tool
+```bash
+dotnet tool install --global dotnet-sonarscanner
+```
+
+3. Follow the instructions on http://localhost:9000
+```bash
+dotnet sonarscanner begin /k:"streamphony-layer" /d:sonar.host.url="http://localhost:9000"  /d:sonar.token="sqp_yourtoken"
+dotnet build
+dotnet sonarscanner end /d:sonar.token="sqp_yourtoken"
+```

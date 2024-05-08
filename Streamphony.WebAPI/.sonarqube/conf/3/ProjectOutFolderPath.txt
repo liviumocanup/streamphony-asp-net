@@ -1,0 +1,1 @@
+C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.WebAPI\.sonarqube\out\3

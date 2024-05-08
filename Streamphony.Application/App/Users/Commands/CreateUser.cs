@@ -15,13 +15,11 @@ public class CreateUserHandler : IRequestHandler<CreateUser, UserDto>
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMappingProvider _mapper;
     private readonly ILoggingService _logger;
-    private readonly IValidationService _validationService;
-    public CreateUserHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingService logger, IValidationService validationService)
+    public CreateUserHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingService logger)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _logger = logger;
-        _validationService = validationService;
     }
 
     public async Task<UserDto> Handle(CreateUser request, CancellationToken cancellationToken)

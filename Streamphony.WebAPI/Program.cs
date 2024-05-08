@@ -28,7 +28,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerDocumentation();
 }
 
-// app.UseRequestTiming();
 app.UseHttpsRedirection();
 app.UseDbTransaction();
 app.MapControllers();

@@ -11,5 +11,4 @@ public interface IRepository<T> where T : BaseEntity
     Task<T> Add(T entity, CancellationToken cancellationToken);
     Task Delete(Guid id, CancellationToken cancellationToken);
     Task<T> Update(T entity, CancellationToken cancellationToken);
-    // Task<PaginatedResult<TDto>> GetPagedData<TDto>(PagedRequest pagedRequest) where TDto : class;
 }
