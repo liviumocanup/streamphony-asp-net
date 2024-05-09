@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Streamphony.Domain.Tests", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Streamphony.Infrastructure.Tests", "Tests\Streamphony.Infrastructure.Tests\Streamphony.Infrastructure.Tests.csproj", "{D11B5B89-02CE-4456-AD45-52C42495EA25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Streamphony.ConsolePresentation", "Streamphony.ConsolePresentation\Streamphony.ConsolePresentation.csproj", "{872B0682-4B40-4E41-9DF4-75E18CC3A414}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Streamphony.WebAPI.Tests", "Tests\Streamphony.WebAPI.Tests\Streamphony.WebAPI.Tests.csproj", "{FF03E556-3C21-4890-B276-AC2F527E073D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,10 +62,15 @@ Global
 		{872B0682-4B40-4E41-9DF4-75E18CC3A414}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{872B0682-4B40-4E41-9DF4-75E18CC3A414}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{872B0682-4B40-4E41-9DF4-75E18CC3A414}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF03E556-3C21-4890-B276-AC2F527E073D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF03E556-3C21-4890-B276-AC2F527E073D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF03E556-3C21-4890-B276-AC2F527E073D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF03E556-3C21-4890-B276-AC2F527E073D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FF534034-0442-4E3A-969B-572619759D51} = {42A11A56-2C09-416C-840F-5538B4AAD270}
 		{44B451A1-FEDD-4A16-9E4B-0D81B0CD4555} = {42A11A56-2C09-416C-840F-5538B4AAD270}
 		{D11B5B89-02CE-4456-AD45-52C42495EA25} = {42A11A56-2C09-416C-840F-5538B4AAD270}
+		{FF03E556-3C21-4890-B276-AC2F527E073D} = {42A11A56-2C09-416C-840F-5538B4AAD270}
 	EndGlobalSection
 EndGlobal

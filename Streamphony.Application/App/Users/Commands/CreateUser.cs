@@ -39,16 +39,12 @@ public class CreateUserHandler : IRequestHandler<CreateUser, UserDto>
     private async Task EnsureUniqueUsernameAndEmail(string username, string email, CancellationToken cancellationToken)
     {
         var conflictingUser = await _unitOfWork.UserRepository.GetByUsernameOrEmail(username, email, cancellationToken);
-        if (conflictingUser != null)
-        {
-            if (conflictingUser.Username == username)
-            {
-                _logger.LogAndThrowDuplicateException(nameof(User), "Username", username, LogAction.Create);
-            }
-            if (conflictingUser.Email == email)
-            {
-                _logger.LogAndThrowDuplicateException(nameof(User), "Email", email, LogAction.Create);
-            }
-        }
+        if (conflictingUser == null) return;
+
+        if (conflictingUser.Username == username)
+            _logger.LogAndThrowDuplicateException(nameof(User), "Username", username, LogAction.Create);
+
+        if (conflictingUser.Email == email)
+            _logger.LogAndThrowDuplicateException(nameof(User), "Email", email, LogAction.Create);
     }
 }

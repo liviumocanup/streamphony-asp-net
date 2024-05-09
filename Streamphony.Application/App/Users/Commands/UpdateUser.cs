@@ -41,16 +41,12 @@ public class UpdateUserHandler : IRequestHandler<UpdateUser, UserDto>
     private async Task EnsureUniqueUsernameAndEmailExceptId(string username, string email, Guid id, CancellationToken cancellationToken)
     {
         var conflictingUser = await _unitOfWork.UserRepository.GetByUsernameOrEmailWhereIdNotEqual(username, email, id, cancellationToken);
-        if (conflictingUser != null)
-        {
-            if (conflictingUser.Username == username)
-            {
-                _logger.LogAndThrowDuplicateException(nameof(User), "Username", username, LogAction.Update);
-            }
-            if (conflictingUser.Email == email)
-            {
-                _logger.LogAndThrowDuplicateException(nameof(User), "Email", email, LogAction.Update);
-            }
-        }
+        if (conflictingUser == null) return;
+
+        if (conflictingUser.Username == username)
+            _logger.LogAndThrowDuplicateException(nameof(User), "Username", username, LogAction.Update);
+
+        if (conflictingUser.Email == email)
+            _logger.LogAndThrowDuplicateException(nameof(User), "Email", email, LogAction.Update);
     }
 }

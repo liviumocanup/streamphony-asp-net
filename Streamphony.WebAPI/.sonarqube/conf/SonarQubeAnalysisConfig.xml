@@ -137,6 +137,7 @@
   </ServerSettings>
   <LocalSettings>
     <Property Name="sonar.host.url">http://localhost:9000</Property>
+    <Property Name="sonar.tests">../Tests/Streamphony.Application.Tests</Property>
   </LocalSettings>
   <AnalyzersSettings>
     <AnalyzerSettings>

@@ -6,9 +6,13 @@ bC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\Service
 ]C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\Services\LogAction.csr	
 kC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\Exceptions\UnauthorizedException.cs 8r
 	
-∑
-hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Users\Commands\CreateUser.cs 8r.	 !#$%'()*+,-./0123456xÇ !#$)*,.02§
-|C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\UserPreferences\Queries\GetUserPreferenceById.cs 8r	Çu
+{
+gC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\Exceptions\NotFoundException.cs 8r
+	
+|
+hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\Exceptions\DuplicateException.cs 8r
+	
+u
 fC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Users\Responses\UserDto.cs 8rÅ
 mC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Users\Responses\UserDetailsDto.cs 8r
 	
@@ -19,22 +23,18 @@ r	
 û
 hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Users\Queries\GetUserById.cs 8r	 !"#Ç	 !é
 hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Users\Queries\GetAllUsers.cs 8r
-Ç∫
-hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Users\Commands\UpdateUser.cs 8r0	 "#%&')*+,-./012345678xÇ "#%&+,.024ï
-hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Users\Commands\DeleteUser.cs 8r	Ç{
-gC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\Exceptions\NotFoundException.cs 8r
-	
-ã
-zC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\UserPreferences\Responses\UserPreferenceDto.cs 8r|
-hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\Exceptions\DuplicateException.cs 8r
-	
-¢
+Çï
+hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Users\Commands\DeleteUser.cs 8r	Ç∑
+hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Users\Commands\CreateUser.cs 8r.	 !#$%'()*+,-./0123456xÇ !#$)*,.02ã
+zC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\UserPreferences\Responses\UserPreferenceDto.cs 8r§
+|C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\UserPreferences\Queries\GetUserPreferenceById.cs 8r	Ç¢
 |C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\UserPreferences\Queries\GetAllUserPreferences.cs 8r
 Ç™
 |C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\UserPreferences\Commands\UpdateUserPreference.cs 8r	Çß
 |C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\UserPreferences\Commands\DeleteUserPreference.cs 8r	Ç∫
 |C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\UserPreferences\Commands\CreateUserPreference.cs 8r"
- !#$%'()*Ç !#$%'(u
+ !#$%'()*Ç !#$%'(∫
+hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Users\Commands\UpdateUser.cs 8r0	 "#%&')*+,-./012345678xÇ "#%&+,.024u
 fC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Songs\Responses\SongDto.cs 8rÇ
 nC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Songs\Responses\SongCreationDto.cs 8r
 	
@@ -43,21 +43,21 @@ hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Son
 hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Songs\Queries\GetAllSongs.cs 8r
 Ç∏
 hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Songs\Commands\UpdateSong.cs 8r-	!"#$%'(*+,./0234567xÇ!"#$%'(*+024ì
-hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Songs\Commands\DeleteSong.cs 8r	Çú
-jC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Genres\Commands\CreateGenre.cs 8r	 !"Ç Å
-oC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Album\Responses\AlbumCreationDto.cs 8r	
-oC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Genres\Responses\GenreDetailsDto.cs 8rÄ
+hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Songs\Commands\DeleteSong.cs 8r	Ç™
+hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Songs\Commands\CreateSong.cs 8r$
+ !"#%&')*+,Ç !"#%&')*w
+hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Genres\Responses\GenreDto.cs 8rÄ
 pC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Genres\Responses\GenreCreationDto.cs 8rú
 jC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Genres\Queries\GetGenreById.cs 8r	 !Çê
 jC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Genres\Queries\GetAllGenres.cs 8r
 Çú
 jC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Genres\Commands\UpdateGenre.cs 8r	 !"Ç ï
-jC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Genres\Commands\DeleteGenre.cs 8r	Ç™
-hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Songs\Commands\CreateSong.cs 8r$
- !"#%&')*+,Ç !"#%&')*v
+jC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Genres\Commands\DeleteGenre.cs 8r	Çú
+jC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Genres\Commands\CreateGenre.cs 8r	 !"Ç 
+oC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Genres\Responses\GenreDetailsDto.cs 8rv
 gC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Album\Responses\AlbumDto.cs 8r~
-nC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Album\Responses\AlbumDetailsDto.cs 8rw
-hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Genres\Responses\GenreDto.cs 8rè
+nC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Album\Responses\AlbumDetailsDto.cs 8rÅ
+oC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Album\Responses\AlbumCreationDto.cs 8r	è
 iC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Album\Queries\GetAllAlbums.cs 8r
 Çõ
 iC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Album\Queries\GetAlbumById.cs 8r	 !Çµ

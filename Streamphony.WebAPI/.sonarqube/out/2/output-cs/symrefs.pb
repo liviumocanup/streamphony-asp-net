@@ -42,6 +42,11 @@ zC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Infrastructure\Vali
  
 
  
+  ≈
+äC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Infrastructure\Validation\Validators\CreationDTOs\AlbumCreationDtoValidator.cs
+
+ &
+  
   ã
 yC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Infrastructure\Validation\Configurations\AlbumArtistConfig.cs
 
@@ -56,17 +61,7 @@ yC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Infrastructure\Vali
  !% '
   
    
- !% 'è
-}C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Infrastructure\Validation\Configurations\UserPreferencesConfig.cs
-
- "
-
-		 
-		< C  
-  
-  
-  
-+ -1 3
+ !% '
 rC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Infrastructure\Validation\Configurations\UserConfig.cs
 
  
@@ -130,12 +125,17 @@ sC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Infrastructure\Vali
   $ %
   
   
-  $ %≈
-äC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Infrastructure\Validation\Validators\CreationDTOs\AlbumCreationDtoValidator.cs
+  $ %è
+}C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Infrastructure\Validation\Configurations\UserPreferencesConfig.cs
 
- &
-  
-  ı
+ "
+
+		 
+		< C  
+  
+  
+  
++ -1 3ı
 uC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Infrastructure\Persistence\Repositories\UserRepository.cs
 
  

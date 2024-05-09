@@ -215,52 +215,19 @@ kC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\Excepti
  "
 ( /8 ?
 		( /		R Y
-		; I		[ iÌ
-hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Users\Commands\CreateUser.cs
- 1 ;& 0
+		; I		[ i·
+gC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\Exceptions\NotFoundException.cs
 
-) 8
+ 
+$ +4 ;
+		$ +		N U
+		7 E		W e¸
+hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\Exceptions\DuplicateException.cs
 
- 2
-! ,    &!! ))$ /(
-& -   $$ 2
-% , ## .. 22 
-) 3  
-F L 
-^ d 
-
- %
-1 8 (
-L ]L ]  F W!!$ 5(
- + 2= D+ 2
-   : D
-   ##) /$$$ *
-'' 3 *(
-''; C))T \,,, 4..P X(
-''L Q))^ c00) .22M R
-''e v))e v(
-)) ** ,, 00 Ã
-|C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\UserPreferences\Queries\GetUserPreferenceById.cs 
- #
-« À0 E
-
-) +
-
- )
-6 @/ 9
-S Y0 6
-k q/ 5
-
-† —= N
-! ,H S
-& - 
-% , 
-( :# 5
-
-) /
-F Mn u
-a r	z ‹
- 3 A. <€
+ 
+% ,5 <
+		% ,		O V
+		8 F		X f€
 fC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Users\Responses\UserDto.cs
 
  
@@ -330,33 +297,7 @@ hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Use
 
 ? F
 Z k< M
- 1 6£
-hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Users\Commands\UpdateUser.cs
- 1 ;& 0
-
-! (
-
- 2
-! , > I## ++$ /(
-& - "" && 2
-% , %% 00 44 
-( :  +
-) 3  
-F L 
-^ d 
-	y Š .
-
- %
-1 8 (
-L ]f w  ` q##$ 5<
- Z a  3 :  E L  T ["" (
- "" !%%) -&&$ (
-)) ;   2(
-))C K++c k.., 400P X(
-))T Y++m r22) .44M R
-))` b++t v
-	))v ‡	++x ‰(
-++ ,, .. 22 æ
+ 1 6æ
 hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Users\Commands\DeleteUser.cs 
 		 
 ‡ ‘# -
@@ -375,13 +316,31 @@ hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Use
 . 5 2
 I ZX iU f8 I$ 52
  P VM S0 6) /
-5 9= A·
-gC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\Exceptions\NotFoundException.cs
+5 9= AÌ
+hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Users\Commands\CreateUser.cs
+ 1 ;& 0
 
- 
-$ +4 ;
-		$ +		N U
-		7 E		W e¬
+) 8
+
+ 2
+! ,    &!! ))$ /(
+& -   $$ 2
+% , ## .. 22 
+) 3  
+F L 
+^ d 
+
+ %
+1 8 (
+L ]L ]  F W!!$ 5(
+ + 2= D+ 2
+   : D
+   ##) /$$$ *
+'' 3 *(
+''; C))T \,,, 4..P X(
+''L Q))^ c00) .22M R
+''e v))e v(
+)) ** ,, 00 ¬
 zC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\UserPreferences\Responses\UserPreferenceDto.cs
 
  
@@ -390,13 +349,28 @@ zC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Use
 
  
 
- ¸
-hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\Exceptions\DuplicateException.cs
+ Ã
+|C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\UserPreferences\Queries\GetUserPreferenceById.cs 
+ #
+« À0 E
 
- 
-% ,5 <
-		% ,		O V
-		8 F		X fô
+) +
+
+ )
+6 @/ 9
+S Y0 6
+k q/ 5
+
+† —= N
+! ,H S
+& - 
+% , 
+( :# 5
+
+) /
+F Mn u
+a r	z ‹
+ 3 A. <ô
 |C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\UserPreferences\Queries\GetAllUserPreferences.cs 
 
 
@@ -484,7 +458,33 @@ hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\Excepti
  	  p !!J [!!a r##? P
  !!6 A
 ##  $$N b
-$$ ''3 C((. >€
+$$ ''3 C((. >£
+hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Users\Commands\UpdateUser.cs
+ 1 ;& 0
+
+! (
+
+ 2
+! , > I## ++$ /(
+& - "" && 2
+% , %% 00 44 
+( :  +
+) 3  
+F L 
+^ d 
+	y Š .
+
+ %
+1 8 (
+L ]f w  ` q##$ 5<
+ Z a  3 :  E L  T ["" (
+ "" !%%) -&&$ (
+)) ;   2(
+))C K++c k.., 400P X(
+))T Y++m r22) .44M R
+))` b++t v
+	))v ‡	++x ‰(
+++ ,, .. 22 €
 fC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Songs\Responses\SongDto.cs
 
  
@@ -591,46 +591,39 @@ hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Son
  "
 . 5 (
 I ZX i8 I$ 5(
- P V0 6) /·
-jC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Genres\Commands\CreateGenre.cs 
- 
-¡ ¬' 2
+ P V0 6) /ã
+hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Songs\Commands\CreateSong.cs
+
+
+ 1 ;& 0
 
-+ ;
+
+
+) 8
 
- 
-, 6/ 9
-I O0 6
-a g/ 5
-	| = N(
-! , ' ' 
-& - !   
-% , 
-( :  
+ P
+! , ' 2  J U!!K V""K V&& &'' (
+& - %%  ** 
+% , )) <
+( :     !!  ""  ##  
+) 3  
+F L 
+^ d 
+	y Š .
 
-  &
-3 : - 4(
-N _k |I Z$ 5
- L T\ d
- 6 C
- < G
- * 1  % ,­
-oC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Album\Responses\AlbumCreationDto.cs
+ %
+1 8 K
+L ]	  w ˆ	!!y Š	""y Š
+##‹ œ&&F W''$ 5Q
+   f m!!h o""h o##T [##l s	##| ƒ%%+ 2
+ $##: R
+%% &&: D
+&& ))) /**$ *‚
+hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Genres\Responses\GenreDto.cs
 
- 
+ 
 
-  
-
-  
-
- 
-
- ‰
-oC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Genres\Responses\GenreDetailsDto.cs
-
- 
-
-! &–
+ –
 pC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Genres\Responses\GenreCreationDto.cs
 
  
@@ -718,34 +711,35 @@ jC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Gen
  "
 / 6 1 8(
 J [Z k= N$ 5
- Q X* 1ã
-hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Songs\Commands\CreateSong.cs
-
-
- 1 ;& 0
+ Q X* 1·
+jC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Genres\Commands\CreateGenre.cs 
+ 
+¡ ¬' 2
 
-
-
-) 8
++ ;
 
- P
-! , ' 2  J U!!K V""K V&& &'' (
-& - %%  ** 
-% , )) <
-( :     !!  ""  ##  
-) 3  
-F L 
-^ d 
-	y Š .
+ 
+, 6/ 9
+I O0 6
+a g/ 5
+	| = N(
+! , ' ' 
+& - !   
+% , 
+( :  
 
- %
-1 8 K
-L ]	  w ˆ	!!y Š	""y Š
-##‹ œ&&F W''$ 5Q
-   f m!!h o""h o##T [##l s	##| ƒ%%+ 2
- $##: R
-%% &&: D
-&& ))) /**$ *
+  &
+3 : - 4(
+N _k |I Z$ 5
+ L T\ d
+ 6 C
+ < G
+ * 1  % ,‰
+oC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Genres\Responses\GenreDetailsDto.cs
+
+ 
+
+! &
 gC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Album\Responses\AlbumDto.cs
 
  
@@ -755,12 +749,7 @@ nC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Alb
 
  
 
- "‚
-hC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Genres\Responses\GenreDto.cs
-
- 
-
- à
+ "à
 iC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Album\Queries\GetAllAlbums.cs
 
 
@@ -778,7 +767,18 @@ iC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Alb
 
 A H
 \ m> O
- 2 8Ä
+ 2 8­
+oC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Album\Responses\AlbumCreationDto.cs
+
+ 
+
+  
+
+  
+
+ 
+
+ Ä
 iC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Application\App\Album\Queries\GetAlbumById.cs 
  
 ¢ ®. :

@@ -56,7 +56,8 @@ public static class ServiceExtensions
         services.AddSerilog((services, lc) => lc
             .ReadFrom.Configuration(configuration)
             .ReadFrom.Services(services)
-            .Enrich.FromLogContext());
+            .Enrich.FromLogContext(),
+            true);
 
         return services;
     }

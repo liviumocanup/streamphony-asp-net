@@ -16,12 +16,12 @@ zC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Infrastructure\Vali
 ‚«
 ‰C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Infrastructure\Validation\Validators\CreationDTOs\GenreCeationDtoValidator.cs 8r	
 ‚
-¦
+¬
+ŠC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Infrastructure\Validation\Validators\CreationDTOs\AlbumCreationDtoValidator.cs 8r	
+‚¦
 yC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Infrastructure\Validation\Configurations\AlbumArtistConfig.cs 8r	
 ‚
- 
-}C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Infrastructure\Validation\Configurations\UserPreferencesConfig.cs 8r	
-‚§
+§
 rC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Infrastructure\Validation\Configurations\UserConfig.cs 8r	
 ‚«
 rC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Infrastructure\Validation\Configurations\SongConfig.cs 8r	
@@ -29,9 +29,9 @@ rC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Infrastructure\Vali
 sC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Infrastructure\Validation\Configurations\GenreConfig.cs 8r	
 ‚¢
 sC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Infrastructure\Validation\Configurations\AlbumConfig.cs 8r	
-‚¬
-ŠC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Infrastructure\Validation\Validators\CreationDTOs\AlbumCreationDtoValidator.cs 8r	
-‚£
+‚ 
+}C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Infrastructure\Validation\Configurations\UserPreferencesConfig.cs 8r	
+‚£
 uC:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Infrastructure\Persistence\Repositories\UserRepository.cs 8r	
 x‚Œ
 C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Infrastructure\Persistence\Repositories\UserPreferenceRepository.csr	²

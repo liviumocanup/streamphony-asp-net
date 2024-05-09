@@ -48,8 +48,6 @@ public class UpdateSongHandler : IRequestHandler<UpdateSong, SongDto>
         var user = await _validationService.GetExistingEntity(_unitOfWork.UserRepository, songDto.OwnerId, cancellationToken, LogAction.Get);
 
         if (!user.UploadedSongs.Any(song => song.Id == songDto.Id))
-        {
             _logger.LogAndThrowNotAuthorizedException(nameof(Song), songDto.Id, nameof(User), songDto.OwnerId);
-        }
     }
 }
