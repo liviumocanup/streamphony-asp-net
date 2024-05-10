@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Streamphony.Application.App.Songs.Commands;
 using Streamphony.Application.App.Songs.Queries;
 using Streamphony.Application.App.Songs.Responses;
+using Streamphony.Application.Models;
 using Streamphony.WebAPI.Filters;
 
 namespace Streamphony.WebAPI.Controllers;
@@ -39,9 +40,9 @@ public class SongController(IMediator mediator) : AppBaseController
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<SongDto>>> GetAllSongs()
+    public async Task<ActionResult<PaginatedResult<SongDto>>> GetAllSongs([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
-        var songs = await _mediator.Send(new GetAllSongs());
+        var songs = await _mediator.Send(new GetAllSongs(pageNumber, pageSize));
         return Ok(songs);
     }
 

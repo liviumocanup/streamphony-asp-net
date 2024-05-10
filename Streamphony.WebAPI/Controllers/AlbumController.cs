@@ -38,9 +38,9 @@ public class AlbumController(IMediator mediator) : AppBaseController
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<AlbumDto>>> GetAllAlbums()
+    public async Task<ActionResult<IEnumerable<AlbumDto>>> GetAllAlbums([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
-        var albums = await _mediator.Send(new GetAllAlbums());
+        var albums = await _mediator.Send(new GetAllAlbums(pageNumber, pageSize));
         return Ok(albums);
     }
 

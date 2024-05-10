@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using Streamphony.Domain.Models;
 using Streamphony.Application.Abstractions.Repositories;
 using Streamphony.Infrastructure.Persistence.Contexts;
+using Streamphony.Application.Models;
 
 namespace Streamphony.Infrastructure.Persistence.Repositories;
 
@@ -47,6 +48,19 @@ public class Repository<T>(ApplicationDbContext context) : IRepository<T> where 
         _context.Set<T>().Update(entity);
         await _context.SaveChangesAsync(cancellationToken);
         return entity;
+    }
+
+    public async Task<(List<T>, int)> GetAllPaginated(int pageNumber, int pageSize, CancellationToken cancellationToken)
+    {
+        var query = _context.Set<T>().AsQueryable();
+        query = query.OrderBy(s => s.Id);
+
+        int totalRecords = await query.CountAsync(cancellationToken);
+        List<T> items = await query.Skip((pageNumber - 1) * pageSize)
+                                   .Take(pageSize)
+                                   .ToListAsync(cancellationToken);
+
+        return (items, totalRecords);
     }
 
     private IQueryable<T> IncludeProperties(params Expression<Func<T, object>>[] includeProperties)

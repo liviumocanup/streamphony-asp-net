@@ -37,9 +37,9 @@ public class UserController(IMediator mediator) : AppBaseController
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsers()
+    public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsers([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
-        var users = await _mediator.Send(new GetAllUsers());
+        var users = await _mediator.Send(new GetAllUsers(pageNumber, pageSize));
         return Ok(users);
     }
 

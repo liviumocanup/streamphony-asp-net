@@ -53,4 +53,13 @@ public class InMemoryRepository<T> : IRepository<T> where T : BaseEntity
         _entities.Add(entity);
         return Task.FromResult(entity);
     }
+
+    public Task<(List<T>, int)> GetAllPaginated(int pageNumber, int pageSize, CancellationToken cancellationToken)
+    {
+        var totalRecords = _entities.Count;
+        var items = _entities.Skip((pageNumber - 1) * pageSize)
+                             .Take(pageSize)
+                             .ToList();
+        return Task.FromResult((items, totalRecords));
+    }
 }

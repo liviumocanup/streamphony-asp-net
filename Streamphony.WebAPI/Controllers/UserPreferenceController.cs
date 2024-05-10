@@ -37,9 +37,9 @@ public class UserPreferenceController(IMediator mediator) : AppBaseController
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<UserPreferenceDto>>> GetAllUserPreferences()
+    public async Task<ActionResult<IEnumerable<UserPreferenceDto>>> GetAllUserPreferences([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
-        var userPreferences = await _mediator.Send(new GetAllUserPreferences());
+        var userPreferences = await _mediator.Send(new GetAllUserPreferences(pageNumber, pageSize));
         return Ok(userPreferences);
     }
 

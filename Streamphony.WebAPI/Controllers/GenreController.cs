@@ -37,9 +37,9 @@ public class GenreController(IMediator mediator) : AppBaseController
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<GenreDto>>> GetAllGenres()
+    public async Task<ActionResult<IEnumerable<GenreDto>>> GetAllGenres([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
-        var genres = await _mediator.Send(new GetAllGenres());
+        var genres = await _mediator.Send(new GetAllGenres(pageNumber, pageSize));
         return Ok(genres);
     }
 
