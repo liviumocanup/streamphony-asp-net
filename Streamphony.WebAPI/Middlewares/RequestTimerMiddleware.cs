@@ -20,4 +20,3 @@ public class RequestTimerMiddleware(RequestDelegate next, ILogger<RequestTimerMi
             stopwatch.ElapsedMilliseconds);
     }
 }
-

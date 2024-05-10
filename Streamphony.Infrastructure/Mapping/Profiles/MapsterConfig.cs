@@ -16,21 +16,21 @@ public static class MapsterConfig
     {
         GlobalConfig = new TypeAdapterConfig();
 
-        GlobalConfig.NewConfig<User, UserCreationDto>().TwoWays();
-        GlobalConfig.NewConfig<User, UserDto>().TwoWays();
+        GlobalConfig.NewConfig<User, UserCreationDto>().PreserveReference(true);
+        GlobalConfig.NewConfig<User, UserDto>().PreserveReference(true);
         GlobalConfig.NewConfig<User, UserDetailsDto>().PreserveReference(true);
 
-        GlobalConfig.NewConfig<Song, SongCreationDto>().TwoWays();
-        GlobalConfig.NewConfig<Song, SongDto>().TwoWays();
+        GlobalConfig.NewConfig<Song, SongCreationDto>().PreserveReference(true);
+        GlobalConfig.NewConfig<Song, SongDto>().PreserveReference(true);
 
-        GlobalConfig.NewConfig<Genre, GenreCreationDto>().TwoWays();
-        GlobalConfig.NewConfig<Genre, GenreDto>().TwoWays();
+        GlobalConfig.NewConfig<Genre, GenreCreationDto>().PreserveReference(true);
+        GlobalConfig.NewConfig<Genre, GenreDto>().PreserveReference(true);
         GlobalConfig.NewConfig<Genre, GenreDetailsDto>().PreserveReference(true);
 
-        GlobalConfig.NewConfig<UserPreference, UserPreferenceDto>().TwoWays();
+        GlobalConfig.NewConfig<UserPreference, UserPreferenceDto>().PreserveReference(true);
 
-        GlobalConfig.NewConfig<Album, AlbumCreationDto>().TwoWays();
-        GlobalConfig.NewConfig<Album, AlbumDto>().TwoWays();
+        GlobalConfig.NewConfig<Album, AlbumCreationDto>().PreserveReference(true);
+        GlobalConfig.NewConfig<Album, AlbumDto>().PreserveReference(true);
         GlobalConfig.NewConfig<Album, AlbumDetailsDto>().PreserveReference(true);
 
         GlobalConfig.Compile();

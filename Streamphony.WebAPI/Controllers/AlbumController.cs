@@ -14,6 +14,10 @@ public class AlbumController(IMediator mediator) : AppBaseController
 
     [HttpPost]
     [ValidateModel]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<AlbumDto>> CreateAlbum(AlbumCreationDto albumDto)
     {
         var createdAlbumDto = await _mediator.Send(new CreateAlbum(albumDto));
@@ -22,6 +26,10 @@ public class AlbumController(IMediator mediator) : AppBaseController
 
     [HttpPut]
     [ValidateModel]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<AlbumDto>> UpdateAlbum(AlbumDto albumDto)
     {
         var updatedAlbumDto = await _mediator.Send(new UpdateAlbum(albumDto));
@@ -29,6 +37,7 @@ public class AlbumController(IMediator mediator) : AppBaseController
     }
 
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<AlbumDto>>> GetAllAlbums()
     {
         var albums = await _mediator.Send(new GetAllAlbums());
@@ -36,6 +45,8 @@ public class AlbumController(IMediator mediator) : AppBaseController
     }
 
     [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<AlbumDto>> GetAlbumById(Guid id)
     {
         var albumDto = await _mediator.Send(new GetAlbumById(id));
@@ -43,6 +54,8 @@ public class AlbumController(IMediator mediator) : AppBaseController
     }
 
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteAlbum(Guid id)
     {
         await _mediator.Send(new DeleteAlbum(id));

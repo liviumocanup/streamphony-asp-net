@@ -14,6 +14,9 @@ public class UserController(IMediator mediator) : AppBaseController
 
     [HttpPost]
     [ValidateModel]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<UserDto>> CreateUser(UserCreationDto userDto)
     {
         var createdUserDto = await _mediator.Send(new CreateUser(userDto));
@@ -22,20 +25,18 @@ public class UserController(IMediator mediator) : AppBaseController
 
     [HttpPut]
     [ValidateModel]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<UserDto>> UpdateUser(UserDto userDto)
     {
-        try
-        {
-            var updatedUserDto = await _mediator.Send(new UpdateUser(userDto));
-            return Ok(updatedUserDto);
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound($"User with ID {userDto.Id} not found.");
-        }
+        var updatedUserDto = await _mediator.Send(new UpdateUser(userDto));
+        return Ok(updatedUserDto);
     }
 
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsers()
     {
         var users = await _mediator.Send(new GetAllUsers());
@@ -43,18 +44,20 @@ public class UserController(IMediator mediator) : AppBaseController
     }
 
     [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<UserDetailsDto>> GetUserById(Guid id)
     {
         var userDto = await _mediator.Send(new GetUserById(id));
-        if (userDto == null) return NotFound("User not found.");
         return Ok(userDto);
     }
 
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteUser(Guid id)
     {
-        var result = await _mediator.Send(new DeleteUser(id));
-        if (!result) return NotFound($"User with ID {id} not found.");
-        return Ok();
+        await _mediator.Send(new DeleteUser(id));
+        return NoContent();
     }
 }

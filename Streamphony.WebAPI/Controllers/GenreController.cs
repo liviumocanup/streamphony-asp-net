@@ -14,6 +14,9 @@ public class GenreController(IMediator mediator) : AppBaseController
 
     [HttpPost]
     [ValidateModel]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<GenreDto>> CreateGenre(GenreCreationDto genreDto)
     {
         var createdGenreDto = await _mediator.Send(new CreateGenre(genreDto));
@@ -22,20 +25,18 @@ public class GenreController(IMediator mediator) : AppBaseController
 
     [HttpPut]
     [ValidateModel]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<GenreDto>> UpdateGenre(GenreDto genreDto)
     {
-        try
-        {
-            var updatedGenreDto = await _mediator.Send(new UpdateGenre(genreDto));
-            return Ok(updatedGenreDto);
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound($"Genre with ID {genreDto.Id} not found.");
-        }
+        var updatedGenreDto = await _mediator.Send(new UpdateGenre(genreDto));
+        return Ok(updatedGenreDto);
     }
 
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<GenreDto>>> GetAllGenres()
     {
         var genres = await _mediator.Send(new GetAllGenres());
@@ -43,18 +44,20 @@ public class GenreController(IMediator mediator) : AppBaseController
     }
 
     [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<GenreDto>> GetGenreById(Guid id)
     {
         var genreDto = await _mediator.Send(new GetGenreById(id));
-        if (genreDto == null) return NotFound("Genre not found.");
         return Ok(genreDto);
     }
 
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteGenre(Guid id)
     {
-        var result = await _mediator.Send(new DeleteGenre(id));
-        if (!result) return NotFound($"Genre with ID {id} not found.");
-        return Ok();
+        await _mediator.Send(new DeleteGenre(id));
+        return NoContent();
     }
 }
