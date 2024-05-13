@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Streamphony.Application.App.Genres.Commands;
 using Streamphony.Application.App.Genres.Queries;
 using Streamphony.Application.App.Genres.Responses;
+using Streamphony.Application.Common;
 using Streamphony.WebAPI.Filters;
 
 namespace Streamphony.WebAPI.Controllers;
@@ -37,7 +38,7 @@ public class GenreController(IMediator mediator) : AppBaseController
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<GenreDto>>> GetAllGenres([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+    public async Task<ActionResult<PaginatedResult<GenreDto>>> GetAllGenres([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
         var genres = await _mediator.Send(new GetAllGenres(pageNumber, pageSize));
         return Ok(genres);

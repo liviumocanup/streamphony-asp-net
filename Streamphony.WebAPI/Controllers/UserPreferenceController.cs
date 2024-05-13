@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Streamphony.Application.App.UserPreferences.Commands;
 using Streamphony.Application.App.UserPreferences.Queries;
 using Streamphony.Application.App.UserPreferences.Responses;
+using Streamphony.Application.Common;
 using Streamphony.WebAPI.Filters;
 
 namespace Streamphony.WebAPI.Controllers;
@@ -37,7 +38,7 @@ public class UserPreferenceController(IMediator mediator) : AppBaseController
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<UserPreferenceDto>>> GetAllUserPreferences([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+    public async Task<ActionResult<PaginatedResult<UserPreferenceDto>>> GetAllUserPreferences([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
         var userPreferences = await _mediator.Send(new GetAllUserPreferences(pageNumber, pageSize));
         return Ok(userPreferences);

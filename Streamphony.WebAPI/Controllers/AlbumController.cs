@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Streamphony.Application.App.Albums.Commands;
 using Streamphony.Application.App.Albums.Queries;
 using Streamphony.Application.App.Albums.Responses;
+using Streamphony.Application.Common;
 using Streamphony.WebAPI.Filters;
 
 namespace Streamphony.WebAPI.Controllers;
@@ -38,7 +39,7 @@ public class AlbumController(IMediator mediator) : AppBaseController
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<AlbumDto>>> GetAllAlbums([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+    public async Task<ActionResult<PaginatedResult<AlbumDto>>> GetAllAlbums([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
         var albums = await _mediator.Send(new GetAllAlbums(pageNumber, pageSize));
         return Ok(albums);

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Streamphony.Application.App.Users.Commands;
 using Streamphony.Application.App.Users.Queries;
 using Streamphony.Application.App.Users.Responses;
+using Streamphony.Application.Common;
 using Streamphony.WebAPI.Filters;
 
 namespace Streamphony.WebAPI.Controllers;
@@ -37,7 +38,7 @@ public class UserController(IMediator mediator) : AppBaseController
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsers([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+    public async Task<ActionResult<PaginatedResult<UserDto>>> GetAllUsers([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
         var users = await _mediator.Send(new GetAllUsers(pageNumber, pageSize));
         return Ok(users);

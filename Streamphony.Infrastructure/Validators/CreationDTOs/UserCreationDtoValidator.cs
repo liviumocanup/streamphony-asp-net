@@ -2,7 +2,7 @@ using FluentValidation;
 using Streamphony.Application.App.Users.Responses;
 using Streamphony.Infrastructure.Extensions;
 
-namespace Streamphony.Infrastructure.Validation.Validators.CreationDTOs;
+namespace Streamphony.Infrastructure.Validators.CreationDTOs;
 
 public class UserCreationDtoValidator : AbstractValidator<UserCreationDto>
 {

@@ -1,5 +1,4 @@
 using System.Linq.Expressions;
-using Streamphony.Application.Models;
 using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.Abstractions.Repositories;

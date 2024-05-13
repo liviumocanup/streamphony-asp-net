@@ -4,7 +4,7 @@ using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.App.UserPreferences.Responses;
 using Streamphony.Application.Abstractions.Services;
-using Streamphony.Application.Models;
+using Streamphony.Application.Common;
 
 namespace Streamphony.Application.App.UserPreferences.Queries;
 

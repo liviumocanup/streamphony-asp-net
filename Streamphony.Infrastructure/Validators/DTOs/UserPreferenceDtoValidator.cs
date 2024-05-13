@@ -1,7 +1,7 @@
 using FluentValidation;
 using Streamphony.Application.App.UserPreferences.Responses;
 
-namespace Streamphony.Infrastructure.Validation.Validators.DTOs;
+namespace Streamphony.Infrastructure.Validators.DTOs;
 
 public class UserPreferenceDtoValidator : AbstractValidator<UserPreferenceDto>
 {

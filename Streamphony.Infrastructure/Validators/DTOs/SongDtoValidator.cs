@@ -1,8 +1,8 @@
 using FluentValidation;
 using Streamphony.Application.App.Songs.Responses;
-using Streamphony.Infrastructure.Validation.Validators.CreationDTOs;
+using Streamphony.Infrastructure.Validators.CreationDTOs;
 
-namespace Streamphony.Infrastructure.Validation.Validators.DTOs;
+namespace Streamphony.Infrastructure.Validators.DTOs;
 
 public class SongDtoValidator : AbstractValidator<SongDto>
 {

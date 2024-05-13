@@ -14,8 +14,8 @@ using Streamphony.Infrastructure.Logging;
 using Streamphony.Infrastructure.Mapping;
 using Streamphony.Infrastructure.Persistence.Contexts;
 using Streamphony.Infrastructure.Persistence.Repositories;
-using Streamphony.Infrastructure.Validation.Validators.CreationDTOs;
-using Streamphony.Infrastructure.Validation.Validators.DTOs;
+using Streamphony.Infrastructure.Validators.CreationDTOs;
+using Streamphony.Infrastructure.Validators.DTOs;
 
 namespace Streamphony.WebAPI.Extensions;
 

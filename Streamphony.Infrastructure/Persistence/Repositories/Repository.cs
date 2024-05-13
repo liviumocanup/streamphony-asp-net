@@ -3,7 +3,6 @@ using System.Linq.Expressions;
 using Streamphony.Domain.Models;
 using Streamphony.Application.Abstractions.Repositories;
 using Streamphony.Infrastructure.Persistence.Contexts;
-using Streamphony.Application.Models;
 
 namespace Streamphony.Infrastructure.Persistence.Repositories;
 

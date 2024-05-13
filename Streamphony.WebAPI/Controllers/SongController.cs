@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Streamphony.Application.App.Songs.Commands;
 using Streamphony.Application.App.Songs.Queries;
 using Streamphony.Application.App.Songs.Responses;
-using Streamphony.Application.Models;
+using Streamphony.Application.Common;
 using Streamphony.WebAPI.Filters;
 
 namespace Streamphony.WebAPI.Controllers;
