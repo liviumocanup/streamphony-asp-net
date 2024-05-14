@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using Streamphony.Domain.Models;
 using Streamphony.Application.Abstractions.Repositories;
 using Streamphony.Application.Abstractions.Services;
+using Streamphony.Application.Common;
 
 namespace Streamphony.Application.Services;
 
@@ -114,7 +115,7 @@ public class ValidationService(ILoggingService loggingService) : IValidationServ
             _loggingService.LogAndThrowDuplicateException(entityName, propertyName, propertyValue, logAction);
     }
 
-    public async Task EnsureUserUniqueProperty<TEntity, TProperty>(
+    public async Task EnsureArtistUniqueProperty<TEntity, TProperty>(
         Func<Guid, TProperty, CancellationToken, Task<TEntity?>> getEntityFunc,
         Guid ownerId,
         string propertyName,
@@ -126,10 +127,10 @@ public class ValidationService(ILoggingService loggingService) : IValidationServ
         var existingEntity = await getEntityFunc(ownerId, propertyValue, cancellationToken);
 
         if (existingEntity != null)
-            _loggingService.LogAndThrowDuplicateExceptionForUser(entityName, propertyName, propertyValue, ownerId, logAction);
+            _loggingService.LogAndThrowDuplicateExceptionForArtist(entityName, propertyName, propertyValue, ownerId, logAction);
     }
 
-    public async Task EnsureUserUniquePropertyExceptId<TEntity, TProperty>(
+    public async Task EnsureArtistUniquePropertyExceptId<TEntity, TProperty>(
         Func<Guid, TProperty, Guid, CancellationToken, Task<IEnumerable<TEntity>>> getEntitiesFunc,
         Guid ownerId,
         string propertyName,
@@ -142,6 +143,6 @@ public class ValidationService(ILoggingService loggingService) : IValidationServ
         var existingEntities = await getEntitiesFunc(ownerId, propertyValue, entityId, cancellationToken);
 
         if (existingEntities.Any())
-            _loggingService.LogAndThrowDuplicateExceptionForUser(entityName, propertyName, propertyValue, ownerId, logAction);
+            _loggingService.LogAndThrowDuplicateExceptionForArtist(entityName, propertyName, propertyValue, ownerId, logAction);
     }
 }

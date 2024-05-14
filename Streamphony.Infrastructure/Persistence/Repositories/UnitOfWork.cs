@@ -8,16 +8,16 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly ApplicationDbContext _context;
 
-    public UnitOfWork(ApplicationDbContext context, IUserRepository userRepository,
+    public UnitOfWork(ApplicationDbContext context, IArtistRepository artistRepository,
         ISongRepository songRepository, IAlbumRepository albumRepository,
-        IGenreRepository genreRepository, IUserPreferenceRepository userPreferenceRepository)
+        IGenreRepository genreRepository, IPreferenceRepository preferenceRepository)
     {
         _context = context;
-        UserRepository = userRepository;
+        ArtistRepository = artistRepository;
         SongRepository = songRepository;
         AlbumRepository = albumRepository;
         GenreRepository = genreRepository;
-        UserPreferenceRepository = userPreferenceRepository;
+        PreferenceRepository = preferenceRepository;
     }
 
     public async Task SaveAsync(CancellationToken cancellationToken)
@@ -40,9 +40,9 @@ public class UnitOfWork : IUnitOfWork
         await _context.Database.RollbackTransactionAsync(cancellationToken);
     }
 
-    public IUserRepository UserRepository { get; }
+    public IArtistRepository ArtistRepository { get; }
     public ISongRepository SongRepository { get; }
     public IAlbumRepository AlbumRepository { get; }
     public IGenreRepository GenreRepository { get; }
-    public IUserPreferenceRepository UserPreferenceRepository { get; }
+    public IPreferenceRepository PreferenceRepository { get; }
 }

@@ -29,8 +29,8 @@ public class CreateAlbumHandler : IRequestHandler<CreateAlbum, AlbumDto>
         var albumDto = request.AlbumCreationDto;
         var getByOwnerIdAndTitleFunc = _unitOfWork.AlbumRepository.GetByOwnerIdAndTitle;
 
-        await _validationService.AssertNavigationEntityExists<Album, User>(_unitOfWork.UserRepository, albumDto.OwnerId, cancellationToken);
-        await _validationService.EnsureUserUniqueProperty(getByOwnerIdAndTitleFunc, albumDto.OwnerId, nameof(albumDto.Title), albumDto.Title, cancellationToken);
+        await _validationService.AssertNavigationEntityExists<Album, Artist>(_unitOfWork.ArtistRepository, albumDto.OwnerId, cancellationToken);
+        await _validationService.EnsureArtistUniqueProperty(getByOwnerIdAndTitleFunc, albumDto.OwnerId, nameof(albumDto.Title), albumDto.Title, cancellationToken);
 
         var albumEntity = _mapper.Map<Album>(albumDto);
         var albumDb = await _unitOfWork.AlbumRepository.Add(albumEntity, cancellationToken);

@@ -11,10 +11,10 @@ public class SongConfig : IEntityTypeConfiguration<Song>
                 builder.Property(s => s.Title).IsRequired().HasMaxLength(50);
                 builder.HasIndex(s => new { s.Title, s.OwnerId }).IsUnique();
                 builder.Property(s => s.Duration).IsRequired();
-                builder.Property(a => a.Url).IsRequired().HasMaxLength(1000);
+                builder.Property(album => album.Url).IsRequired().HasMaxLength(1000);
 
                 builder.HasOne(s => s.Owner)
-                        .WithMany(u => u.UploadedSongs)
+                        .WithMany(artist => artist.UploadedSongs)
                         .HasForeignKey(s => s.OwnerId)
                         .OnDelete(DeleteBehavior.Restrict);
 
@@ -24,7 +24,7 @@ public class SongConfig : IEntityTypeConfiguration<Song>
                         .OnDelete(DeleteBehavior.SetNull);
 
                 builder.HasOne(s => s.Album)
-                        .WithMany(a => a.Songs)
+                        .WithMany(album => album.Songs)
                         .HasForeignKey(s => s.AlbumId)
                         .OnDelete(DeleteBehavior.SetNull);
         }

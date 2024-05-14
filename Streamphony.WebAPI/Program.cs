@@ -16,8 +16,7 @@ builder.Services.AddControllers(cfg =>
     cfg.Filters.Add<ExceptionFilter>();
 });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddDateOnlyTimeOnlyStringConverters();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwagger();
 
 builder.Services.AddApplicationServices(builder.Configuration);
 

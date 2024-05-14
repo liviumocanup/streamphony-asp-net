@@ -29,10 +29,10 @@ public class CreateSongHandler : IRequestHandler<CreateSong, SongDto>
         var songDto = request.SongCreationDto;
         var getByOwnerIdAndTitleFunc = _unitOfWork.SongRepository.GetByOwnerIdAndTitle;
 
-        await _validationService.AssertNavigationEntityExists<Song, User>(_unitOfWork.UserRepository, songDto.OwnerId, cancellationToken);
+        await _validationService.AssertNavigationEntityExists<Song, Artist>(_unitOfWork.ArtistRepository, songDto.OwnerId, cancellationToken);
         await _validationService.AssertNavigationEntityExists<Song, Genre>(_unitOfWork.GenreRepository, songDto.GenreId, cancellationToken);
         await _validationService.AssertNavigationEntityExists<Song, Album>(_unitOfWork.AlbumRepository, songDto.AlbumId, cancellationToken);
-        await _validationService.EnsureUserUniqueProperty(getByOwnerIdAndTitleFunc, songDto.OwnerId, nameof(songDto.Title), songDto.Title, cancellationToken);
+        await _validationService.EnsureArtistUniqueProperty(getByOwnerIdAndTitleFunc, songDto.OwnerId, nameof(songDto.Title), songDto.Title, cancellationToken);
 
         var songEntity = _mapper.Map<Song>(songDto);
         var songDb = await _unitOfWork.SongRepository.Add(songEntity, cancellationToken);

@@ -8,16 +8,16 @@ public class AlbumConfig : IEntityTypeConfiguration<Album>
 {
     public void Configure(EntityTypeBuilder<Album> builder)
     {
-        builder.Property(a => a.Title).IsRequired().HasMaxLength(50);
-        builder.HasIndex(a => new { a.Title, a.OwnerId }).IsUnique();
-        builder.Property(a => a.CoverImageUrl).HasMaxLength(1000);
+        builder.Property(album => album.Title).IsRequired().HasMaxLength(50);
+        builder.HasIndex(album => new { album.Title, album.OwnerId }).IsUnique();
+        builder.Property(album => album.CoverImageUrl).HasMaxLength(1000);
 
-        builder.HasOne(a => a.Owner)
-                .WithMany(u => u.OwnedAlbums)
-                .HasForeignKey(a => a.OwnerId)
+        builder.HasOne(album => album.Owner)
+                .WithMany(artist => artist.OwnedAlbums)
+                .HasForeignKey(album => album.OwnerId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasMany(a => a.Songs)
+        builder.HasMany(album => album.Songs)
                 .WithOne(s => s.Album)
                 .HasForeignKey(s => s.AlbumId)
                 .OnDelete(DeleteBehavior.NoAction);

@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
 using Streamphony.Domain.Models;
 using Streamphony.Application.Abstractions.Repositories;
-using Streamphony.Application.Services;
+using Streamphony.Application.Common;
 
 namespace Streamphony.Application.Abstractions.Services;
 
@@ -58,7 +58,7 @@ public interface IValidationService
         CancellationToken cancellationToken,
         LogAction logAction = LogAction.Update);
 
-    Task EnsureUserUniqueProperty<TEntity, TProperty>(
+    Task EnsureArtistUniqueProperty<TEntity, TProperty>(
         Func<Guid, TProperty, CancellationToken, Task<TEntity?>> getEntityFunc,
         Guid ownerId,
         string propertyName,
@@ -66,7 +66,7 @@ public interface IValidationService
         CancellationToken cancellationToken,
         LogAction logAction = LogAction.Create);
 
-    Task EnsureUserUniquePropertyExceptId<TEntity, TProperty>(
+    Task EnsureArtistUniquePropertyExceptId<TEntity, TProperty>(
         Func<Guid, TProperty, Guid, CancellationToken, Task<IEnumerable<TEntity>>> getEntitiesFunc,
         Guid ownerId,
         string propertyName,

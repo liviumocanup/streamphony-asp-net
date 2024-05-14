@@ -4,7 +4,7 @@ using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.App.Albums.Responses;
-using Streamphony.Application.Services;
+using Streamphony.Application.Common;
 
 namespace Streamphony.Application.App.Albums.Queries;
 

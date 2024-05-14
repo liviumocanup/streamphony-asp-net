@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Streamphony.Application.App.Songs.Commands;
 using Streamphony.Application.App.Songs.Queries;
@@ -14,9 +15,11 @@ public class SongController(IMediator mediator) : AppBaseController
     private readonly IMediator _mediator = mediator;
 
     [HttpPost]
+    [Authorize]
     [ValidateModel]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<SongDto>> CreateSong(SongCreationDto songDto)
@@ -26,6 +29,7 @@ public class SongController(IMediator mediator) : AppBaseController
     }
 
     [HttpPut]
+    [Authorize]
     [ValidateModel]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -56,7 +60,9 @@ public class SongController(IMediator mediator) : AppBaseController
     }
 
     [HttpDelete("{id}")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteSong(Guid id)
     {

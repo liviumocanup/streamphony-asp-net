@@ -8,7 +8,7 @@ using Streamphony.Application.Abstractions.Logging;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Repositories;
 using Streamphony.Application.Abstractions.Services;
-using Streamphony.Application.App.Users.Queries;
+using Streamphony.Application.App.Artists.Queries;
 using Streamphony.Application.Services;
 using Streamphony.Infrastructure.Logging;
 using Streamphony.Infrastructure.Mapping;
@@ -16,6 +16,7 @@ using Streamphony.Infrastructure.Persistence.Contexts;
 using Streamphony.Infrastructure.Persistence.Repositories;
 using Streamphony.Infrastructure.Validators.CreationDTOs;
 using Streamphony.Infrastructure.Validators.DTOs;
+using Streamphony.Infrastructure.Auth;
 
 namespace Streamphony.WebAPI.Extensions;
 
@@ -26,15 +27,15 @@ public static class ServiceExtensions
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
-        services.AddMediatR(typeof(GetAllUsersHandler).Assembly);
+        services.AddMediatR(typeof(GetAllArtistsHandler).Assembly);
 
         // Repository and UnitOfWork registration
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IArtistRepository, ArtistRepository>();
         services.AddScoped<ISongRepository, SongRepository>();
         services.AddScoped<IAlbumRepository, AlbumRepository>();
         services.AddScoped<IGenreRepository, GenreRepository>();
-        services.AddScoped<IUserPreferenceRepository, UserPreferenceRepository>();
+        services.AddScoped<IPreferenceRepository, PreferenceRepository>();
         services.AddTransient<IValidationService, ValidationService>();
 
         // Mapping provider with Mapster
@@ -48,9 +49,15 @@ public static class ServiceExtensions
         services.AddScoped<IValidationService, ValidationService>();
 
         // Fluent Validation setup
-        services.AddValidatorsFromAssemblyContaining<UserCreationDtoValidator>();
-        services.AddValidatorsFromAssemblyContaining<UserDtoValidator>();
+        services.AddValidatorsFromAssemblyContaining<ArtistCreationDtoValidator>();
+        services.AddValidatorsFromAssemblyContaining<ArtistDtoValidator>();
         services.AddFluentValidationAutoValidation();
+
+        // Auth
+        services.AddScoped<IUserManagerProvider, UserManagerProvider>();
+        services.AddTransient<ITokenService, TokenService>();
+        services.AddTransient<IAuthenticationService, AuthenticationService>();
+        services.AddJwtAuthentication(configuration);
 
         // Serilog configuration
         services.AddSerilog((services, lc) => lc
