@@ -8,11 +8,7 @@ using Streamphony.Application.Common;
 
 namespace Streamphony.Application.App.Songs.Queries;
 
-public class GetAllSongs(int pageNumber, int pageSize) : IRequest<PaginatedResult<SongDto>>
-{
-    public int PageNumber { get; } = pageNumber;
-    public int PageSize { get; } = pageSize;
-}
+public record GetAllSongs(PagedRequest PagedRequest) : IRequest<PaginatedResult<SongDto>>;
 
 public class GetAllSongsHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingService logger) : IRequestHandler<GetAllSongs, PaginatedResult<SongDto>>
 {
@@ -22,9 +18,11 @@ public class GetAllSongsHandler(IUnitOfWork unitOfWork, IMappingProvider mapper,
 
     public async Task<PaginatedResult<SongDto>> Handle(GetAllSongs request, CancellationToken cancellationToken)
     {
-        (IEnumerable<Song> songs, int totalRecords) = await _unitOfWork.SongRepository.GetAllPaginated(request.PageNumber, request.PageSize, cancellationToken);
+        (var paginatedResult, var songList) = await _unitOfWork.SongRepository.GetAllPaginated<SongDto>(request.PagedRequest, cancellationToken);
+
+        paginatedResult.Items = _mapper.Map<IEnumerable<SongDto>>(songList);
 
         _logger.LogSuccess(nameof(Song));
-        return new PaginatedResult<SongDto>(_mapper.Map<IEnumerable<SongDto>>(songs), totalRecords);
+        return paginatedResult;
     }
 }

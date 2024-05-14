@@ -8,11 +8,7 @@ using Streamphony.Application.Common;
 
 namespace Streamphony.Application.App.Preferences.Queries;
 
-public class GetAllPreferences(int pageNumber, int pageSize) : IRequest<PaginatedResult<PreferenceDto>>
-{
-    public int PageNumber { get; } = pageNumber;
-    public int PageSize { get; } = pageSize;
-}
+public record GetAllPreferences(PagedRequest PagedRequest) : IRequest<PaginatedResult<PreferenceDto>>;
 
 public class GetAllPreferencesHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingService logger) : IRequestHandler<GetAllPreferences, PaginatedResult<PreferenceDto>>
 {
@@ -22,9 +18,11 @@ public class GetAllPreferencesHandler(IUnitOfWork unitOfWork, IMappingProvider m
 
     public async Task<PaginatedResult<PreferenceDto>> Handle(GetAllPreferences request, CancellationToken cancellationToken)
     {
-        (IEnumerable<Preference> preferences, int totalRecords) = await _unitOfWork.PreferenceRepository.GetAllPaginated(request.PageNumber, request.PageSize, cancellationToken);
+        (var paginatedResult, var preferenceList) = await _unitOfWork.PreferenceRepository.GetAllPaginated<PreferenceDto>(request.PagedRequest, cancellationToken);
 
-        _logger.LogSuccess(nameof(Album));
-        return new PaginatedResult<PreferenceDto>(_mapper.Map<IEnumerable<PreferenceDto>>(preferences), totalRecords);
+        paginatedResult.Items = _mapper.Map<IEnumerable<PreferenceDto>>(preferenceList);
+
+        _logger.LogSuccess(nameof(Preference));
+        return paginatedResult;
     }
 }

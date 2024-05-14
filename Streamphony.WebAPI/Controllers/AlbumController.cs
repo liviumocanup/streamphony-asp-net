@@ -46,7 +46,22 @@ public class AlbumController(IMediator mediator) : AppBaseController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<PaginatedResult<AlbumDto>>> GetAllAlbums([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
-        var albums = await _mediator.Send(new GetAllAlbums(pageNumber, pageSize));
+        var pagedRequest = new PagedRequest()
+        {
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+
+        var albums = await _mediator.Send(new GetAllAlbums(pagedRequest));
+        return Ok(albums);
+    }
+
+    [HttpPost("filtered")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<PaginatedResult<AlbumDto>>> GetAllAlbumsFiltered(PagedRequest pagedRequest)
+    {
+        var albums = await _mediator.Send(new GetAllAlbums(pagedRequest));
         return Ok(albums);
     }
 

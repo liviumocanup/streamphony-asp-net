@@ -47,7 +47,22 @@ public class GenreController(IMediator mediator) : AppBaseController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<PaginatedResult<GenreDto>>> GetAllGenres([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
-        var genres = await _mediator.Send(new GetAllGenres(pageNumber, pageSize));
+        var pagedRequest = new PagedRequest()
+        {
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+
+        var genres = await _mediator.Send(new GetAllGenres(pagedRequest));
+        return Ok(genres);
+    }
+
+    [HttpPost("filtered")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<PaginatedResult<GenreDto>>> GetAllGenresFiltered(PagedRequest pagedRequest)
+    {
+        var genres = await _mediator.Send(new GetAllGenres(pagedRequest));
         return Ok(genres);
     }
 

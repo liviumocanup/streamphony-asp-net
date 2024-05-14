@@ -46,7 +46,22 @@ public class SongController(IMediator mediator) : AppBaseController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<PaginatedResult<SongDto>>> GetAllSongs([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
-        var songs = await _mediator.Send(new GetAllSongs(pageNumber, pageSize));
+        var pagedRequest = new PagedRequest()
+        {
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+
+        var songs = await _mediator.Send(new GetAllSongs(pagedRequest));
+        return Ok(songs);
+    }
+
+    [HttpPost("filtered")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<PaginatedResult<SongDto>>> GetAllSongsFiltered(PagedRequest pagedRequest)
+    {
+        var songs = await _mediator.Send(new GetAllSongs(pagedRequest));
         return Ok(songs);
     }
 

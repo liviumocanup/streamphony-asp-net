@@ -8,11 +8,7 @@ using Streamphony.Application.Common;
 
 namespace Streamphony.Application.App.Genres.Queries;
 
-public class GetAllGenres(int pageNumber, int pageSize) : IRequest<PaginatedResult<GenreDto>>
-{
-    public int PageNumber { get; } = pageNumber;
-    public int PageSize { get; } = pageSize;
-}
+public record GetAllGenres(PagedRequest PagedRequest) : IRequest<PaginatedResult<GenreDto>>;
 
 public class GetAllGenresHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingService logger) : IRequestHandler<GetAllGenres, PaginatedResult<GenreDto>>
 {
@@ -22,9 +18,11 @@ public class GetAllGenresHandler(IUnitOfWork unitOfWork, IMappingProvider mapper
 
     public async Task<PaginatedResult<GenreDto>> Handle(GetAllGenres request, CancellationToken cancellationToken)
     {
-        (IEnumerable<Genre> genres, int totalRecords) = await _unitOfWork.GenreRepository.GetAllPaginated(request.PageNumber, request.PageSize, cancellationToken);
+        (var paginatedResult, var genreList) = await _unitOfWork.GenreRepository.GetAllPaginated<GenreDto>(request.PagedRequest, cancellationToken);
+
+        paginatedResult.Items = _mapper.Map<IEnumerable<GenreDto>>(genreList);
 
         _logger.LogSuccess(nameof(Genre));
-        return new PaginatedResult<GenreDto>(_mapper.Map<IEnumerable<GenreDto>>(genres), totalRecords);
+        return paginatedResult;
     }
 }

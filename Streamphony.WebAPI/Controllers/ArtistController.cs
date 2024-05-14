@@ -43,7 +43,22 @@ public class ArtistController(IMediator mediator) : AppBaseController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<PaginatedResult<ArtistDto>>> GetAllArtists([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
-        var artists = await _mediator.Send(new GetAllArtists(pageNumber, pageSize));
+        var pagedRequest = new PagedRequest()
+        {
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+
+        var artists = await _mediator.Send(new GetAllArtists(pagedRequest));
+        return Ok(artists);
+    }
+
+    [HttpPost("filtered")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<PaginatedResult<ArtistDto>>> GetAllArtistsFiltered(PagedRequest pagedRequest)
+    {
+        var artists = await _mediator.Send(new GetAllArtists(pagedRequest));
         return Ok(artists);
     }
 

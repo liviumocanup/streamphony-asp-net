@@ -48,7 +48,24 @@ public class PreferenceController(IMediator mediator) : AppBaseController
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<PaginatedResult<PreferenceDto>>> GetAllPreferences([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
-        var preferences = await _mediator.Send(new GetAllPreferences(pageNumber, pageSize));
+        var pagedRequest = new PagedRequest()
+        {
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+
+        var preferences = await _mediator.Send(new GetAllPreferences(pagedRequest));
+        return Ok(preferences);
+    }
+
+    [HttpPost("filtered")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<PaginatedResult<PreferenceDto>>> GetAllPreferencesFiltered(PagedRequest pagedRequest)
+    {
+        var preferences = await _mediator.Send(new GetAllPreferences(pagedRequest));
         return Ok(preferences);
     }
 
