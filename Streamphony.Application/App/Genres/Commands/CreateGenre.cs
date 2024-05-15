@@ -4,7 +4,6 @@ using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.App.Genres.Responses;
-using Streamphony.Application.Services;
 
 namespace Streamphony.Application.App.Genres.Commands;
 

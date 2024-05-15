@@ -6,7 +6,7 @@ public class Album : BaseEntity
     public string? CoverImageUrl { get; set; }
     public DateOnly ReleaseDate { get; set; }
     public Guid OwnerId { get; set; }
-    public User Owner { get; set; } = default!;
+    public Artist Owner { get; set; } = default!;
     public ICollection<AlbumArtist> Artists { get; set; } = new HashSet<AlbumArtist>();
     public ICollection<Song> Songs { get; set; } = new HashSet<Song>();
 

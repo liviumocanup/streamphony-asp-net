@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using Streamphony.Domain.Models;
 using Streamphony.Application.Abstractions.Repositories;
 using Streamphony.Infrastructure.Persistence.Contexts;
-using System.Linq.Expressions;
+using Streamphony.Infrastructure.Extensions;
+using Streamphony.Application.Common;
 
 namespace Streamphony.Infrastructure.Persistence.Repositories;
 
@@ -47,6 +49,12 @@ public class Repository<T>(ApplicationDbContext context) : IRepository<T> where 
         _context.Set<T>().Update(entity);
         await _context.SaveChangesAsync(cancellationToken);
         return entity;
+    }
+
+    public async Task<(PaginatedResult<TDto>, IEnumerable<T>)> GetAllPaginated<TDto>(PagedRequest pagedRequest, CancellationToken cancellationToken)
+        where TDto : class
+    {
+        return await _context.Set<T>().CreatePaginatedResultAsync<T, TDto>(pagedRequest, cancellationToken);
     }
 
     private IQueryable<T> IncludeProperties(params Expression<Func<T, object>>[] includeProperties)

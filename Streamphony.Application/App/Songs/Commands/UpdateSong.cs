@@ -4,7 +4,7 @@ using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.App.Songs.Responses;
-using Streamphony.Application.Services;
+using Streamphony.Application.Common;
 
 namespace Streamphony.Application.App.Songs.Commands;
 
@@ -34,7 +34,7 @@ public class UpdateSongHandler : IRequestHandler<UpdateSong, SongDto>
         await ValidateOwnership(songDto, cancellationToken);
         await _validationService.AssertNavigationEntityExists<Song, Genre>(_unitOfWork.GenreRepository, songDto.GenreId, cancellationToken, LogAction.Update);
         await _validationService.AssertNavigationEntityExists<Song, Album>(_unitOfWork.AlbumRepository, songDto.AlbumId, cancellationToken, LogAction.Update);
-        await _validationService.EnsureUserUniquePropertyExceptId(duplicateTitleForOtherSongs, songDto.OwnerId, nameof(songDto.Title), songDto.Title, songDto.Id, cancellationToken);
+        await _validationService.EnsureArtistUniquePropertyExceptId(duplicateTitleForOtherSongs, songDto.OwnerId, nameof(songDto.Title), songDto.Title, songDto.Id, cancellationToken);
 
         _mapper.Map(songDto, song);
         await _unitOfWork.SaveAsync(cancellationToken);
@@ -45,11 +45,9 @@ public class UpdateSongHandler : IRequestHandler<UpdateSong, SongDto>
 
     private async Task ValidateOwnership(SongDto songDto, CancellationToken cancellationToken)
     {
-        var user = await _validationService.GetExistingEntity(_unitOfWork.UserRepository, songDto.OwnerId, cancellationToken, LogAction.Get);
+        var artist = await _validationService.GetExistingEntity(_unitOfWork.ArtistRepository, songDto.OwnerId, cancellationToken, LogAction.Get);
 
-        if (!user.UploadedSongs.Any(song => song.Id == songDto.Id))
-        {
-            _logger.LogAndThrowNotAuthorizedException(nameof(Song), songDto.Id, nameof(User), songDto.OwnerId);
-        }
+        if (!artist.UploadedSongs.Any(song => song.Id == songDto.Id))
+            _logger.LogAndThrowNotAuthorizedException(nameof(Song), songDto.Id, nameof(Artist), songDto.OwnerId);
     }
 }

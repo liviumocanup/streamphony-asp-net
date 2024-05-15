@@ -1,0 +1,8 @@
+﻿C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Domain\Models\Album.cs
+C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Domain\Models\AlbumArtist.cs
+C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Domain\Models\ArtistRole.cs
+C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Domain\Models\BaseEntity.cs
+C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Domain\Models\Genre.cs
+C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Domain\Models\Song.cs
+C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Domain\Models\User.cs
+C:\Personal\amdaris\project\streamphony-asp-net\Streamphony.Domain\Models\UserPreference.cs

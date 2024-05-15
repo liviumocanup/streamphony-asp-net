@@ -1,8 +1,10 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Streamphony.Application.App.Genres.Commands;
 using Streamphony.Application.App.Genres.Queries;
 using Streamphony.Application.App.Genres.Responses;
+using Streamphony.Application.Common;
 using Streamphony.WebAPI.Filters;
 
 namespace Streamphony.WebAPI.Controllers;
@@ -13,7 +15,13 @@ public class GenreController(IMediator mediator) : AppBaseController
     private readonly IMediator _mediator = mediator;
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     [ValidateModel]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<GenreDto>> CreateGenre(GenreCreationDto genreDto)
     {
         var createdGenreDto = await _mediator.Send(new CreateGenre(genreDto));
@@ -21,40 +29,61 @@ public class GenreController(IMediator mediator) : AppBaseController
     }
 
     [HttpPut]
+    [Authorize(Roles = "Admin")]
     [ValidateModel]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<GenreDto>> UpdateGenre(GenreDto genreDto)
     {
-        try
-        {
-            var updatedGenreDto = await _mediator.Send(new UpdateGenre(genreDto));
-            return Ok(updatedGenreDto);
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound($"Genre with ID {genreDto.Id} not found.");
-        }
+        var updatedGenreDto = await _mediator.Send(new UpdateGenre(genreDto));
+        return Ok(updatedGenreDto);
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<GenreDto>>> GetAllGenres()
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<PaginatedResult<GenreDto>>> GetAllGenres([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
-        var genres = await _mediator.Send(new GetAllGenres());
+        var pagedRequest = new PagedRequest()
+        {
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+
+        var genres = await _mediator.Send(new GetAllGenres(pagedRequest));
+        return Ok(genres);
+    }
+
+    [HttpPost("filtered")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<PaginatedResult<GenreDto>>> GetAllGenresFiltered(PagedRequest pagedRequest)
+    {
+        var genres = await _mediator.Send(new GetAllGenres(pagedRequest));
         return Ok(genres);
     }
 
     [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<GenreDto>> GetGenreById(Guid id)
     {
         var genreDto = await _mediator.Send(new GetGenreById(id));
-        if (genreDto == null) return NotFound("Genre not found.");
         return Ok(genreDto);
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteGenre(Guid id)
     {
-        var result = await _mediator.Send(new DeleteGenre(id));
-        if (!result) return NotFound($"Genre with ID {id} not found.");
-        return Ok();
+        await _mediator.Send(new DeleteGenre(id));
+        return NoContent();
     }
 }

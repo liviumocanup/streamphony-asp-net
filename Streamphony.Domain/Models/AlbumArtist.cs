@@ -6,7 +6,7 @@ public class AlbumArtist
     public Album Album { get; set; } = default!;
 
     public Guid ArtistId { get; set; }
-    public User Artist { get; set; } = default!;
+    public Artist Artist { get; set; } = default!;
 
     public ArtistRole Role { get; set; }
 }

@@ -10,8 +10,8 @@ public interface IUnitOfWork
     Task RollbackTransactionAsync(CancellationToken cancellationToken);
 
     public ISongRepository SongRepository { get; }
-    public IUserRepository UserRepository { get; }
+    public IArtistRepository ArtistRepository { get; }
     public IAlbumRepository AlbumRepository { get; }
     public IGenreRepository GenreRepository { get; }
-    public IUserPreferenceRepository UserPreferenceRepository { get; }
+    public IPreferenceRepository PreferenceRepository { get; }
 }

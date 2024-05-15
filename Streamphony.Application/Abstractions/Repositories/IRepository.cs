@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Streamphony.Application.Common;
 using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.Abstractions.Repositories;
@@ -11,5 +12,5 @@ public interface IRepository<T> where T : BaseEntity
     Task<T> Add(T entity, CancellationToken cancellationToken);
     Task Delete(Guid id, CancellationToken cancellationToken);
     Task<T> Update(T entity, CancellationToken cancellationToken);
-    // Task<PaginatedResult<TDto>> GetPagedData<TDto>(PagedRequest pagedRequest) where TDto : class;
+    Task<(PaginatedResult<TDto>, IEnumerable<T>)> GetAllPaginated<TDto>(PagedRequest pagedRequest, CancellationToken cancellationToken) where TDto : class;
 }

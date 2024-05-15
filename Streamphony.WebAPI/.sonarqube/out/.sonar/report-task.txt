@@ -1,0 +1,6 @@
+projectKey=streamphony-application
+serverUrl=http://localhost:9000
+serverVersion=10.4.1.88267
+dashboardUrl=http://localhost:9000/dashboard?id=streamphony-application
+ceTaskId=c75676b0-9ced-43f7-81ed-bff685cbcd37
+ceTaskUrl=http://localhost:9000/api/ce/task?id=c75676b0-9ced-43f7-81ed-bff685cbcd37

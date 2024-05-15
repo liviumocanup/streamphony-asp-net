@@ -6,5 +6,15 @@
     },
     
     "dotnet-test-explorer.testArguments": "/p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=./lcov.info",
-    "dotnet-test-explorer.testProjectPath": "**/*.Tests.csproj"
+    "dotnet-test-explorer.testProjectPath": "**/*.Tests.csproj",
+    "dotnet-test-explorer.runInParallel": true,
+    "coverage-gutters.showLineCoverage": false,
+    "coverage-gutters.coverageFileNames": [
+        "lcov.info",
+        "coverage.info",
+        "cov.xml",
+        "coverage.xml",
+        "jacoco.xml",
+        "coverage.cobertura.xml"
+    ]
 }

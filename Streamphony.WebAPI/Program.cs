@@ -16,8 +16,7 @@ builder.Services.AddControllers(cfg =>
     cfg.Filters.Add<ExceptionFilter>();
 });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddDateOnlyTimeOnlyStringConverters();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwagger();
 
 builder.Services.AddApplicationServices(builder.Configuration);
 
@@ -28,9 +27,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerDocumentation();
 }
 
-// app.UseRequestTiming();
 app.UseHttpsRedirection();
+app.UseRequestTiming();
 app.UseDbTransaction();
 app.MapControllers();
 
 app.Run();
+public partial class Program { }
