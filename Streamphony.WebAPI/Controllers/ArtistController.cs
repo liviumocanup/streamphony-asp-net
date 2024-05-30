@@ -15,7 +15,6 @@ public class ArtistController(IMediator mediator) : AppBaseController
     private readonly IMediator _mediator = mediator;
 
     [HttpPost]
-    [Authorize]
     [ValidateModel]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -27,7 +26,6 @@ public class ArtistController(IMediator mediator) : AppBaseController
     }
 
     [HttpPut]
-    [Authorize]
     [ValidateModel]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -40,6 +38,7 @@ public class ArtistController(IMediator mediator) : AppBaseController
     }
 
     [HttpGet]
+    [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<PaginatedResult<ArtistDto>>> GetAllArtists([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
@@ -54,6 +53,7 @@ public class ArtistController(IMediator mediator) : AppBaseController
     }
 
     [HttpPost("filtered")]
+    [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<PaginatedResult<ArtistDto>>> GetAllArtistsFiltered(PagedRequest pagedRequest)
@@ -63,6 +63,7 @@ public class ArtistController(IMediator mediator) : AppBaseController
     }
 
     [HttpGet("{id}")]
+    [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ArtistDetailsDto>> GetArtistById(Guid id)
@@ -72,7 +73,6 @@ public class ArtistController(IMediator mediator) : AppBaseController
     }
 
     [HttpDelete("{id}")]
-    [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

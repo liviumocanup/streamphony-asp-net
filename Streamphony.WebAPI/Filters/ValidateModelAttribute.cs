@@ -17,13 +17,7 @@ public class ValidateModelAttribute : ActionFilterAttribute
                 Timestamp = DateTime.Now
             };
 
-            foreach (var error in context.ModelState)
-            {
-                foreach (var inner in error.Value.Errors)
-                {
-                    apiError.Errors.Add(inner.ErrorMessage);
-                }
-            }
+            apiError.Errors.AddRange(context.ModelState.SelectMany(e => e.Value!.Errors.Select(e => e.ErrorMessage)));
 
             context.Result = new BadRequestObjectResult(apiError);
         }
