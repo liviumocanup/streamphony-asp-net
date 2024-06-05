@@ -1,30 +1,14 @@
 import { Grid } from '@mui/material';
-import { useEffect, useState } from 'react';
 import Card from './Card';
 import FeedSection from './FeedSection';
 import { artists, albums, playlists } from '../../../shared/dummy_data';
+import useFetchImages from '../../../hooks/useFetchImages';
 
 const Feed = () => {
-    const [imageUrls, setImageUrls] = useState<{ [key: string]: string }>({});
-
-    useEffect(() => {
-        fetchImages();
-    }, []);
-
-    const fetchImages = () => {
-        const fetchData = (items: { name: string }[]) => {
-            items.forEach(item => {
-                fetch(`https://picsum.photos/185`)
-                    .then(response => response.url)
-                    .then(url => setImageUrls(prevUrls => ({ ...prevUrls, [item.name]: url })))
-                    .catch(error => console.error('Error fetching image:', error));
-            });
-        };
-
-        fetchData(artists);
-        fetchData(albums);
-        fetchData(playlists);
-    };
+    const artistImages = useFetchImages(artists);
+    const albumImages = useFetchImages(albums);
+    const playlistImages = useFetchImages(playlists);
+    const imageUrls = { ...artistImages, ...albumImages, ...playlistImages };
 
     interface Item {
         name: string;

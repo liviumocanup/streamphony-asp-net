@@ -2,6 +2,7 @@ import { Button, Divider, IconButton, Toolbar, Typography, useTheme } from "@mui
 import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar } from "../styles/AppBarStyle";
 import MaterialUISwitch from "../styles/ThemeSwitchStyle";
+import { Link } from "react-router-dom";
 
 interface HomeAppBarProps {
     toggleTheme: () => void;
@@ -33,12 +34,30 @@ const HomeAppBar = ({ toggleTheme, open, handleDrawerOpen, drawerWidth }: HomeAp
                 >
                     <MenuIcon />
                 </IconButton>
+
                 <Typography variant="h4" align="left" sx={{ flexGrow: 1 }}>
                     Streamphony
                 </Typography>
+
                 <MaterialUISwitch checked={theme.palette.mode === 'dark'} onChange={toggleTheme} />
-                <Button color="inherit" sx={{ mr: 1 }}>Sign Up</Button>
-                <Button color="inherit" variant="outlined">Log in</Button>
+
+                <Button
+                    component={Link}
+                    to="/signUp"
+                    color="inherit"
+                    sx={{ mr: 1 }}
+                >
+                    Sign Up
+                </Button>
+
+                <Button
+                    component={Link}
+                    to="/logIn"
+                    color="inherit"
+                    variant="outlined"
+                >
+                    Log in
+                </Button>
             </Toolbar>
             <Divider />
         </AppBar>

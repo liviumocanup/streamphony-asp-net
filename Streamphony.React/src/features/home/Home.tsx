@@ -5,17 +5,14 @@ import Sidebar from './components/Sidebar';
 import Feed from './components/Feed';
 import { Main } from './styles/MainStyle';
 import { DrawerHeader } from './styles/DrawerHeaderStyle';
-import { useTheme } from '@mui/material';
+import { Helmet } from 'react-helmet-async';
+import { useThemeContext } from '../../hooks/context/ThemeContext';
 
 const drawerWidth = 240;
 
-interface HomeProps {
-    toggleTheme: () => void;
-}
-
-const Home = ({ toggleTheme }: HomeProps) => {
-    const theme = useTheme();
-    const [open, setOpen] = useState(false);
+const Home = () => {
+    const { currentTheme, toggleTheme } = useThemeContext();
+    const [open, setOpen] = useState(true);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -26,14 +23,32 @@ const Home = ({ toggleTheme }: HomeProps) => {
     };
 
     return (
-        <Box sx={{ display: 'flex', backgroundColor: theme.palette.background.default }}>
-            <HomeAppBar toggleTheme={toggleTheme} open={open} handleDrawerOpen={handleDrawerOpen} drawerWidth={drawerWidth} />
-            <Sidebar open={open} handleDrawerClose={handleDrawerClose} drawerWidth={drawerWidth} />
-            <Main open={open} drawerWidth={drawerWidth}>
-                <DrawerHeader />
-                <Feed />
-            </Main>
-        </Box>
+        <>
+            <Helmet>
+                <title>Home</title>
+                <meta name="description" content="Home page of the music streaming app" />
+            </Helmet>
+
+            <Box sx={{ display: 'flex', backgroundColor: currentTheme.palette.background.default }}>
+                <HomeAppBar
+                    toggleTheme={toggleTheme}
+                    open={open}
+                    handleDrawerOpen={handleDrawerOpen}
+                    drawerWidth={drawerWidth}
+                />
+
+                <Sidebar
+                    open={open}
+                    handleDrawerClose={handleDrawerClose}
+                    drawerWidth={drawerWidth}
+                />
+
+                <Main open={open} drawerWidth={drawerWidth}>
+                    <DrawerHeader />
+                    <Feed />
+                </Main>
+            </Box>
+        </>
     );
 }
 
