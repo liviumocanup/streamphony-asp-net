@@ -16,12 +16,12 @@ Developed with [ASP.NET](https://dotnet.microsoft.com/en-us/apps/aspnet) for an 
 
 1. Set up the SQL Server with Docker, by pulling the image and starting the container with the following commands:
 ```bash
-docker pull mcr.microsoft.com/mssql/server:2019-latest
+docker pull mcr.microsoft.com/mssql/server
 
-docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=YourStrong(!)Password" -p 1433:1433 --name sqlserver -h sqlserver -d mcr.microsoft.com/mssql/server:2019-latest
+docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=YourStrong(!)Password" -p 1433:1433 --name sqlserver -h sqlserver -d mcr.microsoft.com/mssql/server
 ```
 
-* `mcr.microsoft.com/mssql/server:2019-latest`: Specifies the Docker image to use.
+* `mcr.microsoft.com/mssql/server`: Specifies the Docker image to use.
 * `-e "ACCEPT_EULA=Y"`: Accepting the End User License Agreement for SQL Server (required to run the container).
 * `-e "SA_PASSWORD=YourStrong(!)Password"`: Sets an environment variable for the SA (System Administrator) account password of SQL Server. Replace `YourStrong(!)Password` with a strong password.
 * `-p 1433:1433`: Maps port 1433 of the container to port 1433 on the host machine. 

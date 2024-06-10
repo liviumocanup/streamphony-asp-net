@@ -1,0 +1,6 @@
+.Form {
+  display: flex;
+  flex-direction: column;
+  width: 28rem;
+  padding: 3%;
+}
