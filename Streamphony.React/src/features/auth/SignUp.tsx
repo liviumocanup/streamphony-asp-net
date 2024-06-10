@@ -1,37 +1,45 @@
-import { Box, IconButton, Link, Typography, useTheme } from "@mui/material";
+import { Box, IconButton, Link, Typography } from '@mui/material';
 import './Auth.css';
-import SignUpForm from "./components/SignUpForm";
-import { Helmet } from "react-helmet-async";
+import '../../App.css';
+import SignUpForm from './components/SignUpForm';
+import { Helmet } from 'react-helmet-async';
 import { Link as RouterLink } from 'react-router-dom';
-import Home from "@mui/icons-material/Home";
+import Home from '@mui/icons-material/Home';
+import { appTitle } from '../../shared/constants';
 
 const SignUp = () => {
-    const theme = useTheme();
+  return (
+    <>
+      <Helmet>
+        <title>Sign Up - {appTitle}</title>
+        <meta name="description" content="Sign up for an account" />
+      </Helmet>
 
-    return (
-        <>
-            <Helmet>
-                <title>Sign Up</title>
-                <meta name="description" content="Sign up for an account" />
-            </Helmet>
+      <Box className="Centered">
+        <Typography variant="h3" fontWeight="bold">
+          Sign Up
+        </Typography>
 
-            <Box className="FormContainer">
-                <Typography variant="h3" fontWeight="bold" sx={{ color: theme.palette.text.primary }}>
-                    Sign Up
-                </Typography>
+        <SignUpForm />
 
-                <SignUpForm />
+        <Typography sx={{ color: 'text.secondary' }}>
+          Already have an account?{' '}
+          <Link component={RouterLink} to="/logIn">
+            Log in.
+          </Link>
+        </Typography>
 
-                <Typography sx={{ color: theme.palette.text.primary }}>
-                    Already have an account? <Link component={RouterLink} to="/logIn">Log in.</Link>
-                </Typography>
-
-                <IconButton component={RouterLink} to="/" aria-label="Go back" sx={{ mt: 2 }}>
-                    <Home />
-                </IconButton>
-            </Box>
-        </>
-    );
-}
+        <IconButton
+          component={RouterLink}
+          to="/"
+          aria-label="Go back"
+          sx={{ mt: 2 }}
+        >
+          <Home />
+        </IconButton>
+      </Box>
+    </>
+  );
+};
 
 export default SignUp;

@@ -1,45 +1,72 @@
-import { Grid } from '@mui/material';
-import Card from './Card';
-import FeedSection from './FeedSection';
 import { artists, albums, playlists } from '../../../shared/dummy_data';
 import useFetchImages from '../../../hooks/useFetchImages';
+import UserAlbums from './UserAlbums';
+import { Suspense } from 'react';
+import Section from './Section';
+import FallbackSection from './fallback/FallbackSection';
+import useAuthStatus from '../../../hooks/useAuthStatus';
 
 const Feed = () => {
-    const artistImages = useFetchImages(artists);
-    const albumImages = useFetchImages(albums);
-    const playlistImages = useFetchImages(playlists);
-    const imageUrls = { ...artistImages, ...albumImages, ...playlistImages };
+  const isLoggedIn = useAuthStatus();
 
-    interface Item {
-        name: string;
-        description: string;
-    }
+  return (
+    <>
+      {isLoggedIn ? (
+        <Suspense fallback={<FallbackSection imageVariant={'circular'} />}>
+          <UserAlbums />
+        </Suspense>
+      ) : null}
 
-    const renderGridSection = (items: Item[], sectionTitle: string, imageVariant?: "circular" | null) => (
-        <FeedSection title={sectionTitle}>
-            <Grid container spacing={2}>
-                {items.map((item: Item, index: number) => (
-                    <Card
-                        key={index}
-                        index={index}
-                        image={imageUrls[item.name]}
-                        imageAlt={item.name}
-                        title={item.name}
-                        description={item.description}
-                        imageVariant={imageVariant ? imageVariant : "rounded"}
-                    />
-                ))}
-            </Grid>
-        </FeedSection>
-    );
+      <Suspense fallback={<FallbackSection imageVariant={'circular'} />}>
+        <PopularArtists />
+      </Suspense>
 
-    return (
-        <>
-            {renderGridSection(artists, "Popular artists", "circular")}
-            {renderGridSection(albums, "Popular albums")}
-            {renderGridSection(playlists, "Featured playlists")}
-        </>
-    );
+      <Suspense fallback={<FallbackSection />}>
+        <PopularAlbums />
+      </Suspense>
+
+      <Suspense fallback={<FallbackSection />}>
+        <FeaturedPlaylists />
+      </Suspense>
+    </>
+  );
+};
+
+const PopularArtists = () => {
+  const { imageUrls: artistImages } = useFetchImages(artists);
+
+  return (
+    <Section
+      items={artists}
+      imageUrls={artistImages}
+      sectionTitle="Popular artists"
+      imageVariant="circular"
+    />
+  );
+};
+
+const PopularAlbums = () => {
+  const { imageUrls: albumImages } = useFetchImages(albums);
+
+  return (
+    <Section
+      items={albums}
+      imageUrls={albumImages}
+      sectionTitle="Popular albums"
+    />
+  );
+};
+
+const FeaturedPlaylists = () => {
+  const { imageUrls: playlistImages } = useFetchImages(playlists);
+
+  return (
+    <Section
+      items={playlists}
+      imageUrls={playlistImages}
+      sectionTitle="Featured playlists"
+    />
+  );
 };
 
 export default Feed;
