@@ -4,7 +4,6 @@ using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.App.Genres.Queries;
 using Streamphony.Application.App.Genres.Responses;
-using Streamphony.Application.Services;
 using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.Tests.App.Genres.Queries;
@@ -12,13 +11,6 @@ namespace Streamphony.Application.Tests.App.Genres.Queries;
 [TestFixture]
 public class GetAllGenresTests
 {
-    private Mock<IUnitOfWork> _unitOfWorkMock;
-    private Mock<IMappingProvider> _mapperMock;
-    private Mock<ILoggingService> _loggerMock;
-    private GetAllGenresHandler _handler;
-    private List<Genre> _genres;
-    private List<GenreDto> _genreDtos;
-
     [SetUp]
     public void Setup()
     {
@@ -29,15 +21,23 @@ public class GetAllGenresTests
 
         _genres =
         [
-            new() { Id = Guid.NewGuid(), Name = "Rock", Description = "A genre of popular music." },
-            new() { Id = Guid.NewGuid(), Name = "Jazz", Description = "A music genre." }
+            new Genre { Id = Guid.NewGuid(), Name = "Rock", Description = "A genre of popular music." },
+            new Genre { Id = Guid.NewGuid(), Name = "Jazz", Description = "A music genre." }
         ];
 
-        _genreDtos = _genres.Select(genre => new GenreDto { Id = genre.Id, Name = genre.Name, Description = genre.Description }).ToList();
+        _genreDtos = _genres.Select(genre => new GenreDto
+            { Id = genre.Id, Name = genre.Name, Description = genre.Description }).ToList();
 
         _unitOfWorkMock.Setup(u => u.GenreRepository.GetAll(It.IsAny<CancellationToken>())).ReturnsAsync(_genres);
         _mapperMock.Setup(m => m.Map<IEnumerable<GenreDto>>(_genres)).Returns(_genreDtos);
     }
+
+    private Mock<IUnitOfWork> _unitOfWorkMock;
+    private Mock<IMappingProvider> _mapperMock;
+    private Mock<ILoggingService> _loggerMock;
+    private GetAllGenresHandler _handler;
+    private List<Genre> _genres;
+    private List<GenreDto> _genreDtos;
 
     [Test]
     public async Task Handle_GenresExist_ReturnsAllGenreDtos()
@@ -61,7 +61,8 @@ public class GetAllGenresTests
     public async Task Handle_NoGenresExist_ReturnsEmpty()
     {
         // Arrange
-        _unitOfWorkMock.Setup(u => u.GenreRepository.GetAll(It.IsAny<CancellationToken>())).ReturnsAsync(new List<Genre>());
+        _unitOfWorkMock.Setup(u => u.GenreRepository.GetAll(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<Genre>());
         var getAllGenresQuery = new GetAllGenres();
 
         // Act

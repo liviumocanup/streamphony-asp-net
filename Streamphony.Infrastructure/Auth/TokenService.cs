@@ -26,13 +26,14 @@ public class TokenService(IOptions<JwtSettings> jwtOptions) : ITokenService
 
     private SecurityTokenDescriptor GetTokenDescriptor(ClaimsIdentity identity)
     {
-        return new SecurityTokenDescriptor()
+        return new SecurityTokenDescriptor
         {
             Subject = identity,
             Expires = DateTime.UtcNow.AddDays(7),
             Audience = _settings.Audiences[0],
             Issuer = _settings.Issuer,
-            SigningCredentials = new SigningCredentials(_settings.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256Signature)
+            SigningCredentials = new SigningCredentials(_settings.GetSymmetricSecurityKey(),
+                SecurityAlgorithms.HmacSha256Signature)
         };
     }
 }

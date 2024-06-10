@@ -1,6 +1,6 @@
 using Streamphony.Application.App.Albums.Responses;
-using Streamphony.Application.App.Songs.Responses;
 using Streamphony.Application.App.Preferences.Responses;
+using Streamphony.Application.App.Songs.Responses;
 
 namespace Streamphony.Application.App.Artists.Responses;
 

@@ -5,7 +5,6 @@ using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.App.Songs.Queries;
 using Streamphony.Application.App.Songs.Responses;
 using Streamphony.Application.Exceptions;
-using Streamphony.Application.Services;
 using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.Tests.App.Songs.Queries;
@@ -13,14 +12,6 @@ namespace Streamphony.Application.Tests.App.Songs.Queries;
 [TestFixture]
 public class GetSongByIdTests
 {
-    private Mock<IUnitOfWork> _unitOfWorkMock;
-    private Mock<IMappingProvider> _mapperMock;
-    private Mock<ILoggingService> _loggerMock;
-    private Mock<IValidationService> _validationServiceMock;
-    private GetSongByIdHandler _handler;
-    private Song _existingSong;
-    private SongDto _songDto;
-
     [SetUp]
     public void Setup()
     {
@@ -28,7 +19,8 @@ public class GetSongByIdTests
         _mapperMock = new Mock<IMappingProvider>();
         _loggerMock = new Mock<ILoggingService>();
         _validationServiceMock = new Mock<IValidationService>();
-        _handler = new GetSongByIdHandler(_unitOfWorkMock.Object, _mapperMock.Object, _loggerMock.Object, _validationServiceMock.Object);
+        _handler = new GetSongByIdHandler(_unitOfWorkMock.Object, _mapperMock.Object, _loggerMock.Object,
+            _validationServiceMock.Object);
 
         _existingSong = new Song
         {
@@ -49,11 +41,20 @@ public class GetSongByIdTests
         };
 
         _unitOfWorkMock.Setup(u => u.SongRepository.GetById(_existingSong.Id, It.IsAny<CancellationToken>()))
-                       .ReturnsAsync(_existingSong);
+            .ReturnsAsync(_existingSong);
         _mapperMock.Setup(m => m.Map<SongDto>(_existingSong)).Returns(_songDto);
-        _validationServiceMock.Setup(v => v.GetExistingEntity(_unitOfWorkMock.Object.SongRepository, _existingSong.Id, It.IsAny<CancellationToken>(), LogAction.Get))
-                              .ReturnsAsync(_existingSong);
+        _validationServiceMock.Setup(v => v.GetExistingEntity(_unitOfWorkMock.Object.SongRepository, _existingSong.Id,
+                It.IsAny<CancellationToken>(), LogAction.Get))
+            .ReturnsAsync(_existingSong);
     }
+
+    private Mock<IUnitOfWork> _unitOfWorkMock;
+    private Mock<IMappingProvider> _mapperMock;
+    private Mock<ILoggingService> _loggerMock;
+    private Mock<IValidationService> _validationServiceMock;
+    private GetSongByIdHandler _handler;
+    private Song _existingSong;
+    private SongDto _songDto;
 
     [Test]
     public async Task Handle_ValidId_ReturnsSongDto()
@@ -80,10 +81,11 @@ public class GetSongByIdTests
         var invalidSongId = Guid.NewGuid();
         var getSongByIdQuery = new GetSongById(invalidSongId);
         _unitOfWorkMock.Setup(u => u.SongRepository.GetById(invalidSongId, It.IsAny<CancellationToken>()))
-                       .ReturnsAsync((Song)null!);
+            .ReturnsAsync((Song)null!);
 
-        _validationServiceMock.Setup(v => v.GetExistingEntity(_unitOfWorkMock.Object.SongRepository, invalidSongId, It.IsAny<CancellationToken>(), LogAction.Get))
-                              .ThrowsAsync(new NotFoundException("Song not found."));
+        _validationServiceMock.Setup(v => v.GetExistingEntity(_unitOfWorkMock.Object.SongRepository, invalidSongId,
+                It.IsAny<CancellationToken>(), LogAction.Get))
+            .ThrowsAsync(new NotFoundException("Song not found."));
 
         // Act & Assert
         Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(getSongByIdQuery, CancellationToken.None));

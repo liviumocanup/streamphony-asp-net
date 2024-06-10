@@ -13,13 +13,13 @@ public class AlbumArtistConfig : IEntityTypeConfiguration<AlbumArtist>
         builder.HasKey(aa => new { aa.AlbumId, aa.ArtistId, aa.Role });
 
         builder.HasOne(aa => aa.Album)
-                .WithMany(album => album.Artists)
-                .HasForeignKey(aa => aa.AlbumId)
-                .OnDelete(DeleteBehavior.Cascade);
+            .WithMany(album => album.Artists)
+            .HasForeignKey(aa => aa.AlbumId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(aa => aa.Artist)
-                .WithMany(artist => artist.AlbumContributions)
-                .HasForeignKey(aa => aa.ArtistId)
-                .OnDelete(DeleteBehavior.Restrict);
+            .WithMany(artist => artist.AlbumContributions)
+            .HasForeignKey(aa => aa.ArtistId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

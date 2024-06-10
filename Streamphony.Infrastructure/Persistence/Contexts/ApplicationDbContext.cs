@@ -7,7 +7,8 @@ using Streamphony.Infrastructure.Persistence.Constants;
 
 namespace Streamphony.Infrastructure.Persistence.Contexts;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<User, Role, Guid, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+    : IdentityDbContext<User, Role, Guid, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>(options)
 {
     public DbSet<Genre> Genres { get; set; }
     public DbSet<Artist> Artists { get; set; }

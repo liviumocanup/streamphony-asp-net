@@ -1,17 +1,18 @@
 using MediatR;
-using Streamphony.Domain.Models;
 using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.Common;
+using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.App.Songs.Commands;
 
 public record DeleteSong(Guid Id) : IRequest<bool>;
 
-public class DeleteSongHandler(IUnitOfWork unitOfWork, ILoggingService logger, IValidationService validationService) : IRequestHandler<DeleteSong, bool>
+public class DeleteSongHandler(IUnitOfWork unitOfWork, ILoggingService logger, IValidationService validationService)
+    : IRequestHandler<DeleteSong, bool>
 {
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ILoggingService _logger = logger;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IValidationService _validationService = validationService;
 
     public async Task<bool> Handle(DeleteSong request, CancellationToken cancellationToken)

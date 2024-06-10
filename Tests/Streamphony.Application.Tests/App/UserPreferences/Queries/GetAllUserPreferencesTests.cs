@@ -2,23 +2,12 @@ using Moq;
 using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Services;
-using Streamphony.Application.App.UserPreferences.Queries;
-using Streamphony.Application.App.UserPreferences.Responses;
-using Streamphony.Application.Services;
-using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.Tests.App.UserPreferences.Queries;
 
 [TestFixture]
 public class GetAllUserPreferencesTests
 {
-    private Mock<IUnitOfWork> _unitOfWorkMock;
-    private Mock<IMappingProvider> _mapperMock;
-    private Mock<ILoggingService> _loggerMock;
-    private GetAllUserPreferencesHandler _handler;
-    private List<UserPreference> _userPreferences;
-    private List<UserPreferenceDto> _userPreferenceDtos;
-
     [SetUp]
     public void Setup()
     {
@@ -29,8 +18,34 @@ public class GetAllUserPreferencesTests
 
         _userPreferences =
         [
-            new() { Id = Guid.NewGuid(), DarkMode = true, Language = "en", User = new User { Id = Guid.NewGuid(), Username = "user1", ArtistName = "Artist", Email = "user1@mail.com", DateOfBirth = new DateOnly(1999, 10, 10) }},
-            new() { Id = Guid.NewGuid(), DarkMode = false, Language = "de", User = new User { Id = Guid.NewGuid(), Username = "user2", ArtistName = "Artist2", Email = "user2@mail.com", DateOfBirth = new DateOnly(1999, 10, 10) }}
+            new()
+            {
+                Id = Guid.NewGuid(),
+                DarkMode = true,
+                Language = "en",
+                User = new User
+                {
+                    Id = Guid.NewGuid(),
+                    Username = "user1",
+                    ArtistName = "Artist",
+                    Email = "user1@mail.com",
+                    DateOfBirth = new DateOnly(1999, 10, 10)
+                }
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                DarkMode = false,
+                Language = "de",
+                User = new User
+                {
+                    Id = Guid.NewGuid(),
+                    Username = "user2",
+                    ArtistName = "Artist2",
+                    Email = "user2@mail.com",
+                    DateOfBirth = new DateOnly(1999, 10, 10)
+                }
+            }
         ];
 
         _userPreferenceDtos = _userPreferences.Select(up => new UserPreferenceDto
@@ -40,9 +55,17 @@ public class GetAllUserPreferencesTests
             Language = up.Language
         }).ToList();
 
-        _unitOfWorkMock.Setup(u => u.UserPreferenceRepository.GetAll(It.IsAny<CancellationToken>())).ReturnsAsync(_userPreferences);
+        _unitOfWorkMock.Setup(u => u.UserPreferenceRepository.GetAll(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_userPreferences);
         _mapperMock.Setup(m => m.Map<IEnumerable<UserPreferenceDto>>(_userPreferences)).Returns(_userPreferenceDtos);
     }
+
+    private Mock<IUnitOfWork> _unitOfWorkMock;
+    private Mock<IMappingProvider> _mapperMock;
+    private Mock<ILoggingService> _loggerMock;
+    private GetAllUserPreferencesHandler _handler;
+    private List<UserPreference> _userPreferences;
+    private List<UserPreferenceDto> _userPreferenceDtos;
 
     [Test]
     public async Task Handle_UserPreferencesExist_ReturnsAllUserPreferenceDtos()

@@ -13,13 +13,13 @@ public class AlbumConfig : IEntityTypeConfiguration<Album>
         builder.Property(album => album.CoverImageUrl).HasMaxLength(1000);
 
         builder.HasOne(album => album.Owner)
-                .WithMany(artist => artist.OwnedAlbums)
-                .HasForeignKey(album => album.OwnerId)
-                .OnDelete(DeleteBehavior.Cascade);
+            .WithMany(artist => artist.OwnedAlbums)
+            .HasForeignKey(album => album.OwnerId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(album => album.Songs)
-                .WithOne(s => s.Album)
-                .HasForeignKey(s => s.AlbumId)
-                .OnDelete(DeleteBehavior.NoAction);
+            .WithOne(s => s.Album)
+            .HasForeignKey(s => s.AlbumId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

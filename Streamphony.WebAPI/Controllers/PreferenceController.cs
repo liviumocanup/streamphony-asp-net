@@ -46,9 +46,10 @@ public class PreferenceController(IMediator mediator) : AppBaseController
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<PaginatedResult<PreferenceDto>>> GetAllPreferences([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+    public async Task<ActionResult<PaginatedResult<PreferenceDto>>> GetAllPreferences([FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10)
     {
-        var pagedRequest = new PagedRequest()
+        var pagedRequest = new PagedRequest
         {
             PageNumber = pageNumber,
             PageSize = pageSize

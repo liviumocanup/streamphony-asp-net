@@ -1,25 +1,23 @@
 using Mapster;
-using Streamphony.Domain.Models;
+using Streamphony.Application.App.Albums.Responses;
 using Streamphony.Application.App.Artists.Responses;
-using Streamphony.Application.App.Songs.Responses;
+using Streamphony.Application.App.Auth.Responses;
 using Streamphony.Application.App.Genres.Responses;
 using Streamphony.Application.App.Preferences.Responses;
-using Streamphony.Application.App.Albums.Responses;
-using Streamphony.Application.App.Auth.Responses;
+using Streamphony.Application.App.Songs.Responses;
+using Streamphony.Domain.Models;
 using Streamphony.Domain.Models.Auth;
 
 namespace Streamphony.Infrastructure.Mapping.Profiles;
 
 public static class MapsterConfig
 {
-    public static TypeAdapterConfig GlobalConfig { get; }
-
     static MapsterConfig()
     {
         GlobalConfig = new TypeAdapterConfig();
 
         GlobalConfig.NewConfig<RegisterUserDto, User>()
-            .Map(dest => dest.UserName, src => src.UserName)
+            .Map(dest => dest.UserName, src => src.Username)
             .Map(dest => dest.Email, src => src.Email)
             .IgnoreNonMapped(true);
 
@@ -42,4 +40,6 @@ public static class MapsterConfig
 
         GlobalConfig.Compile();
     }
+
+    public static TypeAdapterConfig GlobalConfig { get; }
 }

@@ -1,8 +1,8 @@
 using System.Linq.Expressions;
-using Streamphony.Domain.Models;
 using Streamphony.Application.Abstractions.Repositories;
 using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.Common;
+using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.Services;
 
@@ -127,7 +127,8 @@ public class ValidationService(ILoggingService loggingService) : IValidationServ
         var existingEntity = await getEntityFunc(ownerId, propertyValue, cancellationToken);
 
         if (existingEntity != null)
-            _loggingService.LogAndThrowDuplicateExceptionForArtist(entityName, propertyName, propertyValue, ownerId, logAction);
+            _loggingService.LogAndThrowDuplicateExceptionForArtist(entityName, propertyName, propertyValue, ownerId,
+                logAction);
     }
 
     public async Task EnsureArtistUniquePropertyExceptId<TEntity, TProperty>(
@@ -143,6 +144,7 @@ public class ValidationService(ILoggingService loggingService) : IValidationServ
         var existingEntities = await getEntitiesFunc(ownerId, propertyValue, entityId, cancellationToken);
 
         if (existingEntities.Any())
-            _loggingService.LogAndThrowDuplicateExceptionForArtist(entityName, propertyName, propertyValue, ownerId, logAction);
+            _loggingService.LogAndThrowDuplicateExceptionForArtist(entityName, propertyName, propertyValue, ownerId,
+                logAction);
     }
 }

@@ -1,25 +1,20 @@
 using MediatR;
-using Streamphony.Domain.Models;
 using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.App.Artists.Responses;
+using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.App.Artists.Commands;
 
 public record CreateArtist(ArtistCreationDto ArtistCreationDto) : IRequest<ArtistDto>;
 
-public class CreateArtistHandler : IRequestHandler<CreateArtist, ArtistDto>
+public class CreateArtistHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingService logger)
+    : IRequestHandler<CreateArtist, ArtistDto>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IMappingProvider _mapper;
-    private readonly ILoggingService _logger;
-    public CreateArtistHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingService logger)
-    {
-        _unitOfWork = unitOfWork;
-        _mapper = mapper;
-        _logger = logger;
-    }
+    private readonly ILoggingService _logger = logger;
+    private readonly IMappingProvider _mapper = mapper;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task<ArtistDto> Handle(CreateArtist request, CancellationToken cancellationToken)
     {

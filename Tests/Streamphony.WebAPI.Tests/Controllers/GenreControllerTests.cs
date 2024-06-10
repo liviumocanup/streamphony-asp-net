@@ -11,9 +11,6 @@ namespace Streamphony.WebAPI.Tests.Controllers;
 [TestFixture]
 public class GenreControllerTests
 {
-    private CustomWebApplicationFactory _factory;
-    private HttpClient _client;
-
     [SetUp]
     public void SetUp()
     {
@@ -24,6 +21,20 @@ public class GenreControllerTests
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         Utilities.InitializeDbForTests(db);
     }
+
+    [TearDown]
+    public void TearDown()
+    {
+        using var scope = _factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        db.Database.EnsureDeleted();
+
+        _client.Dispose();
+        _factory.Dispose();
+    }
+
+    private CustomWebApplicationFactory _factory;
+    private HttpClient _client;
 
     [Test]
     public async Task CreateGenre_Success_ReturnsCreated()
@@ -143,7 +154,7 @@ public class GenreControllerTests
     public async Task UpdateGenre_GenreNotInDb_ReturnsNotFound()
     {
         // Arrange
-        Guid genreId = Guid.NewGuid();
+        var genreId = Guid.NewGuid();
         var nonExistingGenreDto = new GenreDto
         {
             Id = genreId,
@@ -278,16 +289,5 @@ public class GenreControllerTests
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
             Assert.That(content, Does.Contain($"Genre with Id '{nonExistingId}' not found."));
         });
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
-        using var scope = _factory.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        db.Database.EnsureDeleted();
-
-        _client.Dispose();
-        _factory.Dispose();
     }
 }

@@ -4,7 +4,6 @@ using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.App.Albums.Queries;
 using Streamphony.Application.App.Albums.Responses;
-using Streamphony.Application.Services;
 using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.Tests.App.Albums.Queries;
@@ -12,13 +11,6 @@ namespace Streamphony.Application.Tests.App.Albums.Queries;
 [TestFixture]
 public class GetAllAlbumsTests
 {
-    private Mock<IUnitOfWork> _unitOfWorkMock;
-    private Mock<IMappingProvider> _mapperMock;
-    private Mock<ILoggingService> _loggerMock;
-    private GetAllAlbumsHandler _handler;
-    private List<Album> _albums;
-    private List<AlbumDto> _albumDtos;
-
     [SetUp]
     public void Setup()
     {
@@ -29,8 +21,8 @@ public class GetAllAlbumsTests
 
         _albums =
         [
-            new() { Id = Guid.NewGuid(), Title = "First Album" },
-            new() { Id = Guid.NewGuid(), Title = "Second Album" }
+            new Album { Id = Guid.NewGuid(), Title = "First Album" },
+            new Album { Id = Guid.NewGuid(), Title = "Second Album" }
         ];
 
         _albumDtos = _albums.Select(album => new AlbumDto { Id = album.Id, Title = album.Title }).ToList();
@@ -38,6 +30,13 @@ public class GetAllAlbumsTests
         _unitOfWorkMock.Setup(u => u.AlbumRepository.GetAll(It.IsAny<CancellationToken>())).ReturnsAsync(_albums);
         _mapperMock.Setup(m => m.Map<IEnumerable<AlbumDto>>(_albums)).Returns(_albumDtos);
     }
+
+    private Mock<IUnitOfWork> _unitOfWorkMock;
+    private Mock<IMappingProvider> _mapperMock;
+    private Mock<ILoggingService> _loggerMock;
+    private GetAllAlbumsHandler _handler;
+    private List<Album> _albums;
+    private List<AlbumDto> _albumDtos;
 
     [Test]
     public async Task Handle_AlbumsExist_ReturnsAllAlbumDtos()

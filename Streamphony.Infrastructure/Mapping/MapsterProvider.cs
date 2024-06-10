@@ -6,12 +6,7 @@ namespace Streamphony.Infrastructure.Mapping;
 
 public class MapsterProvider : IMappingProvider
 {
-    private readonly TypeAdapterConfig _config;
-
-    public MapsterProvider()
-    {
-        _config = MapsterConfig.GlobalConfig;
-    }
+    private readonly TypeAdapterConfig _config = MapsterConfig.GlobalConfig;
 
     public TDestination Map<TDestination>(object? source)
     {

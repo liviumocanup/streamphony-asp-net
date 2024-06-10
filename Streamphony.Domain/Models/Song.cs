@@ -10,7 +10,7 @@ public class Song : BaseEntity
     public Artist Owner { get; set; } = default!;
 
     public Guid? GenreId { get; set; }
-    public Genre? Genre { get; set; } = default!;
+    public Genre? Genre { get; set; }
 
     public Guid? AlbumId { get; set; }
     public Album? Album { get; set; }

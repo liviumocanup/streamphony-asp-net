@@ -5,7 +5,6 @@ using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.App.Albums.Queries;
 using Streamphony.Application.App.Albums.Responses;
 using Streamphony.Application.Exceptions;
-using Streamphony.Application.Services;
 using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.Tests.App.Albums.Queries;
@@ -13,14 +12,6 @@ namespace Streamphony.Application.Tests.App.Albums.Queries;
 [TestFixture]
 public class GetAlbumByIdTests
 {
-    private Mock<IUnitOfWork> _unitOfWorkMock;
-    private Mock<IMappingProvider> _mapperMock;
-    private Mock<ILoggingService> _loggerMock;
-    private Mock<IValidationService> _validationServiceMock;
-    private GetAlbumByIdHandler _handler;
-    private Album _existingAlbum;
-    private AlbumDetailsDto _albumDetailsDto;
-
     [SetUp]
     public void Setup()
     {
@@ -28,12 +19,13 @@ public class GetAlbumByIdTests
         _mapperMock = new Mock<IMappingProvider>();
         _loggerMock = new Mock<ILoggingService>();
         _validationServiceMock = new Mock<IValidationService>();
-        _handler = new GetAlbumByIdHandler(_unitOfWorkMock.Object, _mapperMock.Object, _loggerMock.Object, _validationServiceMock.Object);
+        _handler = new GetAlbumByIdHandler(_unitOfWorkMock.Object, _mapperMock.Object, _loggerMock.Object,
+            _validationServiceMock.Object);
 
         _existingAlbum = new Album
         {
             Id = Guid.NewGuid(),
-            Title = "Sample Album",
+            Title = "Sample Album"
         };
 
         _albumDetailsDto = new AlbumDetailsDto
@@ -42,6 +34,14 @@ public class GetAlbumByIdTests
             Title = _existingAlbum.Title
         };
     }
+
+    private Mock<IUnitOfWork> _unitOfWorkMock;
+    private Mock<IMappingProvider> _mapperMock;
+    private Mock<ILoggingService> _loggerMock;
+    private Mock<IValidationService> _validationServiceMock;
+    private GetAlbumByIdHandler _handler;
+    private Album _existingAlbum;
+    private AlbumDetailsDto _albumDetailsDto;
 
     [Test]
     public async Task Handle_ValidId_ReturnsAlbumDetailsDto()
@@ -54,11 +54,11 @@ public class GetAlbumByIdTests
             .ReturnsAsync(_existingAlbum);
 
         _validationServiceMock.Setup(v => v.GetExistingEntityWithInclude<Album>(
-            _unitOfWorkMock.Object.AlbumRepository.GetByIdWithInclude,
-            albumId,
-            LogAction.Get,
-            It.IsAny<CancellationToken>(),
-            album => album.Songs))
+                _unitOfWorkMock.Object.AlbumRepository.GetByIdWithInclude,
+                albumId,
+                LogAction.Get,
+                It.IsAny<CancellationToken>(),
+                album => album.Songs))
             .ReturnsAsync(_existingAlbum);
 
         _mapperMock.Setup(m => m.Map<AlbumDetailsDto>(_existingAlbum)).Returns(_albumDetailsDto);
@@ -86,11 +86,11 @@ public class GetAlbumByIdTests
             .ReturnsAsync((Album)null!);
 
         _validationServiceMock.Setup(v => v.GetExistingEntityWithInclude<Album>(
-            _unitOfWorkMock.Object.AlbumRepository.GetByIdWithInclude,
-            invalidAlbumId,
-            LogAction.Get,
-            It.IsAny<CancellationToken>(),
-            album => album.Songs))
+                _unitOfWorkMock.Object.AlbumRepository.GetByIdWithInclude,
+                invalidAlbumId,
+                LogAction.Get,
+                It.IsAny<CancellationToken>(),
+                album => album.Songs))
             .ThrowsAsync(new NotFoundException($"{nameof(Album)} with Id '{invalidAlbumId}' not found."));
 
         // Act & Assert

@@ -13,13 +13,13 @@ public class ArtistConfig : IEntityTypeConfiguration<Artist>
         builder.Property(artist => artist.ProfilePictureUrl).HasMaxLength(1000);
 
         builder.HasMany(artist => artist.UploadedSongs)
-                .WithOne(s => s.Owner)
-                .HasForeignKey(s => s.OwnerId)
-                .OnDelete(DeleteBehavior.NoAction);
+            .WithOne(s => s.Owner)
+            .HasForeignKey(s => s.OwnerId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasMany(artist => artist.OwnedAlbums)
-                .WithOne(album => album.Owner)
-                .HasForeignKey(album => album.OwnerId)
-                .OnDelete(DeleteBehavior.NoAction);
+            .WithOne(album => album.Owner)
+            .HasForeignKey(album => album.OwnerId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

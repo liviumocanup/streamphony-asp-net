@@ -1,4 +1,3 @@
-using Streamphony.Application.App.Auth.Responses;
 using Streamphony.Domain.Models.Auth;
 
 namespace Streamphony.Application.Abstractions.Services;

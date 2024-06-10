@@ -6,20 +6,17 @@ using Streamphony.Domain.Models.Auth;
 
 namespace Streamphony.Infrastructure.Auth;
 
-public class AuthenticationService : IAuthenticationService
+public class AuthenticationService(
+    UserManager<User> userManager,
+    SignInManager<User> signInManager,
+    RoleManager<Role> roleManager,
+    ITokenService tokenService)
+    : IAuthenticationService
 {
-    private readonly UserManager<User> _userManager;
-    private readonly SignInManager<User> _signInManager;
-    private readonly RoleManager<Role> _roleManager;
-    private readonly ITokenService _tokenService;
-
-    public AuthenticationService(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<Role> roleManager, ITokenService tokenService)
-    {
-        _userManager = userManager;
-        _signInManager = signInManager;
-        _roleManager = roleManager;
-        _tokenService = tokenService;
-    }
+    private readonly RoleManager<Role> _roleManager = roleManager;
+    private readonly SignInManager<User> _signInManager = signInManager;
+    private readonly ITokenService _tokenService = tokenService;
+    private readonly UserManager<User> _userManager = userManager;
 
     public async Task<string> Register(User user, string password, string firstName, string lastName, string roleEnum)
     {
@@ -32,10 +29,7 @@ public class AuthenticationService : IAuthenticationService
         };
 
         var role = await _roleManager.FindByNameAsync(roleEnum);
-        if (role == null)
-        {
-            await _roleManager.CreateAsync(new Role(roleEnum));
-        }
+        if (role == null) await _roleManager.CreateAsync(new Role(roleEnum));
         await _userManager.AddToRoleAsync(user, roleEnum);
         newClaims.Add(new Claim(ClaimTypes.Role, roleEnum));
 
@@ -56,10 +50,7 @@ public class AuthenticationService : IAuthenticationService
         var roles = _userManager.GetRolesAsync(user).Result;
 
         var claimsIdentity = GetClaimsIdentity(user, (List<Claim>)claims);
-        foreach (var role in roles)
-        {
-            claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role));
-        }
+        foreach (var role in roles) claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role));
 
         var token = _tokenService.CreateSecurityToken(claimsIdentity);
         return _tokenService.WriteToken(token);
@@ -69,8 +60,8 @@ public class AuthenticationService : IAuthenticationService
     {
         var claimsIdentity = new ClaimsIdentity(new Claim[]
         {
-            new (JwtRegisteredClaimNames.Sub, user.UserName ?? throw new ArgumentNullException(user.UserName)),
-            new (JwtRegisteredClaimNames.Email, user.Email ?? throw new ArgumentNullException(user.Email))
+            new(JwtRegisteredClaimNames.Sub, user.UserName ?? throw new ArgumentNullException(user.UserName)),
+            new(JwtRegisteredClaimNames.Email, user.Email ?? throw new ArgumentNullException(user.Email))
         });
 
         claimsIdentity.AddClaims(claims);

@@ -8,7 +8,7 @@ public class TransactionMiddleware(RequestDelegate next)
 
     public async Task InvokeAsync(HttpContext context, IUnitOfWork unitOfWork)
     {
-        CancellationToken cancellationToken = context.RequestAborted;
+        var cancellationToken = context.RequestAborted;
 
         if (context.Request.Method == HttpMethod.Get.Method)
         {

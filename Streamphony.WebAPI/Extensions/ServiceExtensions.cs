@@ -1,6 +1,6 @@
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using FluentValidation;
 using Serilog;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using Streamphony.Application.Abstractions;
@@ -10,19 +10,20 @@ using Streamphony.Application.Abstractions.Repositories;
 using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.App.Artists.Queries;
 using Streamphony.Application.Services;
+using Streamphony.Infrastructure.Auth;
 using Streamphony.Infrastructure.Logging;
 using Streamphony.Infrastructure.Mapping;
 using Streamphony.Infrastructure.Persistence.Contexts;
 using Streamphony.Infrastructure.Persistence.Repositories;
 using Streamphony.Infrastructure.Validators.CreationDTOs;
 using Streamphony.Infrastructure.Validators.DTOs;
-using Streamphony.Infrastructure.Auth;
 
 namespace Streamphony.WebAPI.Extensions;
 
 public static class ServiceExtensions
 {
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services,
+        IConfiguration configuration)
     {
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
@@ -60,10 +61,10 @@ public static class ServiceExtensions
         services.AddJwtAuthentication(configuration);
 
         // Serilog configuration
-        services.AddSerilog((services, lc) => lc
-            .ReadFrom.Configuration(configuration)
-            .ReadFrom.Services(services)
-            .Enrich.FromLogContext(),
+        services.AddSerilog((serv, lc) => lc
+                .ReadFrom.Configuration(configuration)
+                .ReadFrom.Services(serv)
+                .Enrich.FromLogContext(),
             true);
 
         return services;

@@ -7,25 +7,23 @@ namespace Streamphony.Application.App.Auth.Commands;
 
 public record LoginUser(LoginUserDto LoginUserDto) : IRequest<AuthResultDto>;
 
-public class LoginUserHandler : IRequestHandler<LoginUser, AuthResultDto>
+public class LoginUserHandler(
+    ILoggingService loggingService,
+    IUserManagerProvider userManagerProvider,
+    IAuthenticationService authenticationService)
+    : IRequestHandler<LoginUser, AuthResultDto>
 {
-    private readonly ILoggingService _loggingService;
-    private readonly IUserManagerProvider _userManagerProvider;
-    private readonly IAuthenticationService _authenticationService;
-
-    public LoginUserHandler(ILoggingService loggingService, IUserManagerProvider userManagerProvider, IAuthenticationService authenticationService)
-    {
-        _loggingService = loggingService;
-        _userManagerProvider = userManagerProvider;
-        _authenticationService = authenticationService;
-    }
+    private readonly IAuthenticationService _authenticationService = authenticationService;
+    private readonly ILoggingService _loggingService = loggingService;
+    private readonly IUserManagerProvider _userManagerProvider = userManagerProvider;
 
     public async Task<AuthResultDto> Handle(LoginUser request, CancellationToken cancellationToken)
     {
         var userDto = request.LoginUserDto;
 
         var userDb = await _userManagerProvider.FindByNameAsync(userDto.UserName);
-        if (userDb == null) _loggingService.LogAndThrowNotFoundException(nameof(User), nameof(userDto.UserName), userDto.UserName);
+        if (userDb == null)
+            _loggingService.LogAndThrowNotFoundException(nameof(User), nameof(userDto.UserName), userDto.UserName);
 
         var token = await _authenticationService.Login(userDb!, userDto.Password);
         if (token == null) _loggingService.LogAndThrowNotAuthorizedException(nameof(User));

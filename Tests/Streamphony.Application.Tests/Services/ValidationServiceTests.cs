@@ -1,33 +1,28 @@
+using System.Linq.Expressions;
 using Moq;
 using Streamphony.Application.Abstractions.Repositories;
 using Streamphony.Application.Abstractions.Services;
-using Streamphony.Domain.Models;
-using Streamphony.Application.Services;
 using Streamphony.Application.Exceptions;
-using System.Linq.Expressions;
+using Streamphony.Application.Services;
+using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.Tests.Services;
 
 [TestFixture]
 public class ValidationServiceTests
 {
-    private Song _defaultSong;
-    private Album _defaultAlbum;
-    private User _defaultUser;
-    private Genre _defaultGenre;
-
-    private readonly Mock<ILoggingService> _loggingServiceMock = new();
-    private readonly Mock<IRepository<Song>> _songRepositoryMock = new();
-    private readonly Mock<IRepository<Album>> _albumRepositoryMock = new();
-    private readonly Mock<IRepository<User>> _userRepositoryMock = new();
-    private ValidationService _validationService;
-    private readonly CancellationToken _cancellationToken = new();
-
     [SetUp]
     public void Setup()
     {
         _defaultSong = new Song { Id = Guid.NewGuid(), Title = "Melody", Url = "melody.com" };
-        _defaultUser = new User { Id = Guid.NewGuid(), Username = "user1", Email = "user1@mail.ru", ArtistName = "Artist1", DateOfBirth = new DateOnly(1990, 1, 1) };
+        _defaultUser = new User
+        {
+            Id = Guid.NewGuid(),
+            Username = "user1",
+            Email = "user1@mail.ru",
+            ArtistName = "Artist1",
+            DateOfBirth = new DateOnly(1990, 1, 1)
+        };
         _defaultAlbum = new Album { Id = Guid.NewGuid(), Title = "Revolver", OwnerId = _defaultUser.Id };
         _defaultGenre = new Genre { Id = Guid.NewGuid(), Name = "Pop", Description = "Pop music" };
 
@@ -41,12 +36,24 @@ public class ValidationServiceTests
 
         // Setup mocks with default behaviors
         _songRepositoryMock.Setup(repo => repo.GetById(_defaultSong.Id, It.IsAny<CancellationToken>()))
-                           .ReturnsAsync(_defaultSong);
+            .ReturnsAsync(_defaultSong);
         _albumRepositoryMock.Setup(repo => repo.GetById(_defaultAlbum.Id, It.IsAny<CancellationToken>()))
-                            .ReturnsAsync(_defaultAlbum);
+            .ReturnsAsync(_defaultAlbum);
         _userRepositoryMock.Setup(repo => repo.GetById(_defaultUser.Id, It.IsAny<CancellationToken>()))
-                           .ReturnsAsync(_defaultUser);
+            .ReturnsAsync(_defaultUser);
     }
+
+    private Song _defaultSong;
+    private Album _defaultAlbum;
+    private User _defaultUser;
+    private Genre _defaultGenre;
+
+    private readonly Mock<ILoggingService> _loggingServiceMock = new();
+    private readonly Mock<IRepository<Song>> _songRepositoryMock = new();
+    private readonly Mock<IRepository<Album>> _albumRepositoryMock = new();
+    private readonly Mock<IRepository<User>> _userRepositoryMock = new();
+    private ValidationService _validationService;
+    private readonly CancellationToken _cancellationToken = new();
 
     [Test]
     public async Task GetExistingEntity_EntityExists_ReturnsEntity()
@@ -55,11 +62,15 @@ public class ValidationServiceTests
         var songId = _defaultSong.Id;
 
         // Act
-        var result = await _validationService.GetExistingEntity(_songRepositoryMock.Object, songId, _cancellationToken, LogAction.Get);
+        var result =
+            await _validationService.GetExistingEntity(_songRepositoryMock.Object, songId, _cancellationToken,
+                LogAction.Get);
 
         // Assert
         Assert.That(result, Is.EqualTo(_defaultSong));
-        _loggingServiceMock.Verify(log => log.LogAndThrowNotFoundException(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<LogAction>()), Times.Never());
+        _loggingServiceMock.Verify(
+            log => log.LogAndThrowNotFoundException(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<LogAction>()),
+            Times.Never());
     }
 
     [Test]
@@ -68,16 +79,19 @@ public class ValidationServiceTests
         // Arrange
         var entityId = _defaultSong.Id;
         _songRepositoryMock.Setup(repo => repo.GetById(entityId, It.IsAny<CancellationToken>()))
-                           .ReturnsAsync((Song)null!);
-        _loggingServiceMock.Setup(log => log.LogAndThrowNotFoundException(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<LogAction>()))
-                           .Throws(new NotFoundException($"Song with Id '{entityId}' not found."));
+            .ReturnsAsync((Song)null!);
+        _loggingServiceMock.Setup(log =>
+                log.LogAndThrowNotFoundException(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<LogAction>()))
+            .Throws(new NotFoundException($"Song with Id '{entityId}' not found."));
 
         // Act & Assert
         var ex = Assert.ThrowsAsync<NotFoundException>(() =>
-            _validationService.GetExistingEntity(_songRepositoryMock.Object, entityId, _cancellationToken, LogAction.Get));
+            _validationService.GetExistingEntity(_songRepositoryMock.Object, entityId, _cancellationToken,
+                LogAction.Get));
 
         Assert.That(ex.Message, Is.EqualTo($"Song with Id '{entityId}' not found."));
-        _loggingServiceMock.Verify(log => log.LogAndThrowNotFoundException("Song", entityId, LogAction.Get), Times.Once());
+        _loggingServiceMock.Verify(log => log.LogAndThrowNotFoundException("Song", entityId, LogAction.Get),
+            Times.Once());
     }
 
     [Test]
@@ -85,7 +99,11 @@ public class ValidationServiceTests
     {
         // Arrange
         var genre = _defaultGenre;
-        Task<Genre?> getGenreWithSongs(Guid id, CancellationToken token, Expression<Func<Genre, object>>[] includes) => Task.FromResult<Genre?>(genre);
+
+        Task<Genre?> getGenreWithSongs(Guid id, CancellationToken token, Expression<Func<Genre, object>>[] includes)
+        {
+            return Task.FromResult<Genre?>(genre);
+        }
 
         // Act
         var result = await _validationService.GetExistingEntityWithInclude<Genre>(
@@ -98,7 +116,9 @@ public class ValidationServiceTests
 
         // Assert
         Assert.That(result, Is.EqualTo(genre));
-        _loggingServiceMock.Verify(log => log.LogAndThrowNotFoundException(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<LogAction>()), Times.Never());
+        _loggingServiceMock.Verify(
+            log => log.LogAndThrowNotFoundException(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<LogAction>()),
+            Times.Never());
     }
 
     [Test]
@@ -106,9 +126,15 @@ public class ValidationServiceTests
     {
         // Arrange
         var entityId = _defaultGenre.Id;
-        static Task<Genre?> getGenreWithSongs(Guid id, CancellationToken token, Expression<Func<Genre, object>>[] includes) => Task.FromResult<Genre?>(null);
+
+        static Task<Genre?> getGenreWithSongs(Guid id, CancellationToken token,
+            Expression<Func<Genre, object>>[] includes)
+        {
+            return Task.FromResult<Genre?>(null);
+        }
+
         _loggingServiceMock.Setup(log => log.LogAndThrowNotFoundException("Genre", entityId, LogAction.Get))
-                           .Throws(new NotFoundException($"Genre with Id '{entityId}' not found."));
+            .Throws(new NotFoundException($"Genre with Id '{entityId}' not found."));
 
         // Act & Assert
         var ex = Assert.ThrowsAsync<NotFoundException>(() =>
@@ -121,7 +147,8 @@ public class ValidationServiceTests
             ));
 
         Assert.That(ex.Message, Is.EqualTo($"Genre with Id '{entityId}' not found."));
-        _loggingServiceMock.Verify(log => log.LogAndThrowNotFoundException("Genre", entityId, LogAction.Get), Times.Once());
+        _loggingServiceMock.Verify(log => log.LogAndThrowNotFoundException("Genre", entityId, LogAction.Get),
+            Times.Once());
     }
 
     [Test]
@@ -131,8 +158,11 @@ public class ValidationServiceTests
         var albumId = _defaultAlbum.Id;
 
         // Act & Assert
-        Assert.DoesNotThrowAsync(() => _validationService.AssertEntityExists(_albumRepositoryMock.Object, albumId, _cancellationToken));
-        _loggingServiceMock.Verify(log => log.LogAndThrowNotFoundException(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<LogAction>()), Times.Never());
+        Assert.DoesNotThrowAsync(() =>
+            _validationService.AssertEntityExists(_albumRepositoryMock.Object, albumId, _cancellationToken));
+        _loggingServiceMock.Verify(
+            log => log.LogAndThrowNotFoundException(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<LogAction>()),
+            Times.Never());
     }
 
     [Test]
@@ -141,16 +171,18 @@ public class ValidationServiceTests
         // Arrange
         var entityId = _defaultAlbum.Id;
         _albumRepositoryMock.Setup(repo => repo.GetById(entityId, It.IsAny<CancellationToken>()))
-                            .ReturnsAsync((Album)null!);
+            .ReturnsAsync((Album)null!);
         _loggingServiceMock.Setup(log => log.LogAndThrowNotFoundException("Album", entityId, LogAction.Delete))
-                           .Throws(new NotFoundException($"Album with Id '{entityId}' not found."));
+            .Throws(new NotFoundException($"Album with Id '{entityId}' not found."));
 
         // Act & Assert
         var ex = Assert.ThrowsAsync<NotFoundException>(() =>
-            _validationService.AssertEntityExists(_albumRepositoryMock.Object, entityId, _cancellationToken, LogAction.Delete));
+            _validationService.AssertEntityExists(_albumRepositoryMock.Object, entityId, _cancellationToken,
+                LogAction.Delete));
 
         Assert.That(ex.Message, Is.EqualTo($"Album with Id '{entityId}' not found."));
-        _loggingServiceMock.Verify(log => log.LogAndThrowNotFoundException("Album", entityId, LogAction.Delete), Times.Once());
+        _loggingServiceMock.Verify(log => log.LogAndThrowNotFoundException("Album", entityId, LogAction.Delete),
+            Times.Once());
     }
 
     [Test]
@@ -160,8 +192,12 @@ public class ValidationServiceTests
         var userId = _defaultUser.Id;
 
         // Act & Assert
-        Assert.DoesNotThrowAsync(() => _validationService.AssertNavigationEntityExists<Album, User>(_userRepositoryMock.Object, userId, _cancellationToken));
-        _loggingServiceMock.Verify(log => log.LogAndThrowNotFoundExceptionForNavigation(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<LogAction>()), Times.Never());
+        Assert.DoesNotThrowAsync(() =>
+            _validationService.AssertNavigationEntityExists<Album, User>(_userRepositoryMock.Object, userId,
+                _cancellationToken));
+        _loggingServiceMock.Verify(
+            log => log.LogAndThrowNotFoundExceptionForNavigation(It.IsAny<string>(), It.IsAny<string>(),
+                It.IsAny<Guid>(), It.IsAny<LogAction>()), Times.Never());
     }
 
     [Test]
@@ -170,16 +206,20 @@ public class ValidationServiceTests
         // Arrange
         var navId = _defaultUser.Id;
         _userRepositoryMock.Setup(repo => repo.GetById(navId, It.IsAny<CancellationToken>()))
-                           .ReturnsAsync((User)null!);
-        _loggingServiceMock.Setup(log => log.LogAndThrowNotFoundExceptionForNavigation("Album", "User", navId, LogAction.Create))
-                           .Throws(new NotFoundException($"User with Id '{navId}' not found."));
+            .ReturnsAsync((User)null!);
+        _loggingServiceMock.Setup(log =>
+                log.LogAndThrowNotFoundExceptionForNavigation("Album", "User", navId, LogAction.Create))
+            .Throws(new NotFoundException($"User with Id '{navId}' not found."));
 
         // Act & Assert
         var ex = Assert.ThrowsAsync<NotFoundException>(() =>
-            _validationService.AssertNavigationEntityExists<Album, User>(_userRepositoryMock.Object, navId, _cancellationToken, LogAction.Create));
+            _validationService.AssertNavigationEntityExists<Album, User>(_userRepositoryMock.Object, navId,
+                _cancellationToken, LogAction.Create));
 
         Assert.That(ex.Message, Is.EqualTo($"User with Id '{navId}' not found."));
-        _loggingServiceMock.Verify(log => log.LogAndThrowNotFoundExceptionForNavigation("Album", "User", navId, LogAction.Create), Times.Once());
+        _loggingServiceMock.Verify(
+            log => log.LogAndThrowNotFoundExceptionForNavigation("Album", "User", navId, LogAction.Create),
+            Times.Once());
     }
 
     [Test]
@@ -187,9 +227,12 @@ public class ValidationServiceTests
     {
         // Act & Assert
         Assert.DoesNotThrowAsync(() =>
-            _validationService.AssertNavigationEntityExists<Song, User>(_userRepositoryMock.Object, null, _cancellationToken));
+            _validationService.AssertNavigationEntityExists<Song, User>(_userRepositoryMock.Object, null,
+                _cancellationToken));
 
-        _loggingServiceMock.Verify(log => log.LogAndThrowNotFoundExceptionForNavigation(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<LogAction>()), Times.Never());
+        _loggingServiceMock.Verify(
+            log => log.LogAndThrowNotFoundExceptionForNavigation(It.IsAny<string>(), It.IsAny<string>(),
+                It.IsAny<Guid>(), It.IsAny<LogAction>()), Times.Never());
     }
 
     [Test]
@@ -198,42 +241,62 @@ public class ValidationServiceTests
         // Arrange
         Guid? navId = _defaultUser.Id;
         _userRepositoryMock.Setup(repo => repo.GetById(navId.Value, It.IsAny<CancellationToken>()))
-                           .ReturnsAsync(_defaultUser);
+            .ReturnsAsync(_defaultUser);
 
         // Act & Assert
         Assert.DoesNotThrowAsync(() =>
-            _validationService.AssertNavigationEntityExists<Song, User>(_userRepositoryMock.Object, navId, _cancellationToken, LogAction.Create)
+            _validationService.AssertNavigationEntityExists<Song, User>(_userRepositoryMock.Object, navId,
+                _cancellationToken, LogAction.Create)
         );
         _userRepositoryMock.Verify(repo => repo.GetById(navId.Value, It.IsAny<CancellationToken>()), Times.Once());
-        _loggingServiceMock.Verify(log => log.LogAndThrowNotFoundExceptionForNavigation(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<LogAction>()), Times.Never());
+        _loggingServiceMock.Verify(
+            log => log.LogAndThrowNotFoundExceptionForNavigation(It.IsAny<string>(), It.IsAny<string>(),
+                It.IsAny<Guid>(), It.IsAny<LogAction>()), Times.Never());
     }
 
     [Test]
     public void EnsureUniqueProperty_DuplicateEntity_ThrowsDuplicateException()
     {
         // Arrange
-        string genreName = nameof(Genre.Name);
-        Task<Genre?> getByNameFunc(string name, CancellationToken token) => Task.FromResult<Genre?>(_defaultGenre);
-        _loggingServiceMock.Setup(log => log.LogAndThrowDuplicateException("Genre", nameof(Genre.Name), genreName, LogAction.Create))
-                           .Throws(new DuplicateException($"Genre with Name '{genreName}' already exists."));
+        var genreName = nameof(Genre.Name);
+
+        Task<Genre?> getByNameFunc(string name, CancellationToken token)
+        {
+            return Task.FromResult<Genre?>(_defaultGenre);
+        }
+
+        _loggingServiceMock.Setup(log =>
+                log.LogAndThrowDuplicateException("Genre", nameof(Genre.Name), genreName, LogAction.Create))
+            .Throws(new DuplicateException($"Genre with Name '{genreName}' already exists."));
 
         // Act & Assert
-        var ex = Assert.ThrowsAsync<DuplicateException>(() => _validationService.EnsureUniqueProperty(getByNameFunc, nameof(Genre.Name), genreName, _cancellationToken, LogAction.Create));
+        var ex = Assert.ThrowsAsync<DuplicateException>(() =>
+            _validationService.EnsureUniqueProperty(getByNameFunc, nameof(Genre.Name), genreName, _cancellationToken,
+                LogAction.Create));
 
         Assert.That(ex.Message, Is.EqualTo($"Genre with Name '{genreName}' already exists."));
-        _loggingServiceMock.Verify(log => log.LogAndThrowDuplicateException("Genre", nameof(Genre.Name), genreName, LogAction.Create), Times.Once());
+        _loggingServiceMock.Verify(
+            log => log.LogAndThrowDuplicateException("Genre", nameof(Genre.Name), genreName, LogAction.Create),
+            Times.Once());
     }
 
     [Test]
     public void EnsureUniqueProperty_NoDuplicates_DoesNotThrow()
     {
         // Arrange
-        static Task<Genre?> getByNameFunc(string name, CancellationToken token) => Task.FromResult<Genre?>(null);
-        string genreName = _defaultGenre.Name;
+        static Task<Genre?> getByNameFunc(string name, CancellationToken token)
+        {
+            return Task.FromResult<Genre?>(null);
+        }
+
+        var genreName = _defaultGenre.Name;
 
         // Act & Assert
-        Assert.DoesNotThrowAsync(() => _validationService.EnsureUniqueProperty(getByNameFunc, nameof(Genre.Name), genreName, _cancellationToken, LogAction.Create));
-        _loggingServiceMock.Verify(log => log.LogAndThrowDuplicateException(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object>(), It.IsAny<LogAction>()), Times.Never());
+        Assert.DoesNotThrowAsync(() => _validationService.EnsureUniqueProperty(getByNameFunc, nameof(Genre.Name),
+            genreName, _cancellationToken, LogAction.Create));
+        _loggingServiceMock.Verify(
+            log => log.LogAndThrowDuplicateException(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object>(),
+                It.IsAny<LogAction>()), Times.Never());
     }
 
     [Test]
@@ -245,19 +308,25 @@ public class ValidationServiceTests
         var propertyValue = _defaultGenre.Name;
         var existingGenres = new List<Genre> { _defaultGenre };
 
-        Task<IEnumerable<Genre>> getEntitiesFunc(string name, Guid id, CancellationToken token) =>
-            Task.FromResult<IEnumerable<Genre>>(existingGenres);
+        Task<IEnumerable<Genre>> getEntitiesFunc(string name, Guid id, CancellationToken token)
+        {
+            return Task.FromResult<IEnumerable<Genre>>(existingGenres);
+        }
 
-        _loggingServiceMock.Setup(log => log.LogAndThrowDuplicateException("Genre", propertyName, propertyValue, LogAction.Update))
-                           .Throws(new DuplicateException($"Genre with {propertyName} '{propertyValue}' already exists."));
+        _loggingServiceMock.Setup(log =>
+                log.LogAndThrowDuplicateException("Genre", propertyName, propertyValue, LogAction.Update))
+            .Throws(new DuplicateException($"Genre with {propertyName} '{propertyValue}' already exists."));
 
         // Act & Assert
         var ex = Assert.ThrowsAsync<DuplicateException>(() =>
-            _validationService.EnsureUniquePropertyExceptId(getEntitiesFunc, propertyName, propertyValue, entityId, _cancellationToken, LogAction.Update)
+            _validationService.EnsureUniquePropertyExceptId(getEntitiesFunc, propertyName, propertyValue, entityId,
+                _cancellationToken, LogAction.Update)
         );
 
         Assert.That(ex.Message, Is.EqualTo($"Genre with {propertyName} '{propertyValue}' already exists."));
-        _loggingServiceMock.Verify(log => log.LogAndThrowDuplicateException("Genre", propertyName, propertyValue, LogAction.Update), Times.Once());
+        _loggingServiceMock.Verify(
+            log => log.LogAndThrowDuplicateException("Genre", propertyName, propertyValue, LogAction.Update),
+            Times.Once());
     }
 
     [Test]
@@ -267,13 +336,20 @@ public class ValidationServiceTests
         var entityId = _defaultGenre.Id;
         var propertyName = nameof(_defaultGenre.Name);
         var propertyValue = _defaultGenre.Name;
-        static Task<IEnumerable<Genre>> getEntitiesFunc(string name, Guid id, CancellationToken token) => Task.FromResult<IEnumerable<Genre>>([]);
+
+        static Task<IEnumerable<Genre>> getEntitiesFunc(string name, Guid id, CancellationToken token)
+        {
+            return Task.FromResult<IEnumerable<Genre>>([]);
+        }
 
         // Act & Assert
         Assert.DoesNotThrowAsync(() =>
-            _validationService.EnsureUniquePropertyExceptId(getEntitiesFunc, propertyName, propertyValue, entityId, _cancellationToken, LogAction.Update)
+            _validationService.EnsureUniquePropertyExceptId(getEntitiesFunc, propertyName, propertyValue, entityId,
+                _cancellationToken, LogAction.Update)
         );
-        _loggingServiceMock.Verify(log => log.LogAndThrowDuplicateException(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object>(), It.IsAny<LogAction>()), Times.Never());
+        _loggingServiceMock.Verify(
+            log => log.LogAndThrowDuplicateException(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object>(),
+                It.IsAny<LogAction>()), Times.Never());
     }
 
     [Test]
@@ -284,18 +360,28 @@ public class ValidationServiceTests
         var propertyName = nameof(_defaultAlbum.Title);
         var propertyValue = _defaultAlbum.Title;
 
-        Task<Album?> getAlbumByOwnerAndTitleFunc(Guid userId, string title, CancellationToken token) => Task.FromResult<Album?>(_defaultAlbum);
+        Task<Album?> getAlbumByOwnerAndTitleFunc(Guid userId, string title, CancellationToken token)
+        {
+            return Task.FromResult<Album?>(_defaultAlbum);
+        }
 
-        _loggingServiceMock.Setup(log => log.LogAndThrowDuplicateExceptionForUser("Album", propertyName, propertyValue, ownerId, LogAction.Create))
-                           .Throws(new DuplicateException($"Album with {propertyName} '{propertyValue}' already exists for User with Id '{ownerId}'."));
+        _loggingServiceMock.Setup(log =>
+                log.LogAndThrowDuplicateExceptionForUser("Album", propertyName, propertyValue, ownerId,
+                    LogAction.Create))
+            .Throws(new DuplicateException(
+                $"Album with {propertyName} '{propertyValue}' already exists for User with Id '{ownerId}'."));
 
         // Act & Assert
         var ex = Assert.ThrowsAsync<DuplicateException>(() =>
-            _validationService.EnsureUserUniqueProperty(getAlbumByOwnerAndTitleFunc, ownerId, propertyName, propertyValue, _cancellationToken, LogAction.Create)
+            _validationService.EnsureUserUniqueProperty(getAlbumByOwnerAndTitleFunc, ownerId, propertyName,
+                propertyValue, _cancellationToken, LogAction.Create)
         );
 
-        Assert.That(ex.Message, Is.EqualTo($"Album with {propertyName} '{propertyValue}' already exists for User with Id '{ownerId}'."));
-        _loggingServiceMock.Verify(log => log.LogAndThrowDuplicateExceptionForUser("Album", propertyName, propertyValue, ownerId, LogAction.Create), Times.Once());
+        Assert.That(ex.Message,
+            Is.EqualTo($"Album with {propertyName} '{propertyValue}' already exists for User with Id '{ownerId}'."));
+        _loggingServiceMock.Verify(
+            log => log.LogAndThrowDuplicateExceptionForUser("Album", propertyName, propertyValue, ownerId,
+                LogAction.Create), Times.Once());
     }
 
     [Test]
@@ -311,9 +397,12 @@ public class ValidationServiceTests
 
         // Act & Assert
         Assert.DoesNotThrowAsync(() =>
-            _validationService.EnsureUserUniqueProperty(getAlbumByOwnerAndTitleFunc, ownerId, propertyName, propertyValue, _cancellationToken, LogAction.Create)
+            _validationService.EnsureUserUniqueProperty(getAlbumByOwnerAndTitleFunc, ownerId, propertyName,
+                propertyValue, _cancellationToken, LogAction.Create)
         );
-        _loggingServiceMock.Verify(log => log.LogAndThrowDuplicateExceptionForUser(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object>(), It.IsAny<Guid>(), It.IsAny<LogAction>()), Times.Never());
+        _loggingServiceMock.Verify(
+            log => log.LogAndThrowDuplicateExceptionForUser(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object>(),
+                It.IsAny<Guid>(), It.IsAny<LogAction>()), Times.Never());
     }
 
     [Test]
@@ -326,19 +415,28 @@ public class ValidationServiceTests
         var propertyValue = _defaultAlbum.Title;
         var existingAlbums = new List<Album> { _defaultAlbum };
 
-        Task<IEnumerable<Album>> getAlbumsFunc(Guid userId, string title, Guid exId, CancellationToken token) =>
-            Task.FromResult<IEnumerable<Album>>(existingAlbums);
+        Task<IEnumerable<Album>> getAlbumsFunc(Guid userId, string title, Guid exId, CancellationToken token)
+        {
+            return Task.FromResult<IEnumerable<Album>>(existingAlbums);
+        }
 
-        _loggingServiceMock.Setup(log => log.LogAndThrowDuplicateExceptionForUser("Album", propertyName, propertyValue, ownerId, LogAction.Update))
-                           .Throws(new DuplicateException($"Album with {propertyName} '{propertyValue}' already exists for User with Id '{ownerId}'."));
+        _loggingServiceMock.Setup(log =>
+                log.LogAndThrowDuplicateExceptionForUser("Album", propertyName, propertyValue, ownerId,
+                    LogAction.Update))
+            .Throws(new DuplicateException(
+                $"Album with {propertyName} '{propertyValue}' already exists for User with Id '{ownerId}'."));
 
         // Act & Assert
         var ex = Assert.ThrowsAsync<DuplicateException>(() =>
-            _validationService.EnsureUserUniquePropertyExceptId(getAlbumsFunc, ownerId, propertyName, propertyValue, entityId, _cancellationToken, LogAction.Update)
+            _validationService.EnsureUserUniquePropertyExceptId(getAlbumsFunc, ownerId, propertyName, propertyValue,
+                entityId, _cancellationToken, LogAction.Update)
         );
 
-        Assert.That(ex.Message, Is.EqualTo($"Album with {propertyName} '{propertyValue}' already exists for User with Id '{ownerId}'."));
-        _loggingServiceMock.Verify(log => log.LogAndThrowDuplicateExceptionForUser("Album", propertyName, propertyValue, ownerId, LogAction.Update), Times.Once());
+        Assert.That(ex.Message,
+            Is.EqualTo($"Album with {propertyName} '{propertyValue}' already exists for User with Id '{ownerId}'."));
+        _loggingServiceMock.Verify(
+            log => log.LogAndThrowDuplicateExceptionForUser("Album", propertyName, propertyValue, ownerId,
+                LogAction.Update), Times.Once());
     }
 
     [Test]
@@ -350,14 +448,18 @@ public class ValidationServiceTests
         var propertyName = nameof(_defaultAlbum.Title);
         var propertyValue = _defaultAlbum.Title;
 
-        static Task<IEnumerable<Album>> getAlbumsFunc(Guid userId, string title, Guid exId, CancellationToken token) =>
-            Task.FromResult<IEnumerable<Album>>([]);
+        static Task<IEnumerable<Album>> getAlbumsFunc(Guid userId, string title, Guid exId, CancellationToken token)
+        {
+            return Task.FromResult<IEnumerable<Album>>([]);
+        }
 
         // Act & Assert
         Assert.DoesNotThrowAsync(() =>
-            _validationService.EnsureUserUniquePropertyExceptId(getAlbumsFunc, ownerId, propertyName, propertyValue, entityId, _cancellationToken, LogAction.Update)
+            _validationService.EnsureUserUniquePropertyExceptId(getAlbumsFunc, ownerId, propertyName, propertyValue,
+                entityId, _cancellationToken, LogAction.Update)
         );
-        _loggingServiceMock.Verify(log => log.LogAndThrowDuplicateExceptionForUser(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object>(), It.IsAny<Guid>(), It.IsAny<LogAction>()), Times.Never());
+        _loggingServiceMock.Verify(
+            log => log.LogAndThrowDuplicateExceptionForUser(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object>(),
+                It.IsAny<Guid>(), It.IsAny<LogAction>()), Times.Never());
     }
-
 }

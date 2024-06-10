@@ -5,7 +5,6 @@ using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.App.Songs.Commands;
 using Streamphony.Application.App.Songs.Responses;
 using Streamphony.Application.Exceptions;
-using Streamphony.Application.Services;
 using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.Tests.App.Songs.Commands;
@@ -13,15 +12,6 @@ namespace Streamphony.Application.Tests.App.Songs.Commands;
 [TestFixture]
 public class CreateSongTests
 {
-    private Mock<IUnitOfWork> _unitOfWorkMock;
-    private Mock<IMappingProvider> _mapperMock;
-    private Mock<ILoggingService> _loggerMock;
-    private Mock<IValidationService> _validationServiceMock;
-    private CreateSongHandler _handler;
-    private SongCreationDto _songCreationDto;
-    private Song _songEntity;
-    private SongDto _songDto;
-
     [SetUp]
     public void Setup()
     {
@@ -29,7 +19,8 @@ public class CreateSongTests
         _mapperMock = new Mock<IMappingProvider>();
         _loggerMock = new Mock<ILoggingService>();
         _validationServiceMock = new Mock<IValidationService>();
-        _handler = new CreateSongHandler(_unitOfWorkMock.Object, _mapperMock.Object, _loggerMock.Object, _validationServiceMock.Object);
+        _handler = new CreateSongHandler(_unitOfWorkMock.Object, _mapperMock.Object, _loggerMock.Object,
+            _validationServiceMock.Object);
 
         _songCreationDto = new SongCreationDto
         {
@@ -63,9 +54,19 @@ public class CreateSongTests
         };
 
         _mapperMock.Setup(m => m.Map<Song>(_songCreationDto)).Returns(_songEntity);
-        _unitOfWorkMock.Setup(u => u.SongRepository.Add(_songEntity, It.IsAny<CancellationToken>())).ReturnsAsync(_songEntity);
+        _unitOfWorkMock.Setup(u => u.SongRepository.Add(_songEntity, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_songEntity);
         _mapperMock.Setup(m => m.Map<SongDto>(_songEntity)).Returns(_songDto);
     }
+
+    private Mock<IUnitOfWork> _unitOfWorkMock;
+    private Mock<IMappingProvider> _mapperMock;
+    private Mock<ILoggingService> _loggerMock;
+    private Mock<IValidationService> _validationServiceMock;
+    private CreateSongHandler _handler;
+    private SongCreationDto _songCreationDto;
+    private Song _songEntity;
+    private SongDto _songDto;
 
     [Test]
     public async Task Handle_SongIsValid_CreatesSongSuccessfully()
@@ -87,14 +88,18 @@ public class CreateSongTests
     {
         // Arrange
         var duplicateException = new DuplicateException("A song with the same title already exists.");
-        _validationServiceMock.Setup(v => v.EnsureUserUniqueProperty(It.IsAny<Func<Guid, string, CancellationToken, Task<Song?>>>(), _songCreationDto.OwnerId, nameof(_songCreationDto.Title), _songCreationDto.Title, CancellationToken.None, LogAction.Create))
-                              .ThrowsAsync(duplicateException);
+        _validationServiceMock.Setup(v =>
+                v.EnsureUserUniqueProperty(It.IsAny<Func<Guid, string, CancellationToken, Task<Song?>>>(),
+                    _songCreationDto.OwnerId, nameof(_songCreationDto.Title), _songCreationDto.Title,
+                    CancellationToken.None, LogAction.Create))
+            .ThrowsAsync(duplicateException);
 
         var createSongCommand = new CreateSong(_songCreationDto);
 
         // Act & Assert
         Assert.ThrowsAsync<DuplicateException>(() => _handler.Handle(createSongCommand, CancellationToken.None));
-        _unitOfWorkMock.Verify(u => u.SongRepository.Add(It.IsAny<Song>(), It.IsAny<CancellationToken>()), Times.Never());
+        _unitOfWorkMock.Verify(u => u.SongRepository.Add(It.IsAny<Song>(), It.IsAny<CancellationToken>()),
+            Times.Never());
         _loggerMock.Verify(l => l.LogSuccess(nameof(Song), It.IsAny<Guid>(), LogAction.Create), Times.Never());
     }
 
@@ -104,8 +109,10 @@ public class CreateSongTests
     {
         // Arrange
         var notFoundException = new NotFoundException("Owner not found.");
-        _validationServiceMock.Setup(v => v.AssertNavigationEntityExists<Song, User>(_unitOfWorkMock.Object.UserRepository, _songCreationDto.OwnerId, CancellationToken.None, LogAction.Create))
-                              .ThrowsAsync(notFoundException);
+        _validationServiceMock.Setup(v =>
+                v.AssertNavigationEntityExists<Song, User>(_unitOfWorkMock.Object.UserRepository,
+                    _songCreationDto.OwnerId, CancellationToken.None, LogAction.Create))
+            .ThrowsAsync(notFoundException);
 
         var createSongCommand = new CreateSong(_songCreationDto);
 

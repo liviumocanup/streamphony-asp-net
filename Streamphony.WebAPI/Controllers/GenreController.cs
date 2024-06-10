@@ -46,9 +46,10 @@ public class GenreController(IMediator mediator) : AppBaseController
     [HttpGet]
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<PaginatedResult<GenreDto>>> GetAllGenres([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+    public async Task<ActionResult<PaginatedResult<GenreDto>>> GetAllGenres([FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10)
     {
-        var pagedRequest = new PagedRequest()
+        var pagedRequest = new PagedRequest
         {
             PageNumber = pageNumber,
             PageSize = pageSize

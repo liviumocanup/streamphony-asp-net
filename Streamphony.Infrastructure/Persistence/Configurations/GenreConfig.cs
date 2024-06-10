@@ -13,8 +13,8 @@ public class GenreConfig : IEntityTypeConfiguration<Genre>
         builder.Property(g => g.Description).IsRequired().HasMaxLength(1000);
 
         builder.HasMany(g => g.Songs)
-                .WithOne(s => s.Genre)
-                .HasForeignKey(s => s.GenreId)
-                .OnDelete(DeleteBehavior.NoAction);
+            .WithOne(s => s.Genre)
+            .HasForeignKey(s => s.GenreId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

@@ -2,26 +2,13 @@ using Moq;
 using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Services;
-using Streamphony.Application.App.UserPreferences.Commands;
-using Streamphony.Application.App.UserPreferences.Responses;
 using Streamphony.Application.Exceptions;
-using Streamphony.Application.Services;
-using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.Tests.App.UserPreferences.Commands;
 
 [TestFixture]
 public class UpdateUserPreferenceTests
 {
-    private Mock<IUnitOfWork> _unitOfWorkMock;
-    private Mock<IMappingProvider> _mapperMock;
-    private Mock<ILoggingService> _loggerMock;
-    private Mock<IValidationService> _validationServiceMock;
-    private UpdateUserPreferenceHandler _handler;
-    private User _userEntity;
-    private UserPreferenceDto _userPreferenceDto;
-    private UserPreference _existingUserPreference;
-
     [SetUp]
     public void Setup()
     {
@@ -29,7 +16,8 @@ public class UpdateUserPreferenceTests
         _mapperMock = new Mock<IMappingProvider>();
         _loggerMock = new Mock<ILoggingService>();
         _validationServiceMock = new Mock<IValidationService>();
-        _handler = new UpdateUserPreferenceHandler(_unitOfWorkMock.Object, _mapperMock.Object, _loggerMock.Object, _validationServiceMock.Object);
+        _handler = new UpdateUserPreferenceHandler(_unitOfWorkMock.Object, _mapperMock.Object, _loggerMock.Object,
+            _validationServiceMock.Object);
 
         _userEntity = new User
         {
@@ -58,9 +46,19 @@ public class UpdateUserPreferenceTests
         _mapperMock.Setup(m => m.Map(_userPreferenceDto, _existingUserPreference)).Verifiable();
         _mapperMock.Setup(m => m.Map<UserPreferenceDto>(_existingUserPreference)).Returns(_userPreferenceDto);
 
-        _validationServiceMock.Setup(v => v.GetExistingEntity(_unitOfWorkMock.Object.UserPreferenceRepository, _userPreferenceDto.Id, It.IsAny<CancellationToken>(), LogAction.Update))
-                              .ReturnsAsync(_existingUserPreference);
+        _validationServiceMock.Setup(v => v.GetExistingEntity(_unitOfWorkMock.Object.UserPreferenceRepository,
+                _userPreferenceDto.Id, It.IsAny<CancellationToken>(), LogAction.Update))
+            .ReturnsAsync(_existingUserPreference);
     }
+
+    private Mock<IUnitOfWork> _unitOfWorkMock;
+    private Mock<IMappingProvider> _mapperMock;
+    private Mock<ILoggingService> _loggerMock;
+    private Mock<IValidationService> _validationServiceMock;
+    private UpdateUserPreferenceHandler _handler;
+    private User _userEntity;
+    private UserPreferenceDto _userPreferenceDto;
+    private UserPreference _existingUserPreference;
 
     [Test]
     public async Task Handle_ValidUpdate_UpdatesUserPreferenceSuccessfully()
@@ -73,7 +71,8 @@ public class UpdateUserPreferenceTests
 
         // Assert
         _unitOfWorkMock.Verify(u => u.SaveAsync(CancellationToken.None), Times.Once());
-        _loggerMock.Verify(l => l.LogSuccess(nameof(UserPreference), _existingUserPreference.Id, LogAction.Update), Times.Once());
+        _loggerMock.Verify(l => l.LogSuccess(nameof(UserPreference), _existingUserPreference.Id, LogAction.Update),
+            Times.Once());
         _mapperMock.Verify(m => m.Map(_userPreferenceDto, _existingUserPreference), Times.Once());
         Assert.Multiple(() =>
         {
@@ -91,11 +90,13 @@ public class UpdateUserPreferenceTests
         var updateUserPreferenceCommand = new UpdateUserPreference(invalidDto);
         var notFoundException = new NotFoundException("User preference not found.");
 
-        _validationServiceMock.Setup(v => v.GetExistingEntity(_unitOfWorkMock.Object.UserPreferenceRepository, newId, It.IsAny<CancellationToken>(), LogAction.Update))
-                              .ThrowsAsync(notFoundException);
+        _validationServiceMock.Setup(v => v.GetExistingEntity(_unitOfWorkMock.Object.UserPreferenceRepository, newId,
+                It.IsAny<CancellationToken>(), LogAction.Update))
+            .ThrowsAsync(notFoundException);
 
         // Act & Assert
-        Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(updateUserPreferenceCommand, CancellationToken.None));
+        Assert.ThrowsAsync<NotFoundException>(
+            () => _handler.Handle(updateUserPreferenceCommand, CancellationToken.None));
         _unitOfWorkMock.Verify(u => u.SaveAsync(CancellationToken.None), Times.Never());
         _loggerMock.Verify(l => l.LogSuccess(nameof(UserPreference), newId, LogAction.Update), Times.Never());
     }

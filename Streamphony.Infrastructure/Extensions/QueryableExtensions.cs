@@ -8,7 +8,8 @@ namespace Streamphony.Infrastructure.Extensions;
 
 public static class QueryableExtensions
 {
-    public async static Task<(PaginatedResult<TDto>, IEnumerable<T>)> CreatePaginatedResultAsync<T, TDto>(this IQueryable<T> query, PagedRequest pagedRequest, CancellationToken cancellationToken)
+    public static async Task<(PaginatedResult<TDto>, IEnumerable<T>)> CreatePaginatedResultAsync<T, TDto>(
+        this IQueryable<T> query, PagedRequest pagedRequest, CancellationToken cancellationToken)
         where T : BaseEntity
         where TDto : class
     {
@@ -21,7 +22,7 @@ public static class QueryableExtensions
 
         var listResult = await query.ToListAsync(cancellationToken);
 
-        return (new PaginatedResult<TDto>()
+        return (new PaginatedResult<TDto>
         {
             PageNumber = pagedRequest.PageNumber,
             PageSize = pagedRequest.PageSize,
@@ -33,18 +34,16 @@ public static class QueryableExtensions
     {
         var predicate = new StringBuilder();
         var requestFilters = pagedRequest.RequestFilters;
-        for (int i = 0; i < requestFilters.Filters.Count; i++)
+        for (var i = 0; i < requestFilters.Filters.Count; i++)
         {
             if (i > 0) predicate.Append($" {requestFilters.LogicalOperator} ");
             predicate.Append(requestFilters.Filters[i].Path + $".{nameof(string.Contains)}(@{i})");
         }
 
-        if (requestFilters.Filters.Any())
-        {
-            var propertyValues = requestFilters.Filters.Select(filter => filter.Value).ToArray();
+        if (!requestFilters.Filters.Any()) return query;
+        var propertyValues = requestFilters.Filters.Select(filter => filter.Value).ToArray();
 
-            query = query.Where(predicate.ToString(), propertyValues);
-        }
+        query = query.Where(predicate.ToString(), propertyValues);
 
         return query;
     }
@@ -52,16 +51,15 @@ public static class QueryableExtensions
     private static IQueryable<T> Paginate<T>(this IQueryable<T> query, PagedRequest pagedRequest)
     {
         var entities = query.Skip((pagedRequest.PageNumber - 1) * pagedRequest.PageSize)
-                            .Take(pagedRequest.PageSize);
+            .Take(pagedRequest.PageSize);
         return entities;
     }
 
     private static IQueryable<T> Sort<T>(this IQueryable<T> query, PagedRequest pagedRequest)
     {
-        if (!string.IsNullOrWhiteSpace(pagedRequest.ColumnNameForSorting))
-        {
-            query = query.OrderBy(pagedRequest.ColumnNameForSorting + " " + pagedRequest.SortDirection);
-        }
+        query = !string.IsNullOrWhiteSpace(pagedRequest.ColumnNameForSorting)
+            ? query.OrderBy(pagedRequest.ColumnNameForSorting + " " + pagedRequest.SortDirection)
+            : query.OrderBy("Id");
         return query;
     }
 }

@@ -1,7 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
-using Streamphony.Application.App.UserPreferences.Responses;
 using Streamphony.Infrastructure.Persistence.Contexts;
 using Streamphony.WebAPI.Tests.Factories;
 using Streamphony.WebAPI.Tests.Helpers;
@@ -11,9 +10,6 @@ namespace Streamphony.WebAPI.Tests.Controllers;
 [TestFixture]
 public class UserPreferenceControllerTests
 {
-    private CustomWebApplicationFactory _factory;
-    private HttpClient _client;
-
     [SetUp]
     public void SetUp()
     {
@@ -24,6 +20,20 @@ public class UserPreferenceControllerTests
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         Utilities.InitializeDbForTests(db);
     }
+
+    [TearDown]
+    public void TearDown()
+    {
+        using var scope = _factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        db.Database.EnsureDeleted();
+
+        _client.Dispose();
+        _factory.Dispose();
+    }
+
+    private CustomWebApplicationFactory _factory;
+    private HttpClient _client;
 
     [Test]
     public async Task CreateUserPreference_Success_ReturnsCreated()
@@ -66,7 +76,7 @@ public class UserPreferenceControllerTests
     public async Task CreateUserPreference_OwnerDoesNotExist_ReturnsNotFound()
     {
         // Arrange
-        Guid ownerGuid = Guid.NewGuid();
+        var ownerGuid = Guid.NewGuid();
         var userPreferenceDto = new UserPreferenceDto { Id = ownerGuid, Language = "en" };
 
         // Act
@@ -122,7 +132,8 @@ public class UserPreferenceControllerTests
     public async Task UpdateUserPreference_LanguageTooLong_ReturnsBadRequest()
     {
         // Arrange
-        var invalidUpdateUserPreferenceDto = new UserPreferenceDto { Id = Utilities.DbUserPreference.Id, Language = "French" };
+        var invalidUpdateUserPreferenceDto = new UserPreferenceDto
+            { Id = Utilities.DbUserPreference.Id, Language = "French" };
 
         // Act
         var response = await _client.PutAsJsonAsync("api/userPreferences", invalidUpdateUserPreferenceDto);
@@ -140,7 +151,7 @@ public class UserPreferenceControllerTests
     public async Task UpdateUserPreference_UserPreferenceNotInDb_ReturnsNotFound()
     {
         // Arrange
-        Guid userPreferenceId = Guid.NewGuid();
+        var userPreferenceId = Guid.NewGuid();
         var nonExistingUserPreferenceDto = new UserPreferenceDto { Id = userPreferenceId };
 
         // Act
@@ -241,16 +252,5 @@ public class UserPreferenceControllerTests
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
             Assert.That(content, Does.Contain($"UserPreference with Id '{nonExistingId}' not found."));
         });
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
-        using var scope = _factory.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        db.Database.EnsureDeleted();
-
-        _client.Dispose();
-        _factory.Dispose();
     }
 }

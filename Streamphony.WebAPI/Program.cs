@@ -11,26 +11,25 @@ Log.Logger = new LoggerConfiguration()
     .CreateBootstrapLogger();
 
 // Add services to the container.
-builder.Services.AddControllers(cfg =>
-{
-    cfg.Filters.Add<ExceptionFilter>();
-});
+builder.Services.AddControllers(cfg => { cfg.Filters.Add<ExceptionFilter>(); });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger();
 
+builder.Services.AddCorsPolicy();
 builder.Services.AddApplicationServices(builder.Configuration);
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwaggerDocumentation();
-}
+if (app.Environment.IsDevelopment()) app.UseSwaggerDocumentation();
 
+app.UseCors("ClientPermission");
 app.UseHttpsRedirection();
 app.UseRequestTiming();
 app.UseDbTransaction();
 app.MapControllers();
 
 app.Run();
-public partial class Program { }
+
+public partial class Program
+{
+}
