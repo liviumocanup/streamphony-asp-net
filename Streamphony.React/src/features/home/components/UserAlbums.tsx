@@ -1,4 +1,4 @@
-import useGetAlbums from '../../../hooks/useGetAlbums';
+import useGetAlbums from '../hooks/useGetAlbums';
 import Section from './Section';
 import { Album, Item, UrlArray } from '../../../shared/Interfaces';
 

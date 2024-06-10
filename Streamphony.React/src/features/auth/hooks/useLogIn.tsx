@@ -2,10 +2,10 @@ import { LogInData } from '../../../shared/Interfaces';
 import axios from 'axios';
 import { backendUrl, logInEndpoint } from '../../../shared/constants';
 import { useMutation } from '@tanstack/react-query';
-import useToken from '../../../hooks/useToken';
+import useTokenStorage from '../../../hooks/localStorage/useTokenStorage';
 
 const useLogIn = () => {
-  const { setToken } = useToken();
+  const { setToken } = useTokenStorage();
 
   const verifyCredentials = async (user: LogInData) => {
     try {

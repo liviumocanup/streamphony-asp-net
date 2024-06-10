@@ -2,10 +2,10 @@ import { SignUpData } from '../../../shared/Interfaces';
 import axios from 'axios';
 import { backendUrl, signUpEndpoint } from '../../../shared/constants';
 import { useMutation } from '@tanstack/react-query';
-import useToken from '../../../hooks/useToken';
+import useTokenStorage from '../../../hooks/localStorage/useTokenStorage';
 
 const useSignUp = () => {
-  const { setToken } = useToken();
+  const { setToken } = useTokenStorage();
 
   const addUser = async (newUser: SignUpData) => {
     try {

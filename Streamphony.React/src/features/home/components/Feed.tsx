@@ -1,5 +1,5 @@
 import { artists, albums, playlists } from '../../../shared/dummy_data';
-import useFetchImages from '../../../hooks/useFetchImages';
+import useFetchImages from '../hooks/useFetchImages';
 import UserAlbums from './UserAlbums';
 import { Suspense } from 'react';
 import Section from './Section';

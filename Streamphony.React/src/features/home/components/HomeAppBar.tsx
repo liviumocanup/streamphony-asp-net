@@ -10,7 +10,7 @@ import { AppBar } from '../styles/AppBarStyle';
 import MaterialUISwitch from '../styles/ThemeSwitchStyle';
 import { Link } from 'react-router-dom';
 import useAuthStatus from '../../../hooks/useAuthStatus';
-import useThemeContext from '../../../hooks/useThemeContext';
+import useThemeContext from '../../../hooks/context/useThemeContext';
 import { appTitle } from '../../../shared/constants';
 import UserAvatar from './UserAvatar';
 
