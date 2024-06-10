@@ -1,24 +1,33 @@
-import Home from './features/home/Home'
-import { useEffect } from 'react';
+import Home from './features/home/Home';
 import SignUp from './features/auth/SignUp';
 import { Route, Routes } from 'react-router-dom';
 import LogIn from './features/auth/LogIn';
-import { useThemeContext } from './hooks/context/ThemeContext';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import AccountCabinet from './features/auth/AccountCabinet';
+import ProtectedRoute from './routes/ProtectedRoute';
+import NotFoundPage from './routes/NotFoundPage';
+
+const queryClient = new QueryClient();
 
 const App = () => {
-  const { currentTheme } = useThemeContext();
-
-  useEffect(() => {
-    document.body.style.backgroundColor = currentTheme.palette.background.default;
-  }, [currentTheme]);
-
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/signUp" element={<SignUp />} />
-      <Route path="/logIn" element={<LogIn />} />
-    </Routes>
+    <QueryClientProvider client={queryClient}>
+      <Routes>
+        <Route path="/signUp" element={<SignUp />} />
+        <Route path="/logIn" element={<LogIn />} />
+        <Route
+          path="/account"
+          element={
+            <ProtectedRoute>
+              <AccountCabinet />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/" element={<Home />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </QueryClientProvider>
   );
 };
 
-export default App
+export default App;
