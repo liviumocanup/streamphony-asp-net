@@ -1,14 +1,14 @@
 import { createContext } from 'react';
 import { Theme } from '@mui/material/styles';
-import DarkTheme from './DarkTheme';
+import DarkTheme from '../themes/DarkTheme';
 
 type ThemeContextType = {
-  currentTheme: Theme;
+  activeTheme: Theme;
   toggleTheme: () => void;
 };
 
 const defaultContextValue: ThemeContextType = {
-  currentTheme: DarkTheme,
+  activeTheme: DarkTheme,
   toggleTheme: () => {},
 };
 

@@ -3,7 +3,7 @@ import SignUp from './features/auth/SignUp';
 import { Route, Routes } from 'react-router-dom';
 import LogIn from './features/auth/LogIn';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import AccountCabinet from './features/auth/AccountCabinet';
+import AccountCabinet from './features/accountCabinet/AccountCabinet';
 import ProtectedRoute from './routes/ProtectedRoute';
 import NotFoundPage from './routes/NotFoundPage';
 import GuestRoute from './routes/GuestRoute';

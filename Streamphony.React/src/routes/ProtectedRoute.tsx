@@ -1,13 +1,13 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import React from 'react';
-import useAuthStatus from '../hooks/useAuthStatus';
+import useAuthContext from '../hooks/context/useAuthContext';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { isLoggedIn } = useAuthStatus();
+  const { isLoggedIn } = useAuthContext();
   const location = useLocation();
 
   if (!isLoggedIn) {

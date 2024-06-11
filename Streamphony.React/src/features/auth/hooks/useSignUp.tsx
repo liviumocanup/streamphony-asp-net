@@ -3,14 +3,17 @@ import axios from 'axios';
 import { backendUrl, signUpEndpoint } from '../../../shared/constants';
 import { useMutation } from '@tanstack/react-query';
 import useTokenStorage from '../../../hooks/localStorage/useTokenStorage';
+import useAuthContext from '../../../hooks/context/useAuthContext';
 
 const useSignUp = () => {
   const { setToken } = useTokenStorage();
+  const { tokenRefresh } = useAuthContext();
 
   const addUser = async (newUser: SignUpData) => {
     try {
       const res = await axios.post(`${backendUrl}/${signUpEndpoint}`, newUser);
       setToken(res.data.accessToken);
+      tokenRefresh();
       return res.data;
     } catch (err: any) {
       if (axios.isAxiosError(err)) {

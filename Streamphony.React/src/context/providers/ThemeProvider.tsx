@@ -1,15 +1,15 @@
 import { ReactNode, useMemo } from 'react';
 import { ThemeProvider as MUIThemeProvider } from '@mui/material/styles';
-import ThemeContext from './ThemeContext';
+import ThemeContext from '../ThemeContext';
 import { CssBaseline } from '@mui/material';
-import useManageTheme from '../hooks/useManageTheme';
+import useManageTheme from '../../hooks/useManageTheme';
 
 const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const { activeTheme, toggleTheme } = useManageTheme();
 
   const contextValue = useMemo(
     () => ({
-      currentTheme: activeTheme,
+      activeTheme,
       toggleTheme,
     }),
     [activeTheme, toggleTheme],
@@ -17,7 +17,7 @@ const ThemeProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <ThemeContext.Provider value={contextValue}>
-      <MUIThemeProvider theme={contextValue.currentTheme}>
+      <MUIThemeProvider theme={contextValue.activeTheme}>
         <CssBaseline />
         {children}
       </MUIThemeProvider>

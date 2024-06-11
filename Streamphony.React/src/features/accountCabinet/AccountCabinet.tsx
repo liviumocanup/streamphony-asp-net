@@ -2,12 +2,12 @@ import { Avatar, Button, IconButton } from '@mui/material';
 import Home from '@mui/icons-material/Home';
 import { useNavigate } from 'react-router-dom';
 import '../../App.css';
-import useAuthStatus from '../../hooks/useAuthStatus';
 import { Helmet } from 'react-helmet-async';
 import { appTitle } from '../../shared/constants';
+import useAuthContext from '../../hooks/context/useAuthContext';
 
 const AccountCabinet = () => {
-  const { isLoggedIn, handleLogOut } = useAuthStatus();
+  const { isLoggedIn, handleLogOut } = useAuthContext();
   const navigate = useNavigate();
 
   const navigateHome = () => navigate('/');

@@ -4,10 +4,10 @@ import UserAlbums from './UserAlbums';
 import { Suspense } from 'react';
 import Section from './Section';
 import FallbackSection from './fallback/FallbackSection';
-import useAuthStatus from '../../../hooks/useAuthStatus';
+import useAuthContext from '../../../hooks/context/useAuthContext';
 
 const Feed = () => {
-  const { isLoggedIn } = useAuthStatus();
+  const { isLoggedIn } = useAuthContext();
 
   return (
     <>

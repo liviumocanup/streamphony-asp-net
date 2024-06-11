@@ -10,11 +10,11 @@ import {
 import React from 'react';
 import { Logout, PersonOutline, Settings } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import useAuthStatus from '../../../hooks/useAuthStatus';
+import useAuthContext from '../../../hooks/context/useAuthContext';
 
 const UserAvatar = () => {
   const navigate = useNavigate();
-  const { handleLogOut } = useAuthStatus();
+  const { handleLogOut } = useAuthContext();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const openMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -34,7 +34,6 @@ const UserAvatar = () => {
   const logOut = () => {
     handleLogOut();
     navigate('/');
-    navigate(0);
   };
 
   return (

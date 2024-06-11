@@ -1,12 +1,11 @@
 import { Button, IconButton, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar } from '../styles/AppBarStyle';
-import MaterialUISwitch from '../styles/ThemeSwitchStyle';
 import { Link } from 'react-router-dom';
-import useAuthStatus from '../../../hooks/useAuthStatus';
-import useThemeContext from '../../../hooks/context/useThemeContext';
 import { appTitle } from '../../../shared/constants';
 import UserAvatar from './UserAvatar';
+import ThemeToggleButton from './ThemeToggleButton';
+import useAuthContext from '../../../hooks/context/useAuthContext';
 
 interface HomeAppBarProps {
   open: boolean;
@@ -19,8 +18,7 @@ const HomeAppBar = ({
   handleDrawerOpen,
   drawerWidth,
 }: HomeAppBarProps) => {
-  const { currentTheme, toggleTheme } = useThemeContext();
-  const { isLoggedIn } = useAuthStatus();
+  const { isLoggedIn } = useAuthContext();
 
   return (
     <AppBar
@@ -47,11 +45,7 @@ const HomeAppBar = ({
           {appTitle}
         </Typography>
 
-        <MaterialUISwitch
-          checked={currentTheme.palette.mode === 'dark'}
-          onChange={toggleTheme}
-          sx={{ mr: 2 }}
-        />
+        <ThemeToggleButton />
 
         {isLoggedIn ? (
           <UserAvatar />

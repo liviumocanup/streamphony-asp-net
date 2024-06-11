@@ -12,14 +12,12 @@ const useManageTheme = () => {
   });
 
   const toggleTheme = useCallback(() => {
-    setActiveTheme((currentTheme) => {
-      const isLight = currentTheme === LightTheme;
-      const newTheme = isLight ? DarkTheme : LightTheme;
+    const isLight = activeTheme === LightTheme;
+    const newTheme = isLight ? DarkTheme : LightTheme;
 
-      setStorageTheme(isLight ? 'dark' : 'light');
-      return newTheme;
-    });
-  }, [setStorageTheme]);
+    setActiveTheme(newTheme);
+    setStorageTheme(isLight ? 'dark' : 'light');
+  }, [activeTheme, setStorageTheme]);
 
   return { activeTheme, toggleTheme };
 };
