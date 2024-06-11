@@ -16,7 +16,7 @@ const Card = ({
   imageAlt,
   title,
   description,
-  imageVariant,
+  imageVariant = 'rounded',
 }: CardProps) => {
   return (
     <Grid item key={index}>
@@ -40,10 +40,9 @@ const Card = ({
             width: '100%',
             height: 'auto',
             maxHeight: 185,
-            mb: 1,
           }}
         />
-        <Typography variant="subtitle1" align="left">
+        <Typography variant="subtitle1" align="left" sx={{ mt: 1 }}>
           {title}
         </Typography>
         <Typography variant="body2" color="text.secondary" align="left">
@@ -52,10 +51,6 @@ const Card = ({
       </Box>
     </Grid>
   );
-};
-
-Card.defaultProps = {
-  imageVariant: 'rounded',
 };
 
 export default Card;

@@ -7,7 +7,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const isLoggedIn = useAuthStatus();
+  const { isLoggedIn } = useAuthStatus();
   const location = useLocation();
 
   if (!isLoggedIn) {

@@ -6,7 +6,7 @@ interface MainProps {
 }
 
 export const Main = styled('main', {
-  shouldForwardProp: (prop) => prop !== 'open',
+  shouldForwardProp: (prop) => prop !== 'open' && prop !== 'drawerWidth',
 })<MainProps>(({ theme, open, drawerWidth }) => ({
   flexGrow: 1,
   backgroundColor: theme.palette.background.default,

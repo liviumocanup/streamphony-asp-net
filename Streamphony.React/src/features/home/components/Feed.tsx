@@ -7,7 +7,7 @@ import FallbackSection from './fallback/FallbackSection';
 import useAuthStatus from '../../../hooks/useAuthStatus';
 
 const Feed = () => {
-  const isLoggedIn = useAuthStatus();
+  const { isLoggedIn } = useAuthStatus();
 
   return (
     <>

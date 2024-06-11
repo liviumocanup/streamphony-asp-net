@@ -4,7 +4,7 @@ import HomeSkeleton from '../../../../shared/HomeSkeleton';
 
 interface FallbackCardProps {
   index: number;
-  imageVariant?: 'rounded' | 'circular';
+  imageVariant: 'rounded' | 'circular';
 }
 
 const FallbackCard = ({ index, imageVariant }: FallbackCardProps) => {

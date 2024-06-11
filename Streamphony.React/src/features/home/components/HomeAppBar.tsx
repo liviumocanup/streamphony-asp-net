@@ -1,10 +1,4 @@
-import {
-  Button,
-  Divider,
-  IconButton,
-  Toolbar,
-  Typography,
-} from '@mui/material';
+import { Button, IconButton, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar } from '../styles/AppBarStyle';
 import MaterialUISwitch from '../styles/ThemeSwitchStyle';
@@ -26,7 +20,7 @@ const HomeAppBar = ({
   drawerWidth,
 }: HomeAppBarProps) => {
   const { currentTheme, toggleTheme } = useThemeContext();
-  const isLoggedIn = useAuthStatus();
+  const { isLoggedIn } = useAuthStatus();
 
   return (
     <AppBar
@@ -83,7 +77,6 @@ const HomeAppBar = ({
           </>
         )}
       </Toolbar>
-      <Divider />
     </AppBar>
   );
 };

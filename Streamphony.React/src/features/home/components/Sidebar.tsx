@@ -17,10 +17,10 @@ const Sidebar = ({ open, handleDrawerClose, drawerWidth }: SidebarProps) => {
       anchor="left"
       open={open}
       sx={{
-        width: drawerWidth,
+        width: `${drawerWidth}px`,
         flexShrink: 0,
         '& .MuiDrawer-paper': {
-          width: drawerWidth,
+          width: `${drawerWidth}px`,
           boxSizing: 'border-box',
           bgcolor: 'background.paper',
         },

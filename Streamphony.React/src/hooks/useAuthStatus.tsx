@@ -1,18 +1,31 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import useTokenStorage from './localStorage/useTokenStorage';
 
 const useAuthStatus = () => {
-  const { getToken } = useTokenStorage();
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(
-    () => getToken() !== null,
-  );
+  const { getToken, removeToken } = useTokenStorage();
+  const isTokenStored = useCallback(() => {
+    return getToken() !== null;
+  }, [getToken]);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => isTokenStored());
+
+  const handleLogOut = () => {
+    removeToken();
+    setIsLoggedIn(false);
+  };
 
   useEffect(() => {
-    const token = getToken();
-    setIsLoggedIn(token !== null);
-  }, [getToken]);
+    const handleStorageChange = () => {
+      setIsLoggedIn(isTokenStored());
+    };
 
-  return isLoggedIn;
+    window.addEventListener('storage', handleStorageChange);
+
+    handleStorageChange();
+
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [isTokenStored]);
+
+  return { isLoggedIn, handleLogOut };
 };
 
 export default useAuthStatus;

@@ -9,22 +9,39 @@ import {
 } from '@mui/material';
 import React from 'react';
 import { Logout, PersonOutline, Settings } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import useAuthStatus from '../../../hooks/useAuthStatus';
 
 const UserAvatar = () => {
+  const navigate = useNavigate();
+  const { handleLogOut } = useAuthStatus();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+  const openMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
+  const closeMenu = () => {
     setAnchorEl(null);
+  };
+
+  const navigateToPage = (path: string) => {
+    closeMenu();
+    navigate(path);
+  };
+
+  const navigateToAccount = () => navigateToPage('/account');
+  const navigateToSettings = () => navigateToPage('/settings');
+  const logOut = () => {
+    handleLogOut();
+    navigate('/');
+    navigate(0);
   };
 
   return (
     <>
       <Tooltip title="Account Settings">
         <IconButton
-          onClick={handleClick}
+          onClick={openMenu}
           size="small"
           aria-controls={open ? 'account-menu' : undefined}
           aria-haspopup="true"
@@ -38,16 +55,13 @@ const UserAvatar = () => {
         anchorEl={anchorEl}
         id="account-menu"
         open={open}
-        onClose={handleClose}
-        onClick={handleClose}
+        onClose={closeMenu}
+        onClick={closeMenu}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         disableScrollLock={true}
-        // slotProps={{
-        //   paper: { sx: { width: '200px' } },
-        // }}
       >
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={navigateToAccount}>
           <ListItemIcon>
             <PersonOutline fontSize="small" />
           </ListItemIcon>
@@ -56,14 +70,14 @@ const UserAvatar = () => {
 
         <Divider />
 
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={navigateToSettings}>
           <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon>
           Settings
         </MenuItem>
 
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={logOut}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>

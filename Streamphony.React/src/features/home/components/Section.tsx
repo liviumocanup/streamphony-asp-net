@@ -8,14 +8,14 @@ interface SectionProps {
   items: Item[];
   imageUrls: UrlArray;
   sectionTitle: string;
-  imageVariant?: 'circular' | null;
+  imageVariant?: 'circular' | 'rounded';
 }
 
 const Section = ({
   items,
   imageUrls,
   sectionTitle,
-  imageVariant,
+  imageVariant = 'rounded',
 }: SectionProps) => {
   return (
     <FeedSectionContainer sectionTitle={sectionTitle}>
@@ -29,7 +29,7 @@ const Section = ({
               imageAlt={item.name}
               title={item.name}
               description={item.description}
-              imageVariant={imageVariant ? imageVariant : 'rounded'}
+              imageVariant={imageVariant}
             />
           </Suspense>
         ))}
