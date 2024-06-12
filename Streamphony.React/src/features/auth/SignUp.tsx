@@ -16,8 +16,8 @@ const SignUp = () => {
       </Helmet>
 
       <Box className="WidthCentered HeightCentered">
-        <Typography variant="h3" fontWeight="bold">
-          Sign Up
+        <Typography variant="h4" fontWeight="bold">
+          Create an Account
         </Typography>
 
         <SignUpForm />

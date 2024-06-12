@@ -16,8 +16,8 @@ const LogIn = () => {
       </Helmet>
 
       <Box className="WidthCentered HeightCentered">
-        <Typography variant="h3" fontWeight="bold">
-          Log In
+        <Typography variant="h4" fontWeight="bold">
+          Welcome back
         </Typography>
 
         <LogInForm />

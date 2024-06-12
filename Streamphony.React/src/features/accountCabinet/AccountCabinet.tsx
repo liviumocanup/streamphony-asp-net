@@ -23,6 +23,7 @@ const AccountCabinet = () => {
   return (
     <>
       <Helmet>
+        {/*// TODO: Fetch actual Username*/}
         <title>Username - {APP_TITLE}</title>
         <meta name="description" content="Your account settings" />
       </Helmet>

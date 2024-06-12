@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Controller } from 'react-hook-form';
+import { Controller, FieldErrors } from 'react-hook-form';
 import {
   FormControl,
   InputLabel,
@@ -12,7 +12,7 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 interface PasswordInputProps {
   control: any;
-  errors: any;
+  errors: FieldErrors<{ password: string }>;
 }
 
 const PasswordInput = ({ control, errors }: PasswordInputProps) => {
@@ -33,6 +33,7 @@ const PasswordInput = ({ control, errors }: PasswordInputProps) => {
         render={({ field }) => (
           <OutlinedInput
             {...field}
+            id="outlined-adornment-password"
             type={showPassword ? 'text' : 'password'}
             endAdornment={
               <InputAdornment position="end">
