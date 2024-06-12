@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { backendUrl } from '../../../shared/constants';
+import { API_URL } from '../../../shared/constants';
 import { useMemo } from 'react';
 import useTokenStorage from '../../../hooks/localStorage/useTokenStorage';
 
@@ -20,7 +20,7 @@ const useGetAlbums = () => {
   const getAlbums = async () => {
     try {
       // await new Promise(resolve => setTimeout(resolve, 5000));
-      const res = await axios.get(`${backendUrl}/${endpoint}`, config);
+      const res = await axios.get(`${API_URL}/${endpoint}`, config);
       console.log(res.data);
       return res.data.items;
     } catch (err: any) {

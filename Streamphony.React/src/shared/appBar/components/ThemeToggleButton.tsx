@@ -9,7 +9,7 @@ const ThemeToggleButton = () => {
   const isLightMode = activeTheme === LightTheme;
 
   return (
-    <IconButton onClick={toggleTheme} sx={{ mr: 2 }}>
+    <IconButton size={'medium'} onClick={toggleTheme} sx={{ mr: 2 }}>
       {isLightMode ? <SunIcon /> : <MoonIcon />}
     </IconButton>
   );

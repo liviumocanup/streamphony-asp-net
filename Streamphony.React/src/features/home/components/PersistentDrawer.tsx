@@ -1,6 +1,6 @@
 import { IconButton, Drawer } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import NavigationItems from './NavigationItems';
+import SidebarItems from '../../../shared/drawer/SidebarItems';
 import { DrawerHeader } from '../styles/DrawerHeaderStyle';
 import '../Home.css';
 
@@ -10,7 +10,11 @@ interface SidebarProps {
   drawerWidth: number;
 }
 
-const Sidebar = ({ open, handleDrawerClose, drawerWidth }: SidebarProps) => {
+const PersistentDrawer = ({
+  open,
+  handleDrawerClose,
+  drawerWidth,
+}: SidebarProps) => {
   return (
     <Drawer
       variant="persistent"
@@ -31,9 +35,9 @@ const Sidebar = ({ open, handleDrawerClose, drawerWidth }: SidebarProps) => {
           <ChevronLeftIcon />
         </IconButton>
       </DrawerHeader>
-      <NavigationItems />
+      <SidebarItems />
     </Drawer>
   );
 };
 
-export default Sidebar;
+export default PersistentDrawer;

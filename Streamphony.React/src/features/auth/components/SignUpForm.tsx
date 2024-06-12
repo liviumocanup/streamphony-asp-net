@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import PasswordInput from './PasswordInput';
 import LoadingSpinner from '../../../shared/LoadingSpinner';
 import useSignUp from '../hooks/useSignUp';
+import { HOME_ROUTE } from '../../../routes/routes';
 
 type FormData = InferType<typeof registerSchema>;
 
@@ -27,7 +28,7 @@ const SignUpForm = () => {
     console.log(data);
     try {
       await signUp(data);
-      navigate('/');
+      navigate(HOME_ROUTE);
     } catch (err) {
       console.log(err);
     }

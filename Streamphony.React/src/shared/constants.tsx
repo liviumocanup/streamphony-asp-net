@@ -1,8 +1,8 @@
-export const backendUrl = 'http://localhost:5207/api';
-export const logInEndpoint = 'auth/login';
-export const signUpEndpoint = 'auth/register';
+export const API_URL = 'http://localhost:5207/api';
+export const LOG_IN_ENDPOINT = 'auth/login';
+export const SIGN_UP_ENDPOINT = 'auth/register';
 
-export const lsTokenKey = 'token';
-export const lsThemeKey = 'theme';
+export const LS_TOKEN_KEY = 'token';
+export const LS_THEME_KEY = 'theme';
 
-export const appTitle = 'Streamphony';
+export const APP_TITLE = 'Streamphony';

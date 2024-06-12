@@ -1,50 +1,54 @@
-import { Avatar, Button, IconButton } from '@mui/material';
-import Home from '@mui/icons-material/Home';
-import { useNavigate } from 'react-router-dom';
+import { Box } from '@mui/material';
 import '../../App.css';
 import { Helmet } from 'react-helmet-async';
-import { appTitle } from '../../shared/constants';
-import useAuthContext from '../../hooks/context/useAuthContext';
+import { APP_TITLE } from '../../shared/constants';
+import { useState } from 'react';
+import AppBar from '../../shared/appBar/AppBar';
+import TemporaryDrawer from './components/TemporaryDrawer';
+import AccountCabSection from './components/AccountCabSection';
+import SecurityCabSection from './components/SecurityCabSection';
+import { DrawerHeader } from '../home/styles/DrawerHeaderStyle';
 
 const AccountCabinet = () => {
-  const { isLoggedIn, handleLogOut } = useAuthContext();
-  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
-  const navigateHome = () => navigate('/');
-  const logOut = () => {
-    handleLogOut();
-    navigateHome();
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
   };
 
   return (
     <>
       <Helmet>
-        <title>Username - {appTitle}</title>
+        <title>Username - {APP_TITLE}</title>
         <meta name="description" content="Your account settings" />
       </Helmet>
 
-      {isLoggedIn ? (
-        <div className="Centered">
-          <Avatar sx={{ bgcolor: 'secondary.main' }}>U</Avatar>
-          <Button
-            onClick={logOut}
-            variant="contained"
-            aria-label="Log Out"
-            sx={{ mt: 2 }}
-          >
-            Log Out
-          </Button>
-          <IconButton
-            onClick={navigateHome}
-            aria-label="Go Home"
-            sx={{ mt: 2 }}
-          >
-            <Home />
-          </IconButton>
-        </div>
-      ) : (
-        <h1>Not Logged In</h1>
-      )}
+      <Box
+        sx={{
+          display: 'flex',
+          bgcolor: 'background.default',
+        }}
+      >
+        <AppBar
+          open={open}
+          handleDrawerOpen={handleDrawerOpen}
+          hideToggleOnOpen={false}
+        />
+
+        <TemporaryDrawer open={open} handleDrawerClose={handleDrawerClose} />
+      </Box>
+
+      <Box sx={{ flexGrow: 1, mt: 8 }} className="WidthCentered">
+        <DrawerHeader />
+
+        <AccountCabSection />
+
+        <SecurityCabSection />
+      </Box>
     </>
   );
 };

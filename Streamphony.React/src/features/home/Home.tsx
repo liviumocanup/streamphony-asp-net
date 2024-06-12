@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import Box from '@mui/material/Box';
-import HomeAppBar from './components/HomeAppBar';
-import Sidebar from './components/Sidebar';
+import AppBar from '../../shared/appBar/AppBar';
+import PersistentDrawer from './components/PersistentDrawer';
 import Feed from './components/Feed';
 import { Main } from './styles/MainStyle';
 import { DrawerHeader } from './styles/DrawerHeaderStyle';
 import { Helmet } from 'react-helmet-async';
-import { appTitle } from '../../shared/constants';
+import { APP_TITLE } from '../../shared/constants';
 
 const drawerWidth = 240;
 
@@ -24,7 +24,7 @@ const Home = () => {
   return (
     <>
       <Helmet>
-        <title>{appTitle}</title>
+        <title>{APP_TITLE}</title>
         <meta
           name="description"
           content="Home page of the music streaming app"
@@ -37,13 +37,13 @@ const Home = () => {
           bgcolor: 'background.default',
         }}
       >
-        <HomeAppBar
+        <AppBar
           open={open}
           handleDrawerOpen={handleDrawerOpen}
           drawerWidth={drawerWidth}
         />
 
-        <Sidebar
+        <PersistentDrawer
           open={open}
           handleDrawerClose={handleDrawerClose}
           drawerWidth={drawerWidth}

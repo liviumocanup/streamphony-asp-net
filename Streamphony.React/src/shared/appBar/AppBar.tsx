@@ -1,27 +1,32 @@
 import { Button, IconButton, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { AppBar } from '../styles/AppBarStyle';
 import { Link } from 'react-router-dom';
-import { appTitle } from '../../../shared/constants';
+import { APP_TITLE } from '../constants';
 import UserAvatar from './UserAvatar';
-import ThemeToggleButton from './ThemeToggleButton';
-import useAuthContext from '../../../hooks/context/useAuthContext';
+import ThemeToggleButton from './components/ThemeToggleButton';
+import useAuthContext from '../../hooks/context/useAuthContext';
+import { StyledAppBar } from './AppBarStyle';
+import { ReactNode } from 'react';
 
-interface HomeAppBarProps {
+interface AppBarProps {
   open: boolean;
   handleDrawerOpen: () => void;
-  drawerWidth: number;
+  drawerWidth?: number;
+  hideToggleOnOpen?: boolean;
+  avatarItems?: ReactNode[];
 }
 
-const HomeAppBar = ({
+const AppBar = ({
   open,
   handleDrawerOpen,
-  drawerWidth,
-}: HomeAppBarProps) => {
+  drawerWidth = 0,
+  hideToggleOnOpen = true,
+  avatarItems,
+}: AppBarProps) => {
   const { isLoggedIn } = useAuthContext();
 
   return (
-    <AppBar
+    <StyledAppBar
       open={open}
       elevation={0}
       drawerWidth={drawerWidth}
@@ -36,19 +41,25 @@ const HomeAppBar = ({
           aria-label="open sidebar"
           onClick={handleDrawerOpen}
           edge="start"
-          sx={{ mr: 2, ...(open && { display: 'none' }) }}
+          sx={{
+            ml: '1px',
+            mr: 2,
+            ...(hideToggleOnOpen && open && { display: 'none' }),
+          }}
         >
           <MenuIcon />
         </IconButton>
 
         <Typography variant="h4" align="left" sx={{ flexGrow: 1 }}>
-          {appTitle}
+          <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+            {APP_TITLE}
+          </Link>
         </Typography>
 
         <ThemeToggleButton />
 
         {isLoggedIn ? (
-          <UserAvatar />
+          <UserAvatar menuItems={avatarItems} />
         ) : (
           <>
             <Button
@@ -71,8 +82,8 @@ const HomeAppBar = ({
           </>
         )}
       </Toolbar>
-    </AppBar>
+    </StyledAppBar>
   );
 };
 
-export default HomeAppBar;
+export default AppBar;

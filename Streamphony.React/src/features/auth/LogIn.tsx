@@ -5,17 +5,17 @@ import '../../App.css';
 import { Helmet } from 'react-helmet-async';
 import { Link as RouterLink } from 'react-router-dom';
 import Home from '@mui/icons-material/Home';
-import { appTitle } from '../../shared/constants';
+import { APP_TITLE } from '../../shared/constants';
 
 const LogIn = () => {
   return (
     <>
       <Helmet>
-        <title>Log In - {appTitle}</title>
+        <title>Log In - {APP_TITLE}</title>
         <meta name="description" content="Log in to your account" />
       </Helmet>
 
-      <Box className="Centered">
+      <Box className="WidthCentered HeightCentered">
         <Typography variant="h3" fontWeight="bold">
           Log In
         </Typography>
