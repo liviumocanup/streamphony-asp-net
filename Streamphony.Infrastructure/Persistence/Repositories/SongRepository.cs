@@ -16,6 +16,11 @@ public class SongRepository(ApplicationDbContext context) : Repository<Song>(con
         _context.Songs.RemoveRange(songs);
         await _context.SaveChangesAsync(cancellationToken);
     }
+    
+    public async Task<IEnumerable<Song>> GetByOwnerId(Guid ownerId, CancellationToken cancellationToken)
+    {
+        return await _context.Songs.Where(song => song.OwnerId == ownerId).ToListAsync(cancellationToken);
+    }
 
     public async Task<Song?> GetByOwnerIdAndTitle(Guid ownerId, string title, CancellationToken cancellationToken)
     {

@@ -2,7 +2,7 @@ using MediatR;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.App.Auth.Responses;
-using Streamphony.Application.Common;
+using Streamphony.Application.Common.Enum;
 using Streamphony.Domain.Models.Auth;
 
 namespace Streamphony.Application.App.Auth.Commands;
@@ -29,6 +29,11 @@ public class RegisterUserHandler(
         var userDb = await _userManagerProvider.FindByNameAsync(userDto.Username);
         if (userDb != null)
             _loggingService.LogAndThrowDuplicateException(nameof(User), nameof(userDto.Username), userDto.Username,
+                LogAction.Create);
+        
+        userDb = await _userManagerProvider.FindByEmailAsync(userDto.Email);
+        if (userDb != null)
+            _loggingService.LogAndThrowDuplicateException(nameof(User), nameof(userDto.Email), userDto.Email,
                 LogAction.Create);
 
         var token = await _authenticationService.Register(userEntity, userDto.Password, userDto.FirstName,

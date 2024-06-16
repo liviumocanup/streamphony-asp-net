@@ -11,6 +11,11 @@ public class ArtistConfig : IEntityTypeConfiguration<Artist>
         builder.Property(artist => artist.FirstName).IsRequired().HasMaxLength(50);
         builder.Property(artist => artist.LastName).IsRequired().HasMaxLength(50);
         builder.Property(artist => artist.ProfilePictureUrl).HasMaxLength(1000);
+        
+        builder.HasOne(artist => artist.User)
+            .WithOne(user => user.Artist)
+            .HasForeignKey<Artist>(artist => artist.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(artist => artist.UploadedSongs)
             .WithOne(s => s.Owner)

@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
 using Streamphony.Application.Abstractions.Repositories;
 using Streamphony.Application.Abstractions.Services;
-using Streamphony.Application.Common;
+using Streamphony.Application.Common.Enum;
 using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.Services;

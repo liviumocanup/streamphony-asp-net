@@ -1,5 +1,5 @@
 using FluentValidation;
-using Streamphony.Application.App.Songs.Responses;
+using Streamphony.Application.App.Songs.DTOs;
 using Streamphony.Infrastructure.Extensions;
 
 namespace Streamphony.Infrastructure.Validators.CreationDTOs;
@@ -11,14 +11,5 @@ public class SongCreationDtoValidator : AbstractValidator<SongCreationDto>
         RuleFor(song => song.Title)
             .NotEmpty()
             .MaximumLength(50);
-
-        RuleFor(song => song.Duration)
-            .Must(duration => duration > TimeSpan.Zero)
-            .WithMessage("Duration must be greater than zero.");
-
-        RuleFor(song => song.Url)
-            .NotEmpty()
-            .MaximumLength(1000)
-            .ValidUrl();
     }
 }

@@ -1,4 +1,4 @@
-using Streamphony.Application.Common;
+using Streamphony.Application.Common.Enum;
 
 namespace Streamphony.Application.Abstractions.Services;
 
@@ -16,7 +16,8 @@ public interface ILoggingService
     void LogAndThrowNotFoundException<T>(string entityName, string propertyName, T propertyValue,
         LogAction logAction = LogAction.Login);
 
-    void LogAndThrowNotFoundExceptionForNavigation(string entityName, string navName, Guid navId, LogAction logAction);
+    void LogAndThrowNotFoundExceptionForNavigation(string entityName, string navName, Guid navId,
+        LogAction logAction = LogAction.Create);
 
     void LogAndThrowDuplicateException<T>(string entityName, string propertyName, T propertyValue,
         LogAction logAction = LogAction.Update);

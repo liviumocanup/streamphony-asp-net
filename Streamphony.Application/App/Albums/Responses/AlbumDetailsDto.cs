@@ -1,4 +1,4 @@
-using Streamphony.Application.App.Songs.Responses;
+using Streamphony.Application.App.Songs.DTOs;
 
 namespace Streamphony.Application.App.Albums.Responses;
 

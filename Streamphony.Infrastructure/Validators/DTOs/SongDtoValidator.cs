@@ -1,5 +1,5 @@
 using FluentValidation;
-using Streamphony.Application.App.Songs.Responses;
+using Streamphony.Application.App.Songs.DTOs;
 using Streamphony.Infrastructure.Validators.CreationDTOs;
 
 namespace Streamphony.Infrastructure.Validators.DTOs;

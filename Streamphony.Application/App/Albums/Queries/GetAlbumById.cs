@@ -3,7 +3,7 @@ using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.App.Albums.Responses;
-using Streamphony.Application.Common;
+using Streamphony.Application.Common.Enum;
 using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.App.Albums.Queries;

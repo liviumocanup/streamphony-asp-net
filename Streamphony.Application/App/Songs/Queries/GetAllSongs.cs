@@ -2,7 +2,7 @@ using MediatR;
 using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Services;
-using Streamphony.Application.App.Songs.Responses;
+using Streamphony.Application.App.Songs.DTOs;
 using Streamphony.Application.Common;
 using Streamphony.Domain.Models;
 

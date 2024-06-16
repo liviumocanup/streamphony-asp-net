@@ -15,13 +15,19 @@ public class ArtistController(IMediator mediator) : AppBaseController
     private readonly IMediator _mediator = mediator;
 
     [HttpPost]
+    [ExtractUserId]
     [ValidateModel]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ArtistDto>> CreateArtist(ArtistCreationDto artistDto)
     {
-        var createdArtistDto = await _mediator.Send(new CreateArtist(artistDto));
+        if (HttpContext.Items["UserId"] is not Guid userId)
+            return Unauthorized("ID is missing from the context");
+        
+        var createdArtistDto = await _mediator.Send(new CreateArtist(artistDto, userId));
         return CreatedAtAction(nameof(GetArtistById), new { id = createdArtistDto.Id }, createdArtistDto);
     }
 
@@ -74,12 +80,16 @@ public class ArtistController(IMediator mediator) : AppBaseController
     }
 
     [HttpDelete("{id}")]
+    [ExtractUserId]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteArtist(Guid id)
     {
-        await _mediator.Send(new DeleteArtist(id));
+        if (HttpContext.Items["UserId"] is not Guid userId)
+            return Unauthorized();
+        
+        await _mediator.Send(new DeleteArtist(id, userId));
         return NoContent();
     }
 }

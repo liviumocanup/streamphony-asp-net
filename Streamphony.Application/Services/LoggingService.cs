@@ -1,6 +1,6 @@
 using Streamphony.Application.Abstractions.Logging;
 using Streamphony.Application.Abstractions.Services;
-using Streamphony.Application.Common;
+using Streamphony.Application.Common.Enum;
 using Streamphony.Application.Exceptions;
 using Streamphony.Domain.Models;
 

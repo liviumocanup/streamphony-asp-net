@@ -6,4 +6,5 @@ public interface IUserManagerProvider
 {
     public Task<User?> FindByNameAsync(string userName);
     public Task<User?> FindByEmailAsync(string userName);
+    public Task<User?> FindByIdAsync(string userId);
 }

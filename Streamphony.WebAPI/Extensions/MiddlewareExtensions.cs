@@ -11,13 +11,12 @@ public static class MiddlewareExtensions
         return app;
     }
 
-    public static IApplicationBuilder UseRequestTiming(this IApplicationBuilder app)
-    {
-        return app.UseMiddleware<RequestTimerMiddleware>();
-    }
+    public static IApplicationBuilder UseRequestTiming(this IApplicationBuilder app) =>
+        app.UseMiddleware<RequestTimerMiddleware>();
 
-    public static IApplicationBuilder UseDbTransaction(this IApplicationBuilder app)
-    {
-        return app.UseMiddleware<TransactionMiddleware>();
-    }
+    public static IApplicationBuilder UseDbTransaction(this IApplicationBuilder app) =>
+        app.UseMiddleware<TransactionMiddleware>();
+
+    public static IApplicationBuilder UseExceptionHandling(this IApplicationBuilder app) =>
+        app.UseMiddleware<ExceptionHandlerMiddleware>();
 }

@@ -18,13 +18,17 @@ public class TransactionMiddleware(RequestDelegate next)
 
         try
         {
+            Console.WriteLine("STARTED");
             await unitOfWork.BeginTransactionAsync(cancellationToken);
             await _next(context);
             await unitOfWork.CommitTransactionAsync(cancellationToken);
+            Console.WriteLine("COMMITTED");
         }
-        catch (Exception)
+        catch 
         {
+            Console.WriteLine("ROLLBACK");
             await unitOfWork.RollbackTransactionAsync(cancellationToken);
+            throw;
         }
     }
 }

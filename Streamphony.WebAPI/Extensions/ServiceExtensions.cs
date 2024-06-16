@@ -1,72 +1,32 @@
-using FluentValidation;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
-using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
-using Streamphony.Application.Abstractions;
-using Streamphony.Application.Abstractions.Logging;
-using Streamphony.Application.Abstractions.Mapping;
-using Streamphony.Application.Abstractions.Repositories;
-using Streamphony.Application.Abstractions.Services;
-using Streamphony.Application.App.Artists.Queries;
-using Streamphony.Application.Services;
-using Streamphony.Infrastructure.Auth;
-using Streamphony.Infrastructure.Logging;
-using Streamphony.Infrastructure.Mapping;
-using Streamphony.Infrastructure.Persistence.Contexts;
-using Streamphony.Infrastructure.Persistence.Repositories;
-using Streamphony.Infrastructure.Validators.CreationDTOs;
-using Streamphony.Infrastructure.Validators.DTOs;
+using Serilog.Events;
+using Streamphony.Application.Extensions;
+using Streamphony.Infrastructure.Extensions;
 
 namespace Streamphony.WebAPI.Extensions;
 
 public static class ServiceExtensions
 {
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services,
-        IConfiguration configuration)
+    public static void AddServices(this WebApplicationBuilder builder)
     {
-        services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+            .Enrich.FromLogContext()
+            .CreateBootstrapLogger();
 
-        services.AddMediatR(typeof(GetAllArtistsHandler).Assembly);
+        builder.Services.AddControllers();
+        builder.Services.AddEndpointsApiExplorer();
 
-        // Repository and UnitOfWork registration
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddScoped<IArtistRepository, ArtistRepository>();
-        services.AddScoped<ISongRepository, SongRepository>();
-        services.AddScoped<IAlbumRepository, AlbumRepository>();
-        services.AddScoped<IGenreRepository, GenreRepository>();
-        services.AddScoped<IPreferenceRepository, PreferenceRepository>();
-        services.AddTransient<IValidationService, ValidationService>();
-
-        // Mapping provider with Mapster
-        services.AddScoped<IMappingProvider, MapsterProvider>();
-
-        // Logging provider with Serilog
-        services.AddSingleton<ILoggingProvider, SerilogProvider>();
-
-        // Application Services registration
-        services.AddScoped<ILoggingService, LoggingService>();
-        services.AddScoped<IValidationService, ValidationService>();
-
-        // Fluent Validation setup
-        services.AddValidatorsFromAssemblyContaining<ArtistCreationDtoValidator>();
-        services.AddValidatorsFromAssemblyContaining<ArtistDtoValidator>();
-        services.AddFluentValidationAutoValidation();
-
-        // Auth
-        services.AddScoped<IUserManagerProvider, UserManagerProvider>();
-        services.AddTransient<ITokenService, TokenService>();
-        services.AddTransient<IAuthenticationService, AuthenticationService>();
-        services.AddJwtAuthentication(configuration);
+        builder.Services.AddSwagger();
+        builder.Services.AddCorsPolicy();
+        builder.Services.AddInfrastructure(builder.Configuration);
+        builder.Services.AddApplication();
 
         // Serilog configuration
-        services.AddSerilog((serv, lc) => lc
-                .ReadFrom.Configuration(configuration)
+        builder.Services.AddSerilog((serv, lc) => lc
+                .ReadFrom.Configuration(builder.Configuration)
                 .ReadFrom.Services(serv)
                 .Enrich.FromLogContext(),
             true);
-
-        return services;
     }
 }

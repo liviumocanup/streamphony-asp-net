@@ -1,22 +1,8 @@
-using Serilog;
-using Serilog.Events;
 using Streamphony.WebAPI.Extensions;
-using Streamphony.WebAPI.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-    .Enrich.FromLogContext()
-    .CreateBootstrapLogger();
-
-// Add services to the container.
-builder.Services.AddControllers(cfg => { cfg.Filters.Add<ExceptionFilter>(); });
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwagger();
-
-builder.Services.AddCorsPolicy();
-builder.Services.AddApplicationServices(builder.Configuration);
+builder.AddServices();
 
 var app = builder.Build();
 
@@ -25,6 +11,7 @@ if (app.Environment.IsDevelopment()) app.UseSwaggerDocumentation();
 app.UseCors("ClientPermission");
 app.UseHttpsRedirection();
 app.UseRequestTiming();
+app.UseExceptionHandling();
 app.UseDbTransaction();
 app.MapControllers();
 

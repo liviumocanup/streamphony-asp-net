@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 
 namespace Streamphony.WebAPI.Extensions;
@@ -32,6 +33,12 @@ public static class SwaggerExtensions
                     },
                     Array.Empty<string>()
                 }
+            });
+            
+            options.MapType<TimeSpan>(() => new OpenApiSchema
+            {
+                Type = "string",
+                Example = new OpenApiString("00:00:00")
             });
         });
 

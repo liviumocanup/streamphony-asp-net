@@ -12,7 +12,7 @@ using Streamphony.Infrastructure.Persistence.Contexts;
 namespace Streamphony.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240530134634_InitialCreate")]
+    [Migration("20240613070725_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -98,7 +98,13 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Artists");
                 });
@@ -163,6 +169,9 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<Guid?>("ArtistId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -413,6 +422,17 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                     b.Navigation("Artist");
                 });
 
+            modelBuilder.Entity("Streamphony.Domain.Models.Artist", b =>
+                {
+                    b.HasOne("Streamphony.Domain.Models.Auth.User", "User")
+                        .WithOne("Artist")
+                        .HasForeignKey("Streamphony.Domain.Models.Artist", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Streamphony.Domain.Models.Auth.RoleClaim", b =>
                 {
                     b.HasOne("Streamphony.Domain.Models.Auth.Role", null)
@@ -517,6 +537,11 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("UploadedSongs");
+                });
+
+            modelBuilder.Entity("Streamphony.Domain.Models.Auth.User", b =>
+                {
+                    b.Navigation("Artist");
                 });
 
             modelBuilder.Entity("Streamphony.Domain.Models.Genre", b =>
