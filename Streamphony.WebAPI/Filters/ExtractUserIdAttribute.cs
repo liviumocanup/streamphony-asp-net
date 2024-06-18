@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Streamphony.WebAPI.Filters;
 
+
+// TODO: Extension for Claims.FirstOrDefault and rid of Filter
 public class ExtractUserIdAttribute: Attribute, IAsyncActionFilter
 {
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)

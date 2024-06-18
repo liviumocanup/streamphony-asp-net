@@ -2,8 +2,10 @@
 
 public abstract class BlobContainer
 {
+    public static string Draft => "draft";
     public static string Songs => "songs";
-    public static string ProfilePictures => "images/profile-pictures";
-    public static string SongCovers => "images/song-covers";
-    public static string AlbumCovers => "images/album-covers";
+    public static string Images => "images";
+    public static string ProfilePictures => $"{Images}/profile-pictures";
+    public static string SongCovers => $"{Images}/song-covers";
+    public static string AlbumCovers => $"{Images}/album-covers";
 }

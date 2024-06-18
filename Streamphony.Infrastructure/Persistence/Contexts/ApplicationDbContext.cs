@@ -16,6 +16,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<AlbumArtist> AlbumArtists { get; set; }
     public DbSet<Song> Songs { get; set; }
     public DbSet<Preference> Preferences { get; set; }
+    public DbSet<BlobFile> BlobFiles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

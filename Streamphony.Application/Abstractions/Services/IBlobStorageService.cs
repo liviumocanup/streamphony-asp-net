@@ -2,7 +2,7 @@
 
 public interface IBlobStorageService
 {
-    Task<string> UploadAudioFileAsync(string fileName, Stream content);
-    Task<string> UploadImageFileAsync(string containerName, string fileName, Stream content);
+    Task<string> UploadFileAsync(string containerName, string fileName, string contentType, Stream content);
     Task DeleteFileAsync(string containerName, string fileName);
+    Task MoveBlobAsync(string sourceContainer, string sourceFileName, string destinationContainer, string destinationFileName);
 }

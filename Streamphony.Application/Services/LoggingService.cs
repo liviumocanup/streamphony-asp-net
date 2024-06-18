@@ -36,7 +36,7 @@ public class LoggingService(ILoggingProvider logger) : ILoggingService
         throw new UnauthorizedException($"{navName} with Id '{navId}' does not own {entityName} with Id '{entityId}'.");
     }
 
-    public void LogAndThrowNotFoundException(string entityName, Guid entityId, LogAction logAction)
+    public void LogAndThrowNotFoundException(string entityName, Guid entityId, LogAction logAction = LogAction.Delete)
     {
         _logger.LogWarning("{LogAction} attempt for non-existing {EntityType} with Id '{EntityId}'.", logAction,
             entityName, entityId);

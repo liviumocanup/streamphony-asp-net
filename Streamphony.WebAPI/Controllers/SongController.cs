@@ -23,16 +23,12 @@ public class SongController(IMediator mediator) : AppBaseController
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<SongDto>> CreateSong(IFormFile songFile, [FromForm] SongCreationDto songCreationDto)
+    public async Task<ActionResult<SongResponseDto>> CreateSong(SongCreationDto songCreationDto)
     {
         if (HttpContext.Items["UserId"] is not Guid userId)
             return Unauthorized("ID is missing from the context");
         
-        var songId = await _mediator.Send(new CreateSong(songCreationDto, userId));
-        
-        await using var songStream = songFile.OpenReadStream();
-        var createdSongDto = await _mediator.Send(new UploadAudio(songId, songStream, songFile.Length, songFile.FileName));
-        
+        var createdSongDto = await _mediator.Send(new CreateSong(songCreationDto, userId));
         return CreatedAtAction(nameof(GetSongById), new { id = createdSongDto.Id }, createdSongDto);
     }
 
@@ -56,7 +52,7 @@ public class SongController(IMediator mediator) : AppBaseController
     [HttpGet]
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<PaginatedResult<SongDto>>> GetAllSongs([FromQuery] int pageNumber = 1,
+    public async Task<ActionResult<PaginatedResult<SongResponseDto>>> GetAllSongs([FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 10)
     {
         var pagedRequest = new PagedRequest
@@ -82,7 +78,7 @@ public class SongController(IMediator mediator) : AppBaseController
     [HttpGet("current")]
     [ExtractUserId]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<SongDto>>> GetSongsForCurrentUser()
+    public async Task<ActionResult<IEnumerable<SongResponseDto>>> GetSongsForCurrentUser()
     {
         if (HttpContext.Items["UserId"] is not Guid userId)
             return Unauthorized("ID is missing from the context");

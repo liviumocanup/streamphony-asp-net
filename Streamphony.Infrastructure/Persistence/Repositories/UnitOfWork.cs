@@ -10,7 +10,8 @@ public class UnitOfWork(
     ISongRepository songRepository,
     IAlbumRepository albumRepository,
     IGenreRepository genreRepository,
-    IPreferenceRepository preferenceRepository)
+    IPreferenceRepository preferenceRepository,
+    IBlobRepository blobRepository)
     : IUnitOfWork
 {
     private readonly ApplicationDbContext _context = context;
@@ -40,4 +41,5 @@ public class UnitOfWork(
     public IAlbumRepository AlbumRepository { get; } = albumRepository;
     public IGenreRepository GenreRepository { get; } = genreRepository;
     public IPreferenceRepository PreferenceRepository { get; } = preferenceRepository;
+    public IBlobRepository BlobRepository { get; } = blobRepository;
 }

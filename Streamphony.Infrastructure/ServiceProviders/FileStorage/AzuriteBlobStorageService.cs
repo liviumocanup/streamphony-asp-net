@@ -1,31 +1,22 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Streamphony.Application.Abstractions.Services;
-using Streamphony.Application.Common.Enum;
 
 namespace Streamphony.Infrastructure.ServiceProviders.FileStorage;
 
 public class AzuriteBlobStorageService(string? connectionString) : IBlobStorageService
 {
     private readonly BlobServiceClient _blobServiceClient = new BlobServiceClient(connectionString);
+    private static readonly PublicAccessType PublicAccessType = PublicAccessType.Blob;
     
-    public async Task<string> UploadAudioFileAsync(string fileName, Stream content)
-    {
-        return await UploadFileAsync(BlobContainer.Songs, fileName, content, "audio/mpeg");
-    }
-
-    public async Task<string> UploadImageFileAsync(string containerName, string fileName, Stream content)
-    {
-        return await UploadFileAsync(containerName, fileName, content, "image/png");
-    }
-    
-    private async Task<string> UploadFileAsync(string containerName, string fileName, Stream content, string contentType)
+    public async Task<string> UploadFileAsync(string containerName, string fileName, string contentType, Stream content)
     {
         var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
-        await containerClient.CreateIfNotExistsAsync();
+        await containerClient.CreateIfNotExistsAsync(publicAccessType: PublicAccessType);
         
         var blobClient = containerClient.GetBlobClient(fileName);
         var blobHttpHeader = new BlobHttpHeaders { ContentType = contentType };
+        
         await blobClient.UploadAsync(content, new BlobUploadOptions { HttpHeaders = blobHttpHeader });
         
         return blobClient.Uri.AbsoluteUri;
@@ -39,4 +30,22 @@ public class AzuriteBlobStorageService(string? connectionString) : IBlobStorageS
         
         await blobClient.DeleteIfExistsAsync();
     }
+    
+    public async Task MoveBlobAsync(string sourceContainer, string sourceFileName, string destinationContainer, string destinationFileName)
+    {
+        var sourceContainerClient = _blobServiceClient.GetBlobContainerClient(sourceContainer);
+        var destinationContainerClient = _blobServiceClient.GetBlobContainerClient(destinationContainer);
+
+        await destinationContainerClient.CreateIfNotExistsAsync(publicAccessType: PublicAccessType);
+
+        var sourceBlobClient = sourceContainerClient.GetBlobClient(sourceFileName);
+        var destinationBlobClient = destinationContainerClient.GetBlobClient(destinationFileName);
+
+        if (await sourceBlobClient.ExistsAsync())
+        {
+            await destinationBlobClient.StartCopyFromUriAsync(sourceBlobClient.Uri);
+            await sourceBlobClient.DeleteAsync();
+        }
+    }
+
 }

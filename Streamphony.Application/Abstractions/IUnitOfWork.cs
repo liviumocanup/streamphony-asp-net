@@ -9,6 +9,7 @@ public interface IUnitOfWork
     public IAlbumRepository AlbumRepository { get; }
     public IGenreRepository GenreRepository { get; }
     public IPreferenceRepository PreferenceRepository { get; }
+    public IBlobRepository BlobRepository { get; }
     Task SaveAsync(CancellationToken cancellationToken);
     Task BeginTransactionAsync(CancellationToken cancellationToken);
     Task CommitTransactionAsync(CancellationToken cancellationToken);

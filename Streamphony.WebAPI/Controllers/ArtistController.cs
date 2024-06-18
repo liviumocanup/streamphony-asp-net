@@ -28,7 +28,7 @@ public class ArtistController(IMediator mediator) : AppBaseController
             return Unauthorized("ID is missing from the context");
         
         var createdArtistDto = await _mediator.Send(new CreateArtist(artistDto, userId));
-        return CreatedAtAction(nameof(GetArtistById), new { id = createdArtistDto.Id }, createdArtistDto);
+        return CreatedAtAction(nameof(CreateArtist), new { id = createdArtistDto.Id }, createdArtistDto);
     }
 
     [HttpPut]

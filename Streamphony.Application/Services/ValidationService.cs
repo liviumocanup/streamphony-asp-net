@@ -3,6 +3,7 @@ using Streamphony.Application.Abstractions.Repositories;
 using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.Common.Enum;
 using Streamphony.Domain.Models;
+using Streamphony.Domain.Models.Auth;
 
 namespace Streamphony.Application.Services;
 
@@ -19,6 +20,22 @@ public class ValidationService(ILoggingService loggingService) : IValidationServ
     {
         var entityName = typeof(TEntity).Name;
         var existingEntity = await repository.GetById(entityId, cancellationToken);
+
+        if (existingEntity == null)
+            _loggingService.LogAndThrowNotFoundException(entityName, entityId, logAction);
+
+        return existingEntity!;
+    }
+
+    public async Task<User> GetExistingEntity(
+        IUserManagerProvider repository,
+        Guid entityId,
+        CancellationToken cancellationToken,
+        LogAction logAction = LogAction.Create
+    )
+    {
+        const string entityName = nameof(User);
+        var existingEntity = await repository.FindByIdAsync(entityId.ToString());
 
         if (existingEntity == null)
             _loggingService.LogAndThrowNotFoundException(entityName, entityId, logAction);
@@ -77,11 +94,17 @@ public class ValidationService(ILoggingService loggingService) : IValidationServ
         IRepository<TNav> repository,
         Guid? id,
         CancellationToken cancellationToken,
+        bool isNavRequired = false,
         LogAction logAction = LogAction.Create
     ) where TNav : BaseEntity
     {
-        if (id == null) return;
-        var navId = id.Value;
+        if (id == null)
+            if (isNavRequired)
+                _loggingService.LogAndThrowNotFoundExceptionForNavigation(typeof(TEntity).Name, typeof(TNav).Name,
+                    Guid.Empty, logAction);
+            else return;
+
+        var navId = id!.Value;
 
         await AssertNavigationEntityExists<TEntity, TNav>(repository, navId, cancellationToken, logAction);
     }

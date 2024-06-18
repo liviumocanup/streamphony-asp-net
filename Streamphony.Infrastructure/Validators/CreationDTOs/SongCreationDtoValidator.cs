@@ -1,6 +1,5 @@
 using FluentValidation;
 using Streamphony.Application.App.Songs.DTOs;
-using Streamphony.Infrastructure.Extensions;
 
 namespace Streamphony.Infrastructure.Validators.CreationDTOs;
 

@@ -24,7 +24,7 @@ public class AlbumController(IMediator mediator) : AppBaseController
     public async Task<ActionResult<AlbumDto>> CreateAlbum(AlbumCreationDto albumDto)
     {
         var createdAlbumDto = await _mediator.Send(new CreateAlbum(albumDto));
-        return CreatedAtAction(nameof(GetAlbumById), new { id = createdAlbumDto.Id }, createdAlbumDto);
+        return CreatedAtAction(nameof(CreateAlbum), new { id = createdAlbumDto.Id }, createdAlbumDto);
     }
 
     [HttpPut]

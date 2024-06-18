@@ -32,9 +32,9 @@ public class UpdateSongHandler(
             cancellationToken);
         await ValidateOwnership(songDto, userId, cancellationToken);
         await _validationService.AssertNavigationEntityExists<Song, Genre>(_unitOfWork.GenreRepository, songDto.GenreId,
-            cancellationToken, LogAction.Update);
+            cancellationToken, logAction: LogAction.Update);
         await _validationService.AssertNavigationEntityExists<Song, Album>(_unitOfWork.AlbumRepository, songDto.AlbumId,
-            cancellationToken, LogAction.Update);
+            cancellationToken, logAction: LogAction.Update);
         await _validationService.EnsureArtistUniquePropertyExceptId(duplicateTitleForOtherSongs, userId,
             nameof(songDto.Title), songDto.Title, songDto.Id, cancellationToken);
 

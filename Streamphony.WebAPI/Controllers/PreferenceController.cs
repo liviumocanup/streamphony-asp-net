@@ -26,7 +26,7 @@ public class PreferenceController(IMediator mediator) : AppBaseController
     public async Task<ActionResult<PreferenceDto>> CreatePreference(PreferenceDto preferenceDto)
     {
         var createdPreferenceDto = await _mediator.Send(new CreatePreference(preferenceDto));
-        return CreatedAtAction(nameof(GetPreferenceById), new { id = createdPreferenceDto.Id }, createdPreferenceDto);
+        return CreatedAtAction(nameof(CreatePreference), new { id = createdPreferenceDto.Id }, createdPreferenceDto);
     }
 
     [HttpPut]

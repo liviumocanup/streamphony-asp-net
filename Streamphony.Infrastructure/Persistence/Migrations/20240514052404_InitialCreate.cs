@@ -15,6 +15,25 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                 name: "Auth");
 
             migrationBuilder.CreateTable(
+                name: "BlobFiles",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ContainerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StorageKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Extension = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ContentType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Length = table.Column<long>(type: "bigint", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Duration = table.Column<TimeSpan>(type: "time", nullable: true),
+                    OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BlobFiles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Genres",
                 columns: table => new
                 {
@@ -281,7 +300,8 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Duration = table.Column<TimeSpan>(type: "time", nullable: false),
-                    Url = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    CoverUrl = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    AudioUrl = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     GenreId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     AlbumId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
@@ -410,6 +430,9 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
         {
             migrationBuilder.DropTable(
                 name: "AlbumArtists");
+
+            migrationBuilder.DropTable(
+                name: "BlobFiles");
 
             migrationBuilder.DropTable(
                 name: "Preferences");

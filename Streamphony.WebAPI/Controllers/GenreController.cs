@@ -26,7 +26,7 @@ public class GenreController(IMediator mediator) : AppBaseController
     public async Task<ActionResult<GenreDto>> CreateGenre(GenreCreationDto genreDto)
     {
         var createdGenreDto = await _mediator.Send(new CreateGenre(genreDto));
-        return CreatedAtAction(nameof(GetGenreById), new { id = createdGenreDto.Id }, createdGenreDto);
+        return CreatedAtAction(nameof(CreateGenre), new { id = createdGenreDto.Id }, createdGenreDto);
     }
 
     [HttpPut]
