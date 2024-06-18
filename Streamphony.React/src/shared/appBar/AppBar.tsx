@@ -7,12 +7,15 @@ import ThemeToggleButton from './components/ThemeToggleButton';
 import useAuthContext from '../../hooks/context/useAuthContext';
 import { StyledAppBar } from './AppBarStyle';
 import { ReactNode } from 'react';
+import { HOME_ROUTE } from '../../routes/routes';
+import CreateNew from './CreateNew';
 
 interface AppBarProps {
   open: boolean;
   handleDrawerOpen: () => void;
   drawerWidth?: number;
   hideToggleOnOpen?: boolean;
+  showCreate: boolean;
   avatarItems?: ReactNode[];
 }
 
@@ -22,13 +25,14 @@ const AppBar = ({
   drawerWidth = 0,
   hideToggleOnOpen = true,
   avatarItems,
+  showCreate,
 }: AppBarProps) => {
   const { isLoggedIn } = useAuthContext();
 
   return (
     <StyledAppBar
       open={open}
-      elevation={0}
+      elevation={1}
       drawerWidth={drawerWidth}
       sx={{
         color: 'text.primary',
@@ -51,12 +55,17 @@ const AppBar = ({
         </IconButton>
 
         <Typography variant="h4" align="left" sx={{ flexGrow: 1 }}>
-          <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <Link
+            to={HOME_ROUTE}
+            style={{ textDecoration: 'none', color: 'inherit' }}
+          >
             {APP_TITLE}
           </Link>
         </Typography>
 
         <ThemeToggleButton />
+
+        {showCreate && <CreateNew />}
 
         {isLoggedIn ? (
           <UserAvatar menuItems={avatarItems} />

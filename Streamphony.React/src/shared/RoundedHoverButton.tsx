@@ -35,7 +35,7 @@ const RoundedHoverButton = ({
         ...(hasVisibleBackground && {
           backgroundColor: 'background.default',
           borderRadius: '7px',
-          color: '#fff',
+          color: 'text.primary',
           padding: '0.5rem',
           marginRight: '1rem',
         }),

@@ -4,6 +4,8 @@ import { DrawerHeader } from '../../home/styles/DrawerHeaderStyle';
 import { IconButton, Typography } from '@mui/material';
 import { APP_TITLE } from '../../../shared/constants';
 import MenuIcon from '@mui/icons-material/Menu';
+import { HOME_ROUTE } from '../../../routes/routes';
+import { Link } from 'react-router-dom';
 
 interface TemporaryDrawerProps {
   open: boolean;
@@ -36,7 +38,12 @@ const TemporaryDrawer = ({ open, handleDrawerClose }: TemporaryDrawerProps) => {
         </IconButton>
 
         <Typography variant="h4" align="left" sx={{ flexGrow: 1 }}>
-          {APP_TITLE}
+          <Link
+            to={HOME_ROUTE}
+            style={{ textDecoration: 'none', color: 'inherit' }}
+          >
+            {APP_TITLE}
+          </Link>
         </Typography>
       </DrawerHeader>
 

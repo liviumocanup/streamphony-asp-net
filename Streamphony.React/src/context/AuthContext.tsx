@@ -2,14 +2,16 @@ import { createContext } from 'react';
 
 type AuthContextType = {
   isLoggedIn: boolean;
-  tokenRefresh: () => void;
-  handleLogOut: () => void;
+  getToken: () => string | null;
+  tokenRefresh: (token: string) => void;
+  logOut: () => void;
 };
 
 const defaultContextValue: AuthContextType = {
   isLoggedIn: false,
+  getToken: () => null,
   tokenRefresh: () => {},
-  handleLogOut: () => {},
+  logOut: () => {},
 };
 
 const AuthContext = createContext<AuthContextType>(defaultContextValue);

@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import useTokenStorage from './localStorage/useTokenStorage';
 
 const useManageAuth = () => {
-  const { getToken, removeToken } = useTokenStorage();
+  const { getToken, setToken, removeToken } = useTokenStorage();
 
   const isTokenStored = useCallback(() => {
     return getToken() !== null;
@@ -10,16 +10,20 @@ const useManageAuth = () => {
 
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => isTokenStored());
 
-  const tokenRefresh = useCallback(() => {
-    setIsLoggedIn(isTokenStored());
-  }, [isTokenStored]);
+  const tokenRefresh = useCallback(
+    (token: string) => {
+      setToken(token);
+      setIsLoggedIn(isTokenStored());
+    },
+    [setToken, isTokenStored],
+  );
 
-  const handleLogOut = () => {
+  const logOut = () => {
     removeToken();
     setIsLoggedIn(false);
   };
 
-  return { isLoggedIn, tokenRefresh, handleLogOut };
+  return { isLoggedIn, getToken, tokenRefresh, logOut };
 };
 
 export default useManageAuth;

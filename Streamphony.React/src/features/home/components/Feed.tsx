@@ -1,10 +1,11 @@
 import { artists, albums, playlists } from '../../../shared/dummy_data';
 import useFetchImages from '../hooks/useFetchImages';
-import UserAlbums from './UserAlbums';
+// import UserSongs from './UserSongs';
 import { Suspense } from 'react';
 import Section from './Section';
 import FallbackSection from './fallback/FallbackSection';
 import useAuthContext from '../../../hooks/context/useAuthContext';
+import UserAlbums from './UserSongs';
 
 const Feed = () => {
   const { isLoggedIn } = useAuthContext();

@@ -25,11 +25,12 @@ const PasswordInput = ({ control, errors }: PasswordInputProps) => {
 
   return (
     <FormControl variant="outlined" sx={{ mb: 2 }}>
-      <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+      <InputLabel id="outlined-adornment-password" error={!!errors.password}>
+        Password
+      </InputLabel>
       <Controller
         name="password"
         control={control}
-        rules={{ required: 'Password required' }}
         render={({ field }) => (
           <OutlinedInput
             {...field}
@@ -48,6 +49,7 @@ const PasswordInput = ({ control, errors }: PasswordInputProps) => {
               </InputAdornment>
             }
             label="Password"
+            error={!!errors.password}
           />
         )}
       />

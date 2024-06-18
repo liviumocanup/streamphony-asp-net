@@ -56,6 +56,7 @@ const SignUpForm = () => {
         variant="contained"
         type="submit"
         aria-label="Sign Up"
+        disabled={isPending}
         sx={{ mb: 2 }}
       >
         {isPending ? <LoadingSpinner /> : 'Sign Up'}

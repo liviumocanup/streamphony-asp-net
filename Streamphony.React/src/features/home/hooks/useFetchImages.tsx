@@ -2,9 +2,9 @@ import { useSuspenseQueries } from '@tanstack/react-query';
 
 const url = 'https://picsum.photos';
 
-const fetchImageUrl = async (name: string) => {
+const fetchImageUrl = async () => {
   // await new Promise((resolve) => setTimeout(resolve, 5000));
-  const response = await fetch(`${url}/seed/${name}/185`);
+  const response = await fetch(`${url}/185`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
@@ -15,7 +15,7 @@ const useFetchImages = (items: { name: string }[]) => {
   const queryResults = useSuspenseQueries({
     queries: items.map((item) => ({
       queryKey: ['image', item.name],
-      queryFn: () => fetchImageUrl(item.name),
+      queryFn: () => fetchImageUrl(),
       staleTime: Infinity,
     })),
   });

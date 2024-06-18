@@ -18,7 +18,7 @@ const CabinetSection = ({ sectionName, sectionItems }: CabinetSectionProps) => {
     <Box
       sx={{
         bgcolor: 'background.paper',
-        width: '60rem',
+        width: '50rem',
         borderRadius: '10px',
         mb: 2,
       }}

@@ -3,16 +3,9 @@ import useManageAuth from '../../hooks/useManageAuth';
 import AuthContext from '../AuthContext';
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const { isLoggedIn, tokenRefresh, handleLogOut } = useManageAuth();
+  const auth = useManageAuth();
 
-  const contextValue = useMemo(
-    () => ({
-      isLoggedIn,
-      tokenRefresh,
-      handleLogOut,
-    }),
-    [isLoggedIn, tokenRefresh, handleLogOut],
-  );
+  const contextValue = useMemo(() => auth, [auth]);
 
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

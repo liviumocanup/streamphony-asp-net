@@ -1,5 +1,5 @@
-import { Controller, FieldErrors } from 'react-hook-form';
-import { TextField } from '@mui/material';
+import { FieldErrors } from 'react-hook-form';
+import FormInput from './FormInput';
 
 interface UsernameInputProps {
   control: any;
@@ -8,22 +8,12 @@ interface UsernameInputProps {
 
 const UsernameInput = ({ control, errors }: UsernameInputProps) => {
   return (
-    <Controller
-      name="username"
+    <FormInput
+      name={'username'}
+      type={'text'}
+      label={'Username'}
       control={control}
-      rules={{ required: 'Username required' }}
-      render={({ field }) => (
-        <TextField
-          {...field}
-          id="username-textfield"
-          type="text"
-          label="Username"
-          error={!!errors.username}
-          helperText={errors.username?.message}
-          sx={{ mb: 2 }}
-          aria-invalid={!!errors.username}
-        />
-      )}
+      errors={errors}
     />
   );
 };

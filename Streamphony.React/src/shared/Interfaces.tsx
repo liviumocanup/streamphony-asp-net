@@ -11,6 +11,22 @@ export interface SignUpData {
   password: string;
 }
 
+export interface RegisterArtistData {
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  profilePictureUrl?: string;
+}
+
+export interface CreateSongData {
+  title: string;
+  duration: string;
+  url: string;
+  ownerId: string;
+  genreId?: string;
+  albumId?: string;
+}
+
 export interface Album {
   id: number;
   title: string;
@@ -21,6 +37,7 @@ export interface Album {
 export interface Item {
   name: string;
   description: string;
+  url?: string;
 }
 
 export interface UrlArray {
