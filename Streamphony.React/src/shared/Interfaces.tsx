@@ -1,3 +1,5 @@
+import React, { ReactElement } from 'react';
+
 export interface LogInData {
   username: string;
   password: string;
@@ -15,16 +17,27 @@ export interface RegisterArtistData {
   firstName: string;
   lastName: string;
   dateOfBirth: string;
-  profilePictureUrl?: string;
+  profilePictureId: string;
 }
 
 export interface CreateSongData {
   title: string;
-  duration: string;
-  url: string;
-  ownerId: string;
+  coverFileId: string;
+  audioFileId: string;
   genreId?: string;
   albumId?: string;
+}
+
+export interface Song {
+  id: string;
+  title: string;
+  coverUrl: string;
+  audioUrl: string;
+  duration: string;
+  genreId: string;
+  albumId: string;
+  ownerId: string;
+  createdAt: string;
 }
 
 export interface Album {
@@ -37,9 +50,27 @@ export interface Album {
 export interface Item {
   name: string;
   description: string;
-  url?: string;
+  coverUrl: string;
+  resourceUrl: string;
+  resource: any;
 }
 
-export interface UrlArray {
-  [key: string]: string;
+export interface BlobFile {
+  name: string;
+  url: string;
+  file: File;
+  id?: string;
+}
+
+export interface TableHeader {
+  label: string;
+  propertyName: string;
+  centered?: boolean;
+  width?: string;
+  icon?: ReactElement;
+  renderCell?: (
+    item: any,
+    index: number,
+    isHovered: boolean,
+  ) => React.ReactNode;
 }

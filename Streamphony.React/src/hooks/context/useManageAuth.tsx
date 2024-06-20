@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import useTokenStorage from './localStorage/useTokenStorage';
+import useTokenStorage from '../localStorage/useTokenStorage';
 
 const useManageAuth = () => {
   const { getToken, setToken, removeToken } = useTokenStorage();

@@ -24,16 +24,14 @@ const useCreateSong = () => {
         config,
       );
 
-      const song = res.data.song;
+      console.log('Response: ', res.data);
 
-      console.log(res.data);
-
-      return song;
+      return;
     } catch (err: any) {
+      console.log(err);
       if (axios.isAxiosError(err)) {
         throw new Error(err.message);
       } else {
-        console.log(err);
         throw new Error(err.response.data.errors);
       }
     }

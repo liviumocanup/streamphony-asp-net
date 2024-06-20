@@ -12,10 +12,10 @@ const VolumeControl = ({ volume, setVolume }: VolumeControlProps) => {
     <Box
       sx={{
         display: 'flex',
-        mr: 1,
-        width: '8vw',
+        mr: 3,
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-end',
+        width: '30%',
       }}
     >
       <VolumeUpIcon sx={{ mr: 1 }} />
@@ -26,6 +26,7 @@ const VolumeControl = ({ volume, setVolume }: VolumeControlProps) => {
         min={0}
         max={1}
         step={0.01}
+        width="25%"
       />
     </Box>
   );

@@ -7,6 +7,7 @@ interface AudioSliderProps {
   min?: number;
   max?: number;
   step?: number;
+  width?: string;
 }
 
 const AudioSlider = ({
@@ -16,6 +17,7 @@ const AudioSlider = ({
   min = 0,
   max = duration,
   step = 1,
+  width = '100%',
 }: AudioSliderProps) => {
   const theme = useTheme();
 
@@ -29,6 +31,8 @@ const AudioSlider = ({
       step={step}
       onChange={(_, value) => setPosition(value as number)}
       sx={{
+        width: { width },
+        minWidth: '50px',
         color: theme.palette.mode === 'dark' ? '#fff' : 'rgba(0,0,0,0.87)',
         height: 3,
         '& .MuiSlider-thumb': {

@@ -8,14 +8,13 @@ import useAuthContext from '../../hooks/context/useAuthContext';
 import { StyledAppBar } from './AppBarStyle';
 import { ReactNode } from 'react';
 import { HOME_ROUTE } from '../../routes/routes';
-import CreateNew from './CreateNew';
+import StudioCreateButton from './StudioCreateButton';
 
 interface AppBarProps {
   open: boolean;
   handleDrawerOpen: () => void;
   drawerWidth?: number;
-  hideToggleOnOpen?: boolean;
-  showCreate: boolean;
+  showCreate?: boolean;
   avatarItems?: ReactNode[];
 }
 
@@ -23,9 +22,8 @@ const AppBar = ({
   open,
   handleDrawerOpen,
   drawerWidth = 0,
-  hideToggleOnOpen = true,
   avatarItems,
-  showCreate,
+  showCreate = false,
 }: AppBarProps) => {
   const { isLoggedIn } = useAuthContext();
 
@@ -48,7 +46,7 @@ const AppBar = ({
           sx={{
             ml: '1px',
             mr: 2,
-            ...(hideToggleOnOpen && open && { display: 'none' }),
+            ...(open && { display: 'none' }),
           }}
         >
           <MenuIcon />
@@ -65,7 +63,7 @@ const AppBar = ({
 
         <ThemeToggleButton />
 
-        {showCreate && <CreateNew />}
+        {showCreate && <StudioCreateButton />}
 
         {isLoggedIn ? (
           <UserAvatar menuItems={avatarItems} />

@@ -1,21 +1,11 @@
-import { Box, IconButton, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import '../../App.css';
 import { Helmet } from 'react-helmet-async';
 import { APP_TITLE } from '../../shared/constants';
-import { DrawerHeader } from '../home/styles/DrawerHeaderStyle';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { useNavigate } from 'react-router-dom';
-import { STUDIO_ROUTE } from '../../routes/routes';
-import CreateSongForm from './components/CreateSongForm';
+import CreateSongForm from './components/upload/CreateSongForm';
 import AppBarWrapper from '../accountCabinet/AppBarWrapper';
 
 const CreateSong = () => {
-  const navigate = useNavigate();
-
-  const navigateBack = () => {
-    navigate(STUDIO_ROUTE);
-  };
-
   return (
     <>
       <Helmet>
@@ -23,27 +13,28 @@ const CreateSong = () => {
         <meta name="description" content="Upload a new song" />
       </Helmet>
 
-      <AppBarWrapper />
+      <AppBarWrapper
+        showCreate={true}
+        children={
+          <Box sx={{ mt: 7 }} className="CenteredContainer">
+            <Box sx={{ width: '60rem' }}>
+              <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 3 }}>
+                Create your Release
+              </Typography>
 
-      <Box sx={{ flexGrow: 1, mt: 5 }} className="WidthCentered">
-        <DrawerHeader />
-
-        <Box sx={{ width: '40rem' }}>
-          <IconButton
-            onClick={navigateBack}
-            aria-label="Go Back"
-            sx={{ bgcolor: 'background.paper', p: '12px', mb: 5 }}
-          >
-            <ArrowBackIosNewIcon />
-          </IconButton>
-
-          <Typography variant="h3" sx={{ fontWeight: 'bold', mb: 3 }}>
-            Create your Release
-          </Typography>
-
-          <CreateSongForm />
-        </Box>
-      </Box>
+              <Box
+                sx={{
+                  p: 4,
+                  borderRadius: '10px',
+                  bgcolor: 'background.paper',
+                }}
+              >
+                <CreateSongForm />
+              </Box>
+            </Box>
+          </Box>
+        }
+      />
     </>
   );
 };

@@ -3,19 +3,8 @@ import axios from 'axios';
 import { API_URL, CREATE_SONG_ENDPOINT } from '../../../shared/constants';
 import { useMemo } from 'react';
 import useAuthContext from '../../../hooks/context/useAuthContext';
-import { formatDuration } from '../../../shared/utils';
 
 const endpoint = `${CREATE_SONG_ENDPOINT}/current`;
-
-interface Song {
-  id: string;
-  title: string;
-  duration: string;
-  ownerId: string;
-  albumId: string;
-  genreId: string;
-  coverUrl: string;
-}
 
 const useGetCurrentUserSongs = () => {
   const { getToken } = useAuthContext();
@@ -36,17 +25,7 @@ const useGetCurrentUserSongs = () => {
 
       console.log(res.data);
 
-      return items.map((item: Song) => ({
-        id: item.id,
-        title: item.title,
-        duration: formatDuration(item.duration),
-        coverUrl: item.coverUrl,
-        audioUrl: item.audioUrl,
-        dateAdded: '-',
-        albumId: item.albumId === null ? '-' : item.albumId,
-        genreId: item.genreId === null ? '-' : item.genreId,
-        ownerId: item.ownerId,
-      }));
+      return items;
     } catch (err: any) {
       console.error('Failed to fetch albums:', err.response?.data);
       throw new Error(err.response?.data?.errors || 'Error fetching albums');
@@ -54,7 +33,7 @@ const useGetCurrentUserSongs = () => {
   };
 
   return useQuery({
-    queryKey: ['songs', token],
+    queryKey: ['songsDashboard', token],
     queryFn: getSongs,
     enabled: !!token,
   });

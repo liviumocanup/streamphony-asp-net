@@ -21,7 +21,6 @@ const registerArtistSchema = object({
     .min(MIN_YEAR, `Please enter a birth year from ${MIN_YEAR} onwards.`)
     .max(currentYear - MIN_AGE, 'You are too young to register as an artist.')
     .required(yearError),
-  profilePicture: string().url('Profile picture must be a valid URL'),
 }).required();
 
 export default registerArtistSchema;

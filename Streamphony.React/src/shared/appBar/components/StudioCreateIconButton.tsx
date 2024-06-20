@@ -1,4 +1,4 @@
-import { Button, IconButton, Tooltip } from '@mui/material';
+import { Button, Tooltip } from '@mui/material';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import React from 'react';
 
@@ -7,7 +7,7 @@ interface CreateIconButtonProps {
   openMenu: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
-const CreateIconButton = ({ open, openMenu }: CreateIconButtonProps) => {
+const StudioCreateIconButton = ({ open, openMenu }: CreateIconButtonProps) => {
   return (
     <Tooltip title="Create Menu" sx={{ mr: 2 }}>
       <Button
@@ -26,4 +26,4 @@ const CreateIconButton = ({ open, openMenu }: CreateIconButtonProps) => {
   );
 };
 
-export default CreateIconButton;
+export default StudioCreateIconButton;

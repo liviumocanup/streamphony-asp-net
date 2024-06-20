@@ -3,7 +3,8 @@ export const API_URL = 'http://localhost:5207/api';
 export const LOG_IN_ENDPOINT = 'auth/login';
 export const SIGN_UP_ENDPOINT = 'auth/register';
 export const REGISTER_ARTIST_ENDPOINT = 'artists';
-export const CREATE_SONG_ENDPOINT = 'songs';
+export const CREATE_SONG_ENDPOINT = 'songsDashboard';
+export const UPLOAD_BLOB_ENDPOINT = 'blobs';
 
 export const LS_TOKEN_KEY = 'token';
 export const LS_THEME_KEY = 'theme';
@@ -27,3 +28,13 @@ export const MONTHS = [
 
 export const MIN_YEAR = 1900;
 export const MIN_AGE = 13;
+
+export const IMAGE_CONTENT_TYPE = 'image/png, image/jpeg';
+export const AUDIO_CONTENT_TYPE = 'audio/mpeg, audio/wav';
+
+export enum BlobType {
+  Song = 'Song',
+  ProfilePicture = 'ProfilePicture',
+  SongCover = 'SongCover',
+  AlbumCover = 'AlbumCover',
+}

@@ -1,14 +1,22 @@
 import { Box } from '@mui/material';
 import '../../App.css';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import AppBar from '../../shared/appBar/AppBar';
-import TemporaryDrawer from './components/TemporaryDrawer';
+import PersistentDrawer from '../home/components/PersistentDrawer';
+import { DrawerHeader } from '../home/styles/DrawerHeaderStyle';
+import { Main } from '../home/styles/MainStyle';
 
 interface AppBarWrapperProps {
+  children: ReactNode;
   showCreate?: boolean;
 }
 
-const AppBarWrapper = ({ showCreate = false }: AppBarWrapperProps) => {
+const drawerWidth = 240;
+
+const AppBarWrapper = ({
+  children,
+  showCreate = false,
+}: AppBarWrapperProps) => {
   const [open, setOpen] = useState(false);
 
   const handleDrawerOpen = () => {
@@ -29,11 +37,20 @@ const AppBarWrapper = ({ showCreate = false }: AppBarWrapperProps) => {
       <AppBar
         open={open}
         handleDrawerOpen={handleDrawerOpen}
-        hideToggleOnOpen={false}
         showCreate={showCreate}
+        drawerWidth={drawerWidth}
       />
 
-      <TemporaryDrawer open={open} handleDrawerClose={handleDrawerClose} />
+      <PersistentDrawer
+        open={open}
+        handleDrawerClose={handleDrawerClose}
+        drawerWidth={drawerWidth}
+      />
+
+      <Main open={open} drawerWidth={drawerWidth}>
+        <DrawerHeader />
+        {children}
+      </Main>
     </Box>
   );
 };

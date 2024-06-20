@@ -2,9 +2,9 @@ import { SyntheticEvent, useState } from 'react';
 import { Box, Tab, Tabs } from '@mui/material';
 import { a11yProps, TabPanel } from './TabPanel';
 import '../ContentStudio.css';
-import SongsTabPanel from './SongsTabPanel';
+import SongsTabPanel from './songsDashboard/SongsTabPanel';
 
-const ContentTabs = () => {
+const DashboardTabs = () => {
   const [value, setValue] = useState(0);
 
   const handleChange = (_event: SyntheticEvent, newValue: number) => {
@@ -13,7 +13,7 @@ const ContentTabs = () => {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', ml: 3, mr: 3 }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', ml: 3, mr: 6 }}>
         <Tabs value={value} onChange={handleChange} aria-label="content tabs">
           <Tab
             label="Songs"
@@ -46,4 +46,4 @@ const ContentTabs = () => {
   );
 };
 
-export default ContentTabs;
+export default DashboardTabs;

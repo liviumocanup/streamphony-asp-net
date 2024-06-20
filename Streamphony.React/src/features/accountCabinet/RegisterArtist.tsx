@@ -2,7 +2,6 @@ import { Box, IconButton, Typography } from '@mui/material';
 import '../../App.css';
 import { Helmet } from 'react-helmet-async';
 import { APP_TITLE } from '../../shared/constants';
-import { DrawerHeader } from '../home/styles/DrawerHeaderStyle';
 import AppBarWrapper from './AppBarWrapper';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import RegisterArtistForm from './components/RegisterArtistForm';
@@ -23,27 +22,27 @@ const RegisterArtist = () => {
         <meta name="description" content="Registering your Artist Profile" />
       </Helmet>
 
-      <AppBarWrapper />
+      <AppBarWrapper
+        children={
+          <Box sx={{ mt: 7 }} className="CenteredContainer">
+            <Box sx={{ width: '40rem' }}>
+              <IconButton
+                onClick={navigateBack}
+                aria-label="Go Back"
+                sx={{ bgcolor: 'background.paper', p: '12px', mb: 5 }}
+              >
+                <ArrowBackIosNewIcon />
+              </IconButton>
 
-      <Box sx={{ flexGrow: 1, mt: 5 }} className="WidthCentered">
-        <DrawerHeader />
+              <Typography variant="h3" sx={{ fontWeight: 'bold', mb: 3 }}>
+                Register Artist
+              </Typography>
 
-        <Box sx={{ width: '40rem' }}>
-          <IconButton
-            onClick={navigateBack}
-            aria-label="Go Back"
-            sx={{ bgcolor: 'background.paper', p: '12px', mb: 5 }}
-          >
-            <ArrowBackIosNewIcon />
-          </IconButton>
-
-          <Typography variant="h3" sx={{ fontWeight: 'bold', mb: 3 }}>
-            Register Artist
-          </Typography>
-
-          <RegisterArtistForm />
-        </Box>
-      </Box>
+              <RegisterArtistForm />
+            </Box>
+          </Box>
+        }
+      />
     </>
   );
 };

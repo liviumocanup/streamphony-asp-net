@@ -6,17 +6,13 @@ import AccountCabSection from './components/AccountCabSection';
 import SecurityCabSection from './components/SecurityCabSection';
 import AppBarWrapper from './AppBarWrapper';
 import LoadingSpinner from '../../shared/LoadingSpinner';
-import useGetUserDetails from '../../hooks/useGetUserDetails';
 import useTokenStorage from '../../hooks/localStorage/useTokenStorage';
+import useArtistContext from '../../hooks/context/useArtistContext';
 
 const AccountCabinet = () => {
-  const { data: userDetails, isPending } = useGetUserDetails();
+  const { isArtistLinked } = useArtistContext();
   const { getUserClaims } = useTokenStorage();
   const { firstName, lastName } = getUserClaims();
-
-  if (isPending) {
-    return <LoadingSpinner />;
-  }
 
   return (
     <>
@@ -25,15 +21,17 @@ const AccountCabinet = () => {
         <meta name="description" content="Your account settings" />
       </Helmet>
 
-      <AppBarWrapper />
+      <AppBarWrapper
+        children={
+          <Box className="CenteredContainer">
+            <Toolbar />
 
-      <Box sx={{ flexGrow: 1, mt: 8 }} className="WidthCentered">
-        <Toolbar />
+            <AccountCabSection isArtist={isArtistLinked} />
 
-        <AccountCabSection isArtist={userDetails!.isArtistLinked} />
-
-        <SecurityCabSection />
-      </Box>
+            <SecurityCabSection />
+          </Box>
+        }
+      />
     </>
   );
 };

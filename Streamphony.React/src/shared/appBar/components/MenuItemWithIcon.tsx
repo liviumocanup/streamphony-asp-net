@@ -7,7 +7,7 @@ interface UserMenuItemProps {
   onClick: () => void;
 }
 
-const BarMenuItem = ({ text, icon, onClick }: UserMenuItemProps) => {
+const MenuItemWithIcon = ({ text, icon, onClick }: UserMenuItemProps) => {
   return (
     <MenuItem onClick={onClick}>
       <ListItemIcon>{icon}</ListItemIcon>
@@ -16,4 +16,4 @@ const BarMenuItem = ({ text, icon, onClick }: UserMenuItemProps) => {
   );
 };
 
-export default BarMenuItem;
+export default MenuItemWithIcon;

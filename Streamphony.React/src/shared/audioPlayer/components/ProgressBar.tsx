@@ -1,13 +1,13 @@
 import { Box, Typography } from '@mui/material';
 import AudioSlider from './AudioSlider';
 
-interface ProgressBar {
+interface ProgressBarProps {
   position: number;
   setPosition: (position: number) => void;
   duration: number;
 }
 
-const ProgressBar = ({ position, setPosition, duration }: ProgressBar) => {
+const ProgressBar = ({ position, setPosition, duration }: ProgressBarProps) => {
   function formatDuration(value: number) {
     const minute = Math.floor(value / 60);
     const secondLeft = value - minute * 60;
@@ -19,7 +19,7 @@ const ProgressBar = ({ position, setPosition, duration }: ProgressBar) => {
       display="flex"
       flexDirection="row"
       alignItems="center"
-      width="30vw"
+      width="35vw"
       sx={{ mb: 1 }}
     >
       <Typography variant="subtitle2" sx={{ color: 'text.secondary', mr: 2 }}>

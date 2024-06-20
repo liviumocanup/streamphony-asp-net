@@ -1,15 +1,14 @@
-import { TabPanel } from './TabPanel';
+import { TabPanel } from '../TabPanel';
 import { AccessTime as TimeIcon, PlayArrow } from '@mui/icons-material';
-import ContentTable from './ContentTable';
-import useGetCurrentUserSongs from '../hooks/useGetSongs';
+import DashboardTable from '../DashboardTable';
+import useGetCurrentUserSongs from '../../hooks/useGetSongs';
 import { Avatar, Box } from '@mui/material';
 
-interface SongsTabPanelProps {
+interface AlbumsTabPanelProps {
   value: number;
   index: number;
 }
 
-// Example song data
 const headers = [
   {
     label: '#',
@@ -31,7 +30,13 @@ const headers = [
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Avatar
           src={item.coverUrl || ''}
-          sx={{ width: 48, height: 48, marginRight: 2 }}
+          sx={{
+            width: 48,
+            height: 48,
+            marginRight: 2,
+            bgcolor: 'background.paper',
+            mr: 1.5,
+          }}
           variant="rounded"
           alt={item.title}
         />
@@ -39,7 +44,6 @@ const headers = [
       </Box>
     ),
   },
-  { label: 'Album', propertyName: 'albumId', width: '25%' },
   { label: 'Date Added', propertyName: 'dateAdded' },
   {
     label: 'Duration',
@@ -50,7 +54,7 @@ const headers = [
   },
 ];
 
-const SongsTabPanel = ({ value, index }: SongsTabPanelProps) => {
+const AlbumsTabPanel = ({ value, index }: AlbumsTabPanelProps) => {
   const { data: songs, isPending, isError } = useGetCurrentUserSongs();
   const items = songs;
   console.log('Items: ', items);
@@ -62,7 +66,7 @@ const SongsTabPanel = ({ value, index }: SongsTabPanelProps) => {
 
   return (
     <TabPanel value={value} index={index}>
-      <ContentTable headers={headers} items={items} />
+      <DashboardTable headers={headers} items={items} />
     </TabPanel>
   );
 };

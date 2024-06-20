@@ -20,6 +20,8 @@ import RegisterArtist from './features/accountCabinet/RegisterArtist';
 import AuthProvider from './context/providers/AuthProvider';
 import ContentStudio from './features/studio/ContentStudio';
 import CreateSong from './features/studio/CreateSong';
+import AudioPlayerProvider from './context/providers/AudioPlayerProvider';
+import ArtistProvider from './context/providers/ArtistProvider';
 
 const queryClient = new QueryClient();
 
@@ -27,58 +29,62 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <Routes>
-          <Route
-            path={SIGN_UP_ROUTE}
-            element={
-              <GuestRoute>
-                <SignUp />
-              </GuestRoute>
-            }
-          />
-          <Route
-            path={LOG_IN_ROUTE}
-            element={
-              <GuestRoute>
-                <LogIn />
-              </GuestRoute>
-            }
-          />
-          <Route
-            path={ACCOUNT_ROUTE}
-            element={
-              <ProtectedRoute>
-                <AccountCabinet />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path={REGISTER_ARTIST_ROUTE}
-            element={
-              <ProtectedRoute>
-                <RegisterArtist />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path={STUDIO_ROUTE}
-            element={
-              <ProtectedRoute>
-                <ContentStudio />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path={ADD_SONG_ROUTE}
-            element={
-              <ProtectedRoute>
-                <CreateSong />
-              </ProtectedRoute>
-            }
-          />
-          <Route path={HOME_ROUTE} element={<Home />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+        <ArtistProvider>
+          <AudioPlayerProvider>
+            <Routes>
+              <Route
+                path={SIGN_UP_ROUTE}
+                element={
+                  <GuestRoute>
+                    <SignUp />
+                  </GuestRoute>
+                }
+              />
+              <Route
+                path={LOG_IN_ROUTE}
+                element={
+                  <GuestRoute>
+                    <LogIn />
+                  </GuestRoute>
+                }
+              />
+              <Route
+                path={ACCOUNT_ROUTE}
+                element={
+                  <ProtectedRoute>
+                    <AccountCabinet />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path={REGISTER_ARTIST_ROUTE}
+                element={
+                  <ProtectedRoute>
+                    <RegisterArtist />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path={STUDIO_ROUTE}
+                element={
+                  <ProtectedRoute>
+                    <ContentStudio />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path={ADD_SONG_ROUTE}
+                element={
+                  <ProtectedRoute>
+                    <CreateSong />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path={HOME_ROUTE} element={<Home />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </AudioPlayerProvider>
+        </ArtistProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

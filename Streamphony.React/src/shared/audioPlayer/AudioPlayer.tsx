@@ -1,42 +1,26 @@
-import { Box } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import PlayerControls from './components/PlayerControls';
 import TrackDetails from './components/TrackDetails';
 import ProgressBar from './components/ProgressBar';
 import VolumeControl from './components/VolumeControl';
+import useAudioPlayerContext from '../../hooks/context/useAudioPlayerContext';
 
 interface AudioPlayerProps {
-  url: string;
-  title: string;
-  artist: string;
+  isDrawerOpen?: boolean;
+  drawerWidth?: number;
 }
 
-const AudioPlayer = ({ url, title, artist }: AudioPlayerProps) => {
-  const [isPlaying, setIsPlaying] = useState(false);
+const AudioPlayer = ({
+  isDrawerOpen = false,
+  drawerWidth = 0,
+}: AudioPlayerProps) => {
+  const theme = useTheme();
+  const { currentTrack, isPlaying, togglePlay, updateStoppedAt } =
+    useAudioPlayerContext();
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [position, setPosition] = useState(0);
+  const [position, setPosition] = useState(currentTrack.stoppedAt);
   const [volume, setVolume] = useState(0.5);
-  const songDuration = 200;
-
-  const togglePlayPause = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    if (isPlaying) {
-      audio.pause();
-    } else {
-      audio
-        .play()
-        .then(() => {
-          console.log('Audio playing!');
-        })
-        .catch((error) => {
-          console.error('Error attempting to play audio:', error);
-          setIsPlaying(false);
-        });
-    }
-    setIsPlaying(!isPlaying);
-  };
 
   const handlePositionChange = (newPosition: number) => {
     const audio = audioRef.current;
@@ -59,7 +43,8 @@ const AudioPlayer = ({ url, title, artist }: AudioPlayerProps) => {
     if (!audio) return;
 
     const updateTime = () => {
-      setPosition(Math.floor(audio.currentTime));
+      setPosition(audio.currentTime);
+      updateStoppedAt(audio.currentTime);
     };
 
     audio.addEventListener('timeupdate', updateTime);
@@ -69,37 +54,65 @@ const AudioPlayer = ({ url, title, artist }: AudioPlayerProps) => {
     };
   }, []);
 
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (audio.src !== currentTrack.audioUrl) {
+      audio.src = currentTrack.audioUrl;
+      audio.currentTime = currentTrack.stoppedAt;
+    }
+
+    if (isPlaying) {
+      audio.play().catch((error) => {
+        console.error('Error attempting to play audio:', error);
+      });
+    } else {
+      audio.pause();
+    }
+  }, [currentTrack, isPlaying]);
+
   return (
     <Box
       className="WidthCentered"
       sx={{
-        width: 'inherit',
-        bgcolor: 'blue',
+        position: 'fixed',
+        bottom: 0,
+        left: isDrawerOpen ? `${drawerWidth}px` : 0,
+        right: 0,
+        zIndex: 1000,
+        width: isDrawerOpen ? `calc(100% - ${drawerWidth}px)` : '100%',
+        boxShadow: '0 -2px 10px rgba(0,0,0,0.3)',
+        bgcolor: theme.palette.background.paper,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        transition: theme.transitions.create(['left', 'width'], {
+          easing: theme.transitions.easing.easeOut,
+          duration: theme.transitions.duration.enteringScreen,
+        }),
       }}
     >
-      <audio ref={audioRef} src={url} preload="auto" />
+      <audio ref={audioRef} preload="auto" />
       <TrackDetails
-        title={title}
-        artist={artist}
-        coverUrl={
-          'https://fastly.picsum.photos/id/446/185/185.jpg?hmac=-LrVBMhrSY98rhvxkY_0BKXggRTux5yvRUcLoBiaQY0'
-        }
+        title={currentTrack.title}
+        artist={currentTrack.artist}
+        coverUrl={currentTrack.coverUrl}
       />
 
-      <Box display="flex" flexDirection="column" alignItems="center">
-        <PlayerControls
-          isPlaying={isPlaying}
-          togglePlayPause={togglePlayPause}
-        />
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        sx={{ flex: '1', textAlign: 'center', ml: 4, minWidth: '200px' }}
+      >
+        <PlayerControls isPlaying={isPlaying} togglePlayPause={togglePlay} />
 
         <ProgressBar
           position={position}
           setPosition={handlePositionChange}
-          duration={songDuration}
+          duration={currentTrack.duration}
         />
       </Box>
 
@@ -109,70 +122,3 @@ const AudioPlayer = ({ url, title, artist }: AudioPlayerProps) => {
 };
 
 export default AudioPlayer;
-//
-// import { useState, useRef, useEffect } from 'react';
-// import { IconButton } from '@mui/material';
-// import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-// import PauseIcon from '@mui/icons-material/Pause';
-//
-// interface AudioPlayerProps {
-//   url: string;
-// }
-
-// const AudioPlayer = ({ url }: AudioPlayerProps) => {
-//
-//   return (
-//     <div>
-//       <audio ref={audioRef} src={url} preload="auto" />
-//       <IconButton onClick={togglePlayPause}>
-//         {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
-//       </IconButton>
-//     </div>
-//   );
-// };
-//
-// export default AudioPlayer;
-
-// <Card sx={{ display: 'flex' }}>
-//   <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-//     <CardContent sx={{ flex: '1 0 auto' }}>
-//       <Typography component="div" variant="h5">
-//         {title}
-//       </Typography>
-//
-//       <Typography
-//         variant="subtitle1"
-//         color="text.secondary"
-//         component="div"
-//       >
-//         {artist}
-//       </Typography>
-//     </CardContent>
-//
-//     <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1 }}>
-//       <IconButton aria-label="previous">
-//         <SkipPreviousIcon />
-//       </IconButton>
-//
-//       <audio ref={audioRef} src={url} preload="auto" />
-//       <IconButton aria-label="play/pause" onClick={togglePlayPause}>
-//         {isPlaying ? (
-//           <PauseIcon sx={{ height: 38, width: 38 }} />
-//         ) : (
-//           <PlayArrowIcon sx={{ height: 38, width: 38 }} />
-//         )}
-//       </IconButton>
-//
-//       <IconButton aria-label="next">
-//         <SkipNextIcon />
-//       </IconButton>
-//     </Box>
-//   </Box>
-//
-//   <CardMedia
-//     component="img"
-//     sx={{ width: 151 }}
-//     image="https://fastly.picsum.photos/id/1035/185/185.jpg?hmac=d_bceIJkKGnuQ7InHVppPrscz1MJS0eNHoKBNxnBt3s"
-//     alt="Live from space album cover"
-//   />
-// </Card>

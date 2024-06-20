@@ -3,12 +3,14 @@ import axios from 'axios';
 import { useMemo } from 'react';
 import { API_URL } from '../shared/constants';
 import useAuthContext from './context/useAuthContext';
+import useArtistContext from './context/useArtistContext';
 
 const endpoint = 'users';
 
 const useGetUserDetails = () => {
   const { getToken } = useAuthContext();
   const token = getToken();
+  const { setArtistId } = useArtistContext();
 
   const config = useMemo(
     () => ({
@@ -21,13 +23,19 @@ const useGetUserDetails = () => {
     try {
       const res = await axios.get(`${API_URL}/${endpoint}`, config);
 
-      return {
-        id: res.data.id,
-        email: res.data.email,
-        username: res.data.username,
-        artistId: res.data.artistId,
-        isArtistLinked: res.data.artistId !== null,
+      const response = res.data;
+      const user = {
+        id: response.id,
+        email: response.email,
+        username: response.username,
+        artistId: response.artistId,
       };
+
+      if (user.artistId) {
+        setArtistId(user.artistId);
+      }
+
+      return user;
     } catch (err: any) {
       console.error('Failed to fetch current User:', err.response?.data);
       throw new Error(

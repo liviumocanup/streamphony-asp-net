@@ -1,5 +1,5 @@
 import { ReactNode, useMemo } from 'react';
-import useManageAuth from '../../hooks/useManageAuth';
+import useManageAuth from '../../hooks/context/useManageAuth';
 import AuthContext from '../AuthContext';
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {

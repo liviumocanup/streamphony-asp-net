@@ -2,7 +2,7 @@ import { Divider, Menu } from '@mui/material';
 import { Logout, PersonOutline, Settings } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import useAuthContext from '../../../hooks/context/useAuthContext';
-import BarMenuItem from './BarMenuItem';
+import MenuItemWithIcon from './MenuItemWithIcon';
 import { ReactNode } from 'react';
 import {
   ACCOUNT_ROUTE,
@@ -34,7 +34,7 @@ const UserMenu = ({ anchorEl, open, closeMenu, items }: UserMenuProps) => {
   };
 
   const itemList = [
-    <BarMenuItem
+    <MenuItemWithIcon
       key="account"
       text="Account"
       icon={<PersonOutline fontSize="small" />}
@@ -43,14 +43,14 @@ const UserMenu = ({ anchorEl, open, closeMenu, items }: UserMenuProps) => {
 
     <Divider key="divider" />,
 
-    <BarMenuItem
+    <MenuItemWithIcon
       key="settings"
       text="Settings"
       icon={<Settings fontSize="small" />}
       onClick={navigateToSettings}
     />,
 
-    <BarMenuItem
+    <MenuItemWithIcon
       key="logout"
       text="Log out"
       icon={<Logout fontSize="small" />}

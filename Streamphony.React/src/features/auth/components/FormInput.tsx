@@ -6,23 +6,23 @@ import { ChangeEvent } from 'react';
 interface FormInputProps {
   name: string;
   type: string;
-  label: string;
   control: any;
   errors: any;
   sx?: SxProps<Theme>;
   inputProps?: InputBaseComponentProps;
   handleInput?: (event: ChangeEvent<HTMLInputElement>) => void;
+  label?: string;
 }
 
 const FormInput = ({
   name,
   type,
-  label,
   control,
   errors,
   sx = { mb: 2 },
   inputProps,
   handleInput,
+  label = '',
 }: FormInputProps) => {
   return (
     <Controller
@@ -37,7 +37,7 @@ const FormInput = ({
           label={label}
           error={!!errors[name]}
           helperText={errors[name]?.message}
-          sx={sx}
+          sx={{ ...sx, color: 'white' }}
           aria-invalid={!!errors[name]}
           inputProps={inputProps}
           {...(handleInput && { onChange: handleInput })}
