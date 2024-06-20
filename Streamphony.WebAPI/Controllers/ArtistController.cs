@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Streamphony.Application.App.Artists.Commands;
 using Streamphony.Application.App.Artists.Queries;
-using Streamphony.Application.App.Artists.Responses;
+using Streamphony.Application.App.Artists.DTOs;
+using Streamphony.Application.App.BlobStorage.Commands;
 using Streamphony.Application.Common;
+using Streamphony.Application.Common.Enum;
 using Streamphony.WebAPI.Filters;
 
 namespace Streamphony.WebAPI.Controllers;
@@ -22,12 +24,16 @@ public class ArtistController(IMediator mediator) : AppBaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<ArtistDto>> CreateArtist(ArtistCreationDto artistDto)
+    public async Task<ActionResult<ArtistResponseDto>> CreateArtist(ArtistCreationDto artistDto)
     {
         if (HttpContext.Items["UserId"] is not Guid userId)
             return Unauthorized("ID is missing from the context");
         
         var createdArtistDto = await _mediator.Send(new CreateArtist(artistDto, userId));
+        var profilePictureUrl = await _mediator.Send(new CommitBlob(artistDto.ProfilePictureId, userId, createdArtistDto.Id, BlobType.ProfilePicture.ToString()));
+        
+        createdArtistDto.ProfilePictureUrl = profilePictureUrl;
+        
         return CreatedAtAction(nameof(CreateArtist), new { id = createdArtistDto.Id }, createdArtistDto);
     }
 

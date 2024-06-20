@@ -10,7 +10,12 @@ public class ArtistConfig : IEntityTypeConfiguration<Artist>
     {
         builder.Property(artist => artist.FirstName).IsRequired().HasMaxLength(50);
         builder.Property(artist => artist.LastName).IsRequired().HasMaxLength(50);
-        builder.Property(artist => artist.ProfilePictureUrl).HasMaxLength(1000);
+        builder.Property(artist => artist.DateOfBirth).IsRequired();
+        
+        builder.HasOne(artist => artist.ProfilePictureBlob)
+            .WithOne()
+            .HasForeignKey<Artist>(artist => artist.ProfilePictureBlobId)
+            .OnDelete(DeleteBehavior.NoAction);
         
         builder.HasOne(artist => artist.User)
             .WithOne(user => user.Artist)

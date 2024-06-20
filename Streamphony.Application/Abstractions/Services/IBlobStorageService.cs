@@ -4,5 +4,5 @@ public interface IBlobStorageService
 {
     Task<string> UploadFileAsync(string containerName, string fileName, string contentType, Stream content);
     Task DeleteFileAsync(string containerName, string fileName);
-    Task MoveBlobAsync(string sourceContainer, string sourceFileName, string destinationContainer, string destinationFileName);
+    Task<string> MoveBlobAsync(string sourceContainer, string sourceFileName, string destinationContainer, string destinationFileName);
 }

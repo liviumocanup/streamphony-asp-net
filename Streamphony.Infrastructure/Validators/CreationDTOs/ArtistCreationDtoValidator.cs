@@ -1,5 +1,5 @@
 using FluentValidation;
-using Streamphony.Application.App.Artists.Responses;
+using Streamphony.Application.App.Artists.DTOs;
 using Streamphony.Infrastructure.Extensions;
 
 namespace Streamphony.Infrastructure.Validators.CreationDTOs;
@@ -18,9 +18,5 @@ public class ArtistCreationDtoValidator : AbstractValidator<ArtistCreationDto>
 
         RuleFor(artist => artist.DateOfBirth)
             .DateNotInFuture();
-
-        RuleFor(artist => artist.ProfilePictureUrl)
-            .MaximumLength(1000)
-            .ValidUrl();
     }
 }

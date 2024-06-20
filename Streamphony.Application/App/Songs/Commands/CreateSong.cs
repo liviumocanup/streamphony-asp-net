@@ -49,8 +49,8 @@ public class CreateSongHandler(
         
         var songEntity = _mapper.Map<Song>(songCreationDto);
         songEntity.OwnerId = artistId.Value;
-        songEntity.CoverUrl = coverBlob.Url;
-        songEntity.AudioUrl = songBlob.Url;
+        songEntity.CoverBlob = coverBlob;
+        songEntity.AudioBlob = songBlob;
         songEntity.Duration = songBlob.Duration!.Value;
         
         var songDb = await _unitOfWork.SongRepository.Add(songEntity, cancellationToken);

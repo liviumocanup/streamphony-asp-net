@@ -21,6 +21,15 @@ public class SongRepository(ApplicationDbContext context) : Repository<Song>(con
     {
         return await _context.Songs.Where(song => song.OwnerId == ownerId).ToListAsync(cancellationToken);
     }
+    
+    public async Task<IEnumerable<Song>> GetByOwnerIdWithBlobs(Guid ownerId, CancellationToken cancellationToken)
+    {
+        return await _context.Songs
+            .Include(song => song.AudioBlob)
+            .Include(song => song.CoverBlob)
+            .Where(song => song.OwnerId == ownerId)
+            .ToListAsync(cancellationToken);
+    }
 
     public async Task<Song?> GetByOwnerIdAndTitle(Guid ownerId, string title, CancellationToken cancellationToken)
     {

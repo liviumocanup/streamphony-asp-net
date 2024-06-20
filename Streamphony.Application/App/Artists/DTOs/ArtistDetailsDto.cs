@@ -2,7 +2,7 @@ using Streamphony.Application.App.Albums.Responses;
 using Streamphony.Application.App.Preferences.Responses;
 using Streamphony.Application.App.Songs.DTOs;
 
-namespace Streamphony.Application.App.Artists.Responses;
+namespace Streamphony.Application.App.Artists.DTOs;
 
 public class ArtistDetailsDto : ArtistDto
 {

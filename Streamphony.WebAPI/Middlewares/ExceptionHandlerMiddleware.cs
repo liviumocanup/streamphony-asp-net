@@ -59,6 +59,14 @@ public class ExceptionHandlerMiddleware(RequestDelegate next)
                 response.Errors.Add(exception.Message);
                 break;
         }
+        
+        Console.WriteLine(response.StatusCode);
+        Console.WriteLine(response.StatusPhrase);
+        foreach (var error in response.Errors)
+        {
+            Console.WriteLine(error);
+        }
+        
 
         context.Response.StatusCode = response.StatusCode;
         var result = JsonSerializer.Serialize(response);

@@ -10,7 +10,7 @@ using Streamphony.Domain.Models.Auth;
 
 namespace Streamphony.Application.App.BlobStorage.Commands;
 
-public record UploadBlob(BlobRequestDto BlobRequestDto, Guid UserId, bool IsSong) : IRequest<BlobDto>;
+public record UploadBlob(BlobRequestDto BlobRequestDto, Guid UserId, string BlobType) : IRequest<BlobDto>;
 
 public class UploadBlobHandler(
     IBlobStorageService blobStorageService,
@@ -31,20 +31,29 @@ public class UploadBlobHandler(
 
     public async Task<BlobDto> Handle(UploadBlob request, CancellationToken cancellationToken)
     {
+        if (!Enum.TryParse<BlobType>(request.BlobType, true, out var blobType))
+            throw new InvalidOperationException("Invalid blob type.");
+        
         var blobRequestDto = request.BlobRequestDto;
         var userId = request.UserId;
-        var isSong = request.IsSong;
-        var blobType = isSong ? BlobContainer.Songs : BlobContainer.Images;
+        var isAudio = blobType == BlobType.Song;
+        var isProfilePicture = blobType == BlobType.ProfilePicture;
+        var fileFolder = isAudio ? BlobContainer.Songs : BlobContainer.Images;
         
-        var userDb = await _validationService.GetExistingEntity(_userManagerProvider, userId, cancellationToken);
-        var artistId = userDb.ArtistId;
-        await _validationService.AssertNavigationEntityExists<User, Artist>(_unitOfWork.ArtistRepository, artistId, cancellationToken, isNavRequired: true);
+        var userDb = await _validationService.GetExistingEntity(_userManagerProvider, userId, cancellationToken); 
+        var ownerId = userDb.Id;
+        if (!isProfilePicture)
+        {
+            var artistId = userDb.ArtistId;
+            await _validationService.AssertNavigationEntityExists<User, Artist>(_unitOfWork.ArtistRepository, artistId, cancellationToken, isNavRequired: true);
+            ownerId = artistId!.Value;
+        }
 
-        ValidateFileSize(blobRequestDto.Length, isSong);
-        var fileExtension = ValidateFileExtension(blobRequestDto.FileName, blobRequestDto.ContentType, isSong);
+        ValidateFileSize(blobRequestDto.Length, isAudio);
+        var fileExtension = ValidateFileExtension(blobRequestDto.FileName, blobRequestDto.ContentType, isAudio);
 
         var newBlobId = Guid.NewGuid();
-        var newBlobName = $"{blobType}/{newBlobId.ToString()}";
+        var newBlobName = $"{fileFolder}/{newBlobId.ToString()}";
         var containerName = BlobContainer.Draft;
         
         var url = await _blobStorage.UploadFileAsync(
@@ -55,7 +64,7 @@ public class UploadBlobHandler(
         );
         if (string.IsNullOrWhiteSpace(url)) throw new Exception("Failed to upload file");
         
-        TimeSpan? audioDuration = isSong ? _audioDurationService.GetDuration(url) : null;
+        TimeSpan? audioDuration = isAudio ? _audioDurationService.GetDuration(url) : null;
 
         var blobEntity = new BlobFile
         {
@@ -67,7 +76,7 @@ public class UploadBlobHandler(
             Length = blobRequestDto.Length,
             Url = url,
             Duration = audioDuration,
-            OwnerId = artistId!.Value
+            OwnerId = ownerId
         };
 
         var blobDb = await _unitOfWork.BlobRepository.Add(blobEntity, cancellationToken);

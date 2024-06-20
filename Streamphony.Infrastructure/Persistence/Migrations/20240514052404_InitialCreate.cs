@@ -26,7 +26,10 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                     Length = table.Column<long>(type: "bigint", nullable: false),
                     Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Duration = table.Column<TimeSpan>(type: "time", nullable: true),
-                    OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RelatedEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -39,7 +42,9 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -119,12 +124,19 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     DateOfBirth = table.Column<DateOnly>(type: "date", nullable: false),
-                    ProfilePictureUrl = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    ProfilePictureBlobId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Artists", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Artists_BlobFiles_ProfilePictureBlobId",
+                        column: x => x.ProfilePictureBlobId,
+                        principalTable: "BlobFiles",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Artists_Users_UserId",
                         column: x => x.UserId,
@@ -236,7 +248,9 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                     Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     CoverImageUrl = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     ReleaseDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -255,7 +269,9 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DarkMode = table.Column<bool>(type: "bit", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Language = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -300,11 +316,13 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Duration = table.Column<TimeSpan>(type: "time", nullable: false),
-                    CoverUrl = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    AudioUrl = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    CoverBlobId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AudioBlobId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     GenreId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    AlbumId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    AlbumId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -321,6 +339,16 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                         principalTable: "Artists",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Songs_BlobFiles_AudioBlobId",
+                        column: x => x.AudioBlobId,
+                        principalTable: "BlobFiles",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Songs_BlobFiles_CoverBlobId",
+                        column: x => x.CoverBlobId,
+                        principalTable: "BlobFiles",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Songs_Genres_GenreId",
                         column: x => x.GenreId,
@@ -343,6 +371,12 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                 name: "IX_Albums_Title_OwnerId",
                 table: "Albums",
                 columns: new[] { "Title", "OwnerId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Artists_ProfilePictureBlobId",
+                table: "Artists",
+                column: "ProfilePictureBlobId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -375,6 +409,18 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                 name: "IX_Songs_AlbumId",
                 table: "Songs",
                 column: "AlbumId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Songs_AudioBlobId",
+                table: "Songs",
+                column: "AudioBlobId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Songs_CoverBlobId",
+                table: "Songs",
+                column: "CoverBlobId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Songs_GenreId",
@@ -432,9 +478,6 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                 name: "AlbumArtists");
 
             migrationBuilder.DropTable(
-                name: "BlobFiles");
-
-            migrationBuilder.DropTable(
                 name: "Preferences");
 
             migrationBuilder.DropTable(
@@ -472,6 +515,9 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Artists");
+
+            migrationBuilder.DropTable(
+                name: "BlobFiles");
 
             migrationBuilder.DropTable(
                 name: "Users",

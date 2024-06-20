@@ -16,6 +16,13 @@ public class Repository<T>(ApplicationDbContext context) : IRepository<T> where 
     {
         return await _context.Set<T>().ToListAsync(cancellationToken);
     }
+    
+    public async Task<List<T>> GetAllWithInclude(CancellationToken cancellationToken,
+        params Expression<Func<T, object>>[] includeProperties)
+    {
+        var query = IncludeProperties(includeProperties);
+        return await query.ToListAsync(cancellationToken);
+    }
 
     public async Task<T?> GetById(Guid id, CancellationToken cancellationToken)
     {

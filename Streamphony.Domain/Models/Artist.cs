@@ -8,7 +8,8 @@ public class Artist : BaseEntity
     public required string LastName { get; set; }
     public required DateOnly DateOfBirth { get; set; }
 
-    public string? ProfilePictureUrl { get; set; }
+    public Guid ProfilePictureBlobId { get; set; }
+    public BlobFile ProfilePictureBlob { get; set; } = default!;
 
     public Guid UserId { get; set; }
     public User User { get; set; } = default!;

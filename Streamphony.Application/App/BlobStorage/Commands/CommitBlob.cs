@@ -3,47 +3,61 @@ using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.Common.Enum;
 using Streamphony.Domain.Models;
+using Streamphony.Domain.Models.Auth;
 
 namespace Streamphony.Application.App.BlobStorage.Commands;
 
-public record CommitBlob(Guid BlobId, Guid UserId, BlobType BlobType) : IRequest<bool>;
+public record CommitBlob(Guid BlobId, Guid UserId, Guid RelatedEntityId, string BlobType) : IRequest<string>;
 
 public class CommitBlobHandler(
     IValidationService validationService,
     IUnitOfWork unitOfWork,
     IBlobStorageService blobStorageService,
-    IUserManagerProvider userManagerProvider) : IRequestHandler<CommitBlob, bool>
+    IUserManagerProvider userManagerProvider) : IRequestHandler<CommitBlob, string>
 {
     private readonly IValidationService _validationService = validationService;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IBlobStorageService _blobStorage = blobStorageService;
     private readonly IUserManagerProvider _userManagerProvider = userManagerProvider;
 
-    public async Task<bool> Handle(CommitBlob request, CancellationToken cancellationToken)
+    public async Task<string> Handle(CommitBlob request, CancellationToken cancellationToken)
     {
+        if (!Enum.TryParse<BlobType>(request.BlobType, true, out var blobType))
+            throw new InvalidOperationException("Invalid blob type.");
+        
+        var isProfilePicture = blobType == BlobType.ProfilePicture;
+        var relatedEntityId = request.RelatedEntityId;
+        
         var blob = await _validationService.GetExistingEntity(_unitOfWork.BlobRepository, request.BlobId,
             cancellationToken);
         var userDb =
             await _validationService.GetExistingEntity(_userManagerProvider, request.UserId, cancellationToken);
 
-        var artistId = userDb.ArtistId;
-        await _validationService.AssertNavigationEntityExists<BlobFile, Artist>(_unitOfWork.ArtistRepository, artistId,
-            cancellationToken, isNavRequired: true);
-        if (blob.OwnerId != artistId) throw new UnauthorizedAccessException("You are not the owner of this blob");
-
+        var ownerId = userDb.Id;
+        if (!isProfilePicture)
+        {
+            var artistId = userDb.ArtistId;
+            await _validationService.AssertNavigationEntityExists<User, Artist>(_unitOfWork.ArtistRepository, artistId, cancellationToken, isNavRequired: true);
+            ownerId = artistId!.Value;
+        }
+        
+        if (blob.OwnerId != ownerId) throw new UnauthorizedAccessException("You are not the owner of this blob");
         if (blob.ContainerName != BlobContainer.Draft) throw new InvalidOperationException("Blob is already committed");
-        ValidateContentType(blob.ContentType, request.BlobType);
         
-        var destinationContainer = GetDestinationContainer(request.BlobType);
-        var destinationName = $"{GetDestinationName(request.BlobType)}/{blob.Id}";
+        ValidateContentType(blob.ContentType, blobType);
         
-        await _blobStorage.MoveBlobAsync(blob.ContainerName, blob.StorageKey, destinationContainer, destinationName);
+        var destinationContainer = GetDestinationContainer(blobType);
+        var destinationName = $"{GetDestinationFolder(blobType)}/{blob.Id}";
+        
+        var destinationUrl = await _blobStorage.MoveBlobAsync(blob.ContainerName, blob.StorageKey, destinationContainer, destinationName);
 
         blob.ContainerName = destinationContainer;
         blob.StorageKey = destinationName;
+        blob.Url = destinationUrl;
+        blob.RelatedEntityId = relatedEntityId;
         await _unitOfWork.SaveAsync(cancellationToken);
 
-        return true;
+        return destinationUrl;
     }
     
     private static void ValidateContentType(string contentType, BlobType blobType)
@@ -73,7 +87,7 @@ public class CommitBlobHandler(
         };
     }
     
-    private static string GetDestinationName(BlobType blobType)
+    private static string GetDestinationFolder(BlobType blobType)
     {
         return blobType switch
         {

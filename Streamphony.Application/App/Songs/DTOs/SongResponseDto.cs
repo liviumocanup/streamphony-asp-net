@@ -10,4 +10,6 @@ public class SongResponseDto
     public Guid? GenreId { get; set; }
     public Guid? AlbumId { get; set; }
     public Guid OwnerId { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 }

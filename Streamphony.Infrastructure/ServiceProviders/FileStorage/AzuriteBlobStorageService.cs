@@ -31,7 +31,7 @@ public class AzuriteBlobStorageService(string? connectionString) : IBlobStorageS
         await blobClient.DeleteIfExistsAsync();
     }
     
-    public async Task MoveBlobAsync(string sourceContainer, string sourceFileName, string destinationContainer, string destinationFileName)
+    public async Task<string> MoveBlobAsync(string sourceContainer, string sourceFileName, string destinationContainer, string destinationFileName)
     {
         var sourceContainerClient = _blobServiceClient.GetBlobContainerClient(sourceContainer);
         var destinationContainerClient = _blobServiceClient.GetBlobContainerClient(destinationContainer);
@@ -41,11 +41,13 @@ public class AzuriteBlobStorageService(string? connectionString) : IBlobStorageS
         var sourceBlobClient = sourceContainerClient.GetBlobClient(sourceFileName);
         var destinationBlobClient = destinationContainerClient.GetBlobClient(destinationFileName);
 
-        if (await sourceBlobClient.ExistsAsync())
-        {
-            await destinationBlobClient.StartCopyFromUriAsync(sourceBlobClient.Uri);
-            await sourceBlobClient.DeleteAsync();
-        }
+        if (!await sourceBlobClient.ExistsAsync()) 
+            throw new FileNotFoundException("Source blob does not exist.");
+        
+        await destinationBlobClient.StartCopyFromUriAsync(sourceBlobClient.Uri);
+        await sourceBlobClient.DeleteAsync();
+
+        return destinationBlobClient.Uri.AbsoluteUri;
     }
 
 }

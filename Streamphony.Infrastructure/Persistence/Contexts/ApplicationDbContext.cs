@@ -38,4 +38,29 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<RoleClaim>().ToTable("RoleClaims", SchemaConstants.Auth);
         modelBuilder.Entity<UserRole>().ToTable("UserRole", SchemaConstants.Auth);
     }
+    
+    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+    {
+        OnBeforeSaving();
+        return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+    }
+    
+    private void OnBeforeSaving()
+    {
+        var entries = ChangeTracker.Entries<BaseEntity>();
+        var currentTime = DateTime.UtcNow;
+
+        foreach (var entry in entries)
+        {
+            if (entry.State == EntityState.Added)
+            {
+                entry.Entity.CreatedAt = currentTime;
+            }
+
+            if (entry.State is EntityState.Added or EntityState.Modified)
+            {
+                entry.Entity.UpdatedAt = currentTime;
+            }
+        }
+    }
 }

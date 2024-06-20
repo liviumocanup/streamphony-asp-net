@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Streamphony.Application.App.BlobStorage.Commands;
 using Streamphony.Application.App.BlobStorage.DTOs;
-using Streamphony.Application.Common.Enum;
 using Streamphony.WebAPI.Filters;
 
 namespace Streamphony.WebAPI.Controllers;
@@ -10,10 +9,10 @@ namespace Streamphony.WebAPI.Controllers;
 [Route("api/blobs")]
 public class BlobController(IMediator mediator) : AppBaseController
 {
-    [HttpPost("image")]
+    [HttpPost]
     [ValidateModel]
     [ExtractUserId]
-    public async Task<IActionResult> UploadImage(IFormFile file)
+    public async Task<IActionResult> UploadBlob(IFormFile file, [FromForm] string blobType, CancellationToken cancellationToken)
     {
         if (HttpContext.Items["UserId"] is not Guid userId)
             return Unauthorized();
@@ -25,31 +24,12 @@ public class BlobController(IMediator mediator) : AppBaseController
             ContentType = file.ContentType,
             Content = file.OpenReadStream()
         };
-
-        var blobDto = await mediator.Send(new UploadBlob(blobRequestDto, userId, false));
-
-        return CreatedAtAction(nameof(UploadImage), new { id = blobDto.Id }, blobDto);
-    }
-    
-    [HttpPost("audio")]
-    [ValidateModel]
-    [ExtractUserId]
-    public async Task<IActionResult> UploadAudio(IFormFile file)
-    {
-        if (HttpContext.Items["UserId"] is not Guid userId)
-            return Unauthorized();
         
-        var blobRequestDto = new BlobRequestDto
-        {
-            FileName = file.FileName,
-            Length = file.Length,
-            ContentType = file.ContentType,
-            Content = file.OpenReadStream()
-        };
+        Console.WriteLine(blobType);
 
-        var blobDto = await mediator.Send(new UploadBlob(blobRequestDto, userId, true));
+        var blobDto = await mediator.Send(new UploadBlob(blobRequestDto, userId, blobType), cancellationToken);
 
-        return CreatedAtAction(nameof(UploadAudio), new { id = blobDto.Id }, blobDto);
+        return CreatedAtAction(nameof(UploadBlob), new { id = blobDto.Id }, blobDto);
     }
 
     [HttpDelete("{id:guid}")]
@@ -57,12 +37,12 @@ public class BlobController(IMediator mediator) : AppBaseController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteBlob(Guid id)
+    public async Task<IActionResult> DeleteBlob(Guid id, CancellationToken cancellationToken)
     {
         if (HttpContext.Items["UserId"] is not Guid userId)
             return Unauthorized();
         
-        await mediator.Send(new DeleteBlob(id, userId));
+        await mediator.Send(new DeleteBlob(id, userId), cancellationToken);
         return NoContent();
     }
     
@@ -71,12 +51,12 @@ public class BlobController(IMediator mediator) : AppBaseController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> CommitBlob(Guid blobId, BlobType blobType, CancellationToken cancellationToken)
+    public async Task<IActionResult> CommitBlob(Guid blobId, Guid relatedEntityId, string blobType, CancellationToken cancellationToken)
     {
         if (HttpContext.Items["UserId"] is not Guid userId)
             return Unauthorized();
         
-        await mediator.Send(new CommitBlob(blobId, userId, blobType), cancellationToken: cancellationToken);
+        await mediator.Send(new CommitBlob(blobId, userId, relatedEntityId, blobType), cancellationToken);
         return NoContent();
     }
 }

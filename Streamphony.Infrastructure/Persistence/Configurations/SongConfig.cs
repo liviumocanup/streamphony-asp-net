@@ -11,9 +11,17 @@ public class SongConfig : IEntityTypeConfiguration<Song>
         builder.Property(s => s.Title).IsRequired().HasMaxLength(50);
         builder.HasIndex(s => new { s.Title, s.OwnerId }).IsUnique();
         builder.Property(s => s.Duration).IsRequired();
-        builder.Property(s => s.CoverUrl).IsRequired().HasMaxLength(1000);
-        builder.Property(s => s.AudioUrl).IsRequired().HasMaxLength(1000);
 
+        builder.HasOne(s => s.CoverBlob)
+            .WithOne()
+            .HasForeignKey<Song>(s => s.CoverBlobId)
+            .OnDelete(DeleteBehavior.NoAction);
+        
+        builder.HasOne(s => s.AudioBlob)
+            .WithOne()
+            .HasForeignKey<Song>(s => s.AudioBlobId)
+            .OnDelete(DeleteBehavior.NoAction);
+        
         builder.HasOne(s => s.Owner)
             .WithMany(artist => artist.UploadedSongs)
             .HasForeignKey(s => s.OwnerId)

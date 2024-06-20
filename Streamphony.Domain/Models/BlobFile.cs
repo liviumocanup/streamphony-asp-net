@@ -10,4 +10,5 @@ public class BlobFile : BaseEntity
     public required string Url { get; set; }
     public TimeSpan? Duration { get; set; }
     public required Guid OwnerId { get; set; }
+    public Guid? RelatedEntityId { get; set; }
 }

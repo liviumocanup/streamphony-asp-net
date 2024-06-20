@@ -3,6 +3,8 @@ using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.App.Songs.DTOs;
+using Streamphony.Domain.Models;
+using Streamphony.Domain.Models.Auth;
 
 namespace Streamphony.Application.App.Songs.Queries;
 
@@ -11,11 +13,9 @@ public record GetSongForArtist(Guid Id) : IRequest<IEnumerable<SongResponseDto>>
 public class GetSongsForArtistHandler(
     IUnitOfWork unitOfWork,
     IMappingProvider mapper,
-    ILoggingService logger,
     IValidationService validationService,
     IUserManagerProvider userManagerProvider) : IRequestHandler<GetSongForArtist, IEnumerable<SongResponseDto>>
 {
-    private readonly ILoggingService _logger = logger;
     private readonly IMappingProvider _mapper = mapper;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IValidationService _validationService = validationService;
@@ -23,10 +23,11 @@ public class GetSongsForArtistHandler(
 
     public async Task<IEnumerable<SongResponseDto>> Handle(GetSongForArtist request, CancellationToken cancellationToken)
     {
-        var userDb = await _userManagerProvider.FindByIdAsync(request.Id.ToString());
-        var artistId = userDb!.ArtistId!.Value;
-        
-        var songs = await _unitOfWork.SongRepository.GetByOwnerId(artistId, cancellationToken);
+        var userDb = await _validationService.GetExistingEntity(_userManagerProvider, request.Id, cancellationToken);
+        var artistId = userDb.ArtistId;
+        await _validationService.AssertNavigationEntityExists<User, Artist>(_unitOfWork.ArtistRepository, artistId, cancellationToken, isNavRequired: true);
+
+        var songs = await _unitOfWork.SongRepository.GetByOwnerIdWithBlobs(artistId!.Value, cancellationToken);
 
         return _mapper.Map<IEnumerable<SongResponseDto>>(songs);
     }

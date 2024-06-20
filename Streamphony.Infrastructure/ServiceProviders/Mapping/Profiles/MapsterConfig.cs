@@ -1,6 +1,6 @@
 using Mapster;
 using Streamphony.Application.App.Albums.Responses;
-using Streamphony.Application.App.Artists.Responses;
+using Streamphony.Application.App.Artists.DTOs;
 using Streamphony.Application.App.Auth.Responses;
 using Streamphony.Application.App.BlobStorage.DTOs;
 using Streamphony.Application.App.Genres.Responses;
@@ -32,10 +32,16 @@ public static class MapsterConfig
         GlobalConfig.NewConfig<Artist, ArtistCreationDto>().PreserveReference(true);
         GlobalConfig.NewConfig<Artist, ArtistDto>().PreserveReference(true);
         GlobalConfig.NewConfig<Artist, ArtistDetailsDto>().PreserveReference(true);
+        GlobalConfig.NewConfig<Artist, ArtistResponseDto>()
+            .Map(src => src.ProfilePictureUrl, dest => dest.ProfilePictureBlob.Url)
+            .PreserveReference(true);
 
         GlobalConfig.NewConfig<Song, SongCreationDto>().PreserveReference(true);
         GlobalConfig.NewConfig<Song, SongDto>().PreserveReference(true);
-        GlobalConfig.NewConfig<Song, SongResponseDto>().PreserveReference(true);
+        GlobalConfig.NewConfig<Song, SongResponseDto>()
+            .Map(src => src.CoverUrl, dest => dest.CoverBlob.Url)
+            .Map(src => src.AudioUrl, dest => dest.AudioBlob.Url)
+            .PreserveReference(true);
 
         GlobalConfig.NewConfig<Genre, GenreCreationDto>().PreserveReference(true);
         GlobalConfig.NewConfig<Genre, GenreDto>().PreserveReference(true);

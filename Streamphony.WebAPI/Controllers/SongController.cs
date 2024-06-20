@@ -6,6 +6,7 @@ using Streamphony.Application.App.Songs.Commands;
 using Streamphony.Application.App.Songs.Queries;
 using Streamphony.Application.App.Songs.DTOs;
 using Streamphony.Application.Common;
+using Streamphony.Application.Common.Enum;
 using Streamphony.WebAPI.Filters;
 
 namespace Streamphony.WebAPI.Controllers;
@@ -29,6 +30,12 @@ public class SongController(IMediator mediator) : AppBaseController
             return Unauthorized("ID is missing from the context");
         
         var createdSongDto = await _mediator.Send(new CreateSong(songCreationDto, userId));
+        var coverUrl = await _mediator.Send(new CommitBlob(songCreationDto.CoverFileId, userId, createdSongDto.Id, BlobType.SongCover.ToString()));
+        var audioUrl = await _mediator.Send(new CommitBlob(songCreationDto.AudioFileId, userId, createdSongDto.Id, BlobType.Song.ToString()));
+        
+        createdSongDto.CoverUrl = coverUrl;
+        createdSongDto.AudioUrl = audioUrl;
+        
         return CreatedAtAction(nameof(GetSongById), new { id = createdSongDto.Id }, createdSongDto);
     }
 

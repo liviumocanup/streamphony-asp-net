@@ -2,13 +2,14 @@ using MediatR;
 using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Services;
-using Streamphony.Application.App.Artists.Responses;
+using Streamphony.Application.App.Artists.DTOs;
+using Streamphony.Application.Common.Enum;
 using Streamphony.Domain.Models;
 using Streamphony.Domain.Models.Auth;
 
 namespace Streamphony.Application.App.Artists.Commands;
 
-public record CreateArtist(ArtistCreationDto ArtistCreationDto, Guid UserId) : IRequest<ArtistDto>;
+public record CreateArtist(ArtistCreationDto ArtistCreationDto, Guid UserId) : IRequest<ArtistResponseDto>;
 
 public class CreateArtistHandler(
     IUnitOfWork unitOfWork,
@@ -16,7 +17,7 @@ public class CreateArtistHandler(
     ILoggingService logger,
     IUserManagerProvider userManagerProvider,
     IValidationService validationService)
-    : IRequestHandler<CreateArtist, ArtistDto>
+    : IRequestHandler<CreateArtist, ArtistResponseDto>
 {
     private readonly ILoggingService _logger = logger;
     private readonly IMappingProvider _mapper = mapper;
@@ -24,25 +25,27 @@ public class CreateArtistHandler(
     private readonly IUserManagerProvider _userManagerProvider = userManagerProvider;
     private readonly IValidationService _validationService = validationService;
 
-    public async Task<ArtistDto> Handle(CreateArtist request, CancellationToken cancellationToken)
+    public async Task<ArtistResponseDto> Handle(CreateArtist request, CancellationToken cancellationToken)
     {
-        var artistDto = request.ArtistCreationDto;
+        var artistCreationDto = request.ArtistCreationDto;
         var userId = request.UserId;
         var getByIdFunc = _unitOfWork.ArtistRepository.FindByUserIdAsync;
 
-        var userDb = await _userManagerProvider.FindByIdAsync(userId.ToString());
-        if (userDb == null)
-            _logger.LogAndThrowNotFoundExceptionForNavigation(nameof(Artist), nameof(User), userId);
+        var userDb = await _validationService.GetExistingEntity(_userManagerProvider, userId, cancellationToken);
         await _validationService.EnsureUniqueProperty(getByIdFunc, nameof(User), userId, cancellationToken);
+        
+        var pfpBlob = await _validationService.GetExistingEntity(_unitOfWork.BlobRepository, artistCreationDto.ProfilePictureId,
+            cancellationToken, LogAction.Create);
 
-        var artistEntity = _mapper.Map<Artist>(artistDto);
+        var artistEntity = _mapper.Map<Artist>(artistCreationDto);
         artistEntity.UserId = userId;
+        artistEntity.ProfilePictureBlob = pfpBlob;
 
         var artistDb = await _unitOfWork.ArtistRepository.Add(artistEntity, cancellationToken);
-        userDb!.ArtistId = artistDb.Id;
+        userDb.ArtistId = artistDb.Id;
         await _unitOfWork.SaveAsync(cancellationToken);
         
         _logger.LogSuccess(nameof(Artist), artistDb.Id);
-        return _mapper.Map<ArtistDto>(artistDb);
+        return _mapper.Map<ArtistResponseDto>(artistDb);
     }
 }

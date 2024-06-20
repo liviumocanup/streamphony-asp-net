@@ -12,6 +12,10 @@ public interface IRepository<T> where T : BaseEntity
         params Expression<Func<T, object>>[] includeProperties);
 
     Task<List<T>> GetAll(CancellationToken cancellationToken);
+
+    Task<List<T>> GetAllWithInclude(CancellationToken cancellationToken,
+        params Expression<Func<T, object>>[] includeProperties);
+
     Task<T> Add(T entity, CancellationToken cancellationToken);
     Task Delete(Guid id, CancellationToken cancellationToken);
     Task<T> Update(T entity, CancellationToken cancellationToken);

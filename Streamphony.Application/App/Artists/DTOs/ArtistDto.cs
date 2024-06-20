@@ -1,4 +1,4 @@
-namespace Streamphony.Application.App.Artists.Responses;
+namespace Streamphony.Application.App.Artists.DTOs;
 
 public class ArtistDto : ArtistCreationDto
 {
