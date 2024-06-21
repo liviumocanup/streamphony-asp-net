@@ -1,6 +1,6 @@
 import Drawer from '@mui/material/Drawer';
 import SidebarItems from '../../../shared/drawer/SidebarItems';
-import { DrawerHeader } from '../../home/styles/DrawerHeaderStyle';
+import { DrawerHeader } from '../../../shared/drawer/styles/DrawerHeaderStyle';
 import { IconButton, Typography } from '@mui/material';
 import { APP_TITLE } from '../../../shared/constants';
 import MenuIcon from '@mui/icons-material/Menu';

@@ -1,10 +1,8 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { API_URL } from '../../../shared/constants';
+import { ALBUM_ENDPOINT, API_URL } from '../../../shared/constants';
 import { useMemo } from 'react';
 import useAuthContext from '../../../hooks/context/useAuthContext';
-
-const endpoint = 'albums';
 
 const useGetAlbums = () => {
   const { getToken } = useAuthContext();
@@ -19,7 +17,7 @@ const useGetAlbums = () => {
 
   const getAlbums = async () => {
     try {
-      const res = await axios.get(`${API_URL}/${endpoint}`, config);
+      const res = await axios.get(`${API_URL}/${ALBUM_ENDPOINT}`, config);
       console.log(res.data);
       return res.data.items;
     } catch (err: any) {

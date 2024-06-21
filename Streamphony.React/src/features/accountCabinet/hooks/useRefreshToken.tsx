@@ -1,11 +1,10 @@
-import { RegisterArtistData } from '../../../shared/Interfaces';
 import axios from 'axios';
-import { API_URL, ARTIST_ENDPOINT } from '../../../shared/constants';
-import { useMutation } from '@tanstack/react-query';
+import { API_URL, REFRESH_TOKEN_ENDPOINT } from '../../../shared/constants';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import useAuthContext from '../../../hooks/context/useAuthContext';
 
-const useRegisterArtist = () => {
+const useRefreshToken = () => {
   const { getToken, tokenRefresh } = useAuthContext();
   const token = getToken();
 
@@ -16,17 +15,22 @@ const useRegisterArtist = () => {
     [token],
   );
 
-  // TODO: CHANGING ARTIST DETAILS
-  const addArtist = async (newArtist: RegisterArtistData) => {
+  const refreshToken = async () => {
     try {
-      const res = await axios.post(
-        `${API_URL}/${ARTIST_ENDPOINT}`,
-        newArtist,
+      console.log('Refreshing.');
+
+      const res = await axios.get(
+        `${API_URL}/${REFRESH_TOKEN_ENDPOINT}`,
         config,
       );
 
-      const token = res.data.accessToken;
+      console.log('Response: ', res.data);
+
+      const response = res.data;
+      const token = response.accessToken;
       tokenRefresh(token);
+
+      return;
     } catch (err: any) {
       console.log(err);
       if (axios.isAxiosError(err)) {
@@ -38,8 +42,8 @@ const useRegisterArtist = () => {
   };
 
   return useMutation({
-    mutationFn: addArtist,
+    mutationFn: refreshToken,
   });
 };
 
-export default useRegisterArtist;
+export default useRefreshToken;

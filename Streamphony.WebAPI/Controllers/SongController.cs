@@ -7,18 +7,19 @@ using Streamphony.Application.App.Songs.Queries;
 using Streamphony.Application.App.Songs.DTOs;
 using Streamphony.Application.Common;
 using Streamphony.Application.Common.Enum;
+using Streamphony.WebAPI.Extensions;
 using Streamphony.WebAPI.Filters;
 
 namespace Streamphony.WebAPI.Controllers;
 
 [Route("api/songs")]
+[Authorize(Policy = "ArtistPolicy")]
 public class SongController(IMediator mediator) : AppBaseController
 {
     private readonly IMediator _mediator = mediator;
 
     [HttpPost]
     [ValidateModel]
-    [ExtractUserId]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -26,8 +27,7 @@ public class SongController(IMediator mediator) : AppBaseController
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<SongResponseDto>> CreateSong(SongCreationDto songCreationDto)
     {
-        if (HttpContext.Items["UserId"] is not Guid userId)
-            return Unauthorized("ID is missing from the context");
+        var userId = User.GetUserId();
         
         var createdSongDto = await _mediator.Send(new CreateSong(songCreationDto, userId));
         var coverUrl = await _mediator.Send(new CommitBlob(songCreationDto.CoverFileId, userId, createdSongDto.Id, BlobType.SongCover.ToString()));
@@ -41,7 +41,6 @@ public class SongController(IMediator mediator) : AppBaseController
 
     [HttpPut]
     [ValidateModel]
-    [ExtractUserId]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -49,8 +48,7 @@ public class SongController(IMediator mediator) : AppBaseController
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<SongDto>> UpdateSong(SongRequestDto songDto)
     {
-        if (HttpContext.Items["UserId"] is not Guid userId)
-            return Unauthorized("ID is missing from the context");
+        var userId = User.GetUserId();
         
         var updatedSongDto = await _mediator.Send(new UpdateSong(songDto, userId));
         return Ok(updatedSongDto);
@@ -82,13 +80,11 @@ public class SongController(IMediator mediator) : AppBaseController
         return Ok(songs);
     }
     
-    [HttpGet("current")]
-    [ExtractUserId]
+    [HttpGet("user/current")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<SongResponseDto>>> GetSongsForCurrentUser()
     {
-        if (HttpContext.Items["UserId"] is not Guid userId)
-            return Unauthorized("ID is missing from the context");
+        var userId = User.GetUserId();
 
         var songs = await _mediator.Send(new GetSongForArtist(userId));
         return Ok(songs);

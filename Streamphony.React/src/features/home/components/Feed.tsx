@@ -5,14 +5,8 @@ import Section from './Section';
 import FallbackSection from './fallback/FallbackSection';
 import useAuthContext from '../../../hooks/context/useAuthContext';
 import UserSongs from './UserSongs';
-import AudioPlayer from '../../../shared/audioPlayer/AudioPlayer';
 
-interface FeedProps {
-  open: boolean;
-  drawerWidth: number;
-}
-
-const Feed = ({ open, drawerWidth }: FeedProps) => {
+const Feed = () => {
   const { isLoggedIn } = useAuthContext();
 
   return (
@@ -34,14 +28,6 @@ const Feed = ({ open, drawerWidth }: FeedProps) => {
       {/*<Suspense fallback={<FallbackSection />}>*/}
       {/*  <FeaturedPlaylists />*/}
       {/*</Suspense>*/}
-
-      <AudioPlayer
-        url="http://127.0.0.1:10000/devstoreaccount1/draft/songs/0fce21a9-d4d8-482d-87ef-261b8076f221"
-        title="Song Title"
-        artist="Artist Name"
-        isDrawerOpen={open}
-        drawerWidth={drawerWidth}
-      />
     </>
   );
 };

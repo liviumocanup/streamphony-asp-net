@@ -1,6 +1,6 @@
 import { CreateSongData } from '../../../shared/Interfaces';
 import axios from 'axios';
-import { API_URL, CREATE_SONG_ENDPOINT } from '../../../shared/constants';
+import { API_URL, SONG_ENDPOINT } from '../../../shared/constants';
 import { useMutation } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import useAuthContext from '../../../hooks/context/useAuthContext';
@@ -19,7 +19,7 @@ const useCreateSong = () => {
   const addSong = async (newSong: CreateSongData) => {
     try {
       const res = await axios.post(
-        `${API_URL}/${CREATE_SONG_ENDPOINT}`,
+        `${API_URL}/${SONG_ENDPOINT}`,
         newSong,
         config,
       );

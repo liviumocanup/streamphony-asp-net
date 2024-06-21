@@ -25,7 +25,7 @@ public class LoginUserHandler(
         if (userDb == null)
             _loggingService.LogAndThrowNotFoundException(nameof(User), nameof(userDto.UserName), userDto.UserName);
 
-        var token = await _authenticationService.Login(userDb!, userDto.Password);
+        var token = await _authenticationService.Login(userDb!.Id, userDto.Password);
         if (token == null) _loggingService.LogAndThrowNotAuthorizedException(nameof(User));
 
         return new AuthResultDto(token!);

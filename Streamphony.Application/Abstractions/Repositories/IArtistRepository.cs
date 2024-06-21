@@ -5,4 +5,5 @@ namespace Streamphony.Application.Abstractions.Repositories;
 public interface IArtistRepository : IRepository<Artist>
 {
     Task<Artist?> FindByUserIdAsync(Guid userId, CancellationToken cancellationToken);
+    Task<Artist?> GetByOwnerIdWithBlobs(Guid ownerId, CancellationToken cancellationToken);
 }

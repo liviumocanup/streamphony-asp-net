@@ -13,4 +13,11 @@ public class ArtistRepository(ApplicationDbContext context) : Repository<Artist>
     {
         return await _context.Artists.FirstOrDefaultAsync(artist => artist.UserId == userId, cancellationToken);
     }
+    
+    public async Task<Artist?> GetByOwnerIdWithBlobs(Guid ownerId, CancellationToken cancellationToken)
+    {
+        return await _context.Artists
+            .Include(artist => artist.ProfilePictureBlob)
+            .FirstOrDefaultAsync(artist => artist.UserId == ownerId, cancellationToken);
+    }
 }

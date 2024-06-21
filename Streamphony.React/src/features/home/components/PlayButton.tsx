@@ -1,6 +1,7 @@
 import { IconButton } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
+import { APP_GREEN } from '../../../shared/constants';
 
 interface PlayButtonProps {
   isVisible: boolean;
@@ -21,11 +22,11 @@ const PlayButton = ({ isVisible, isPlaying, onClick }: PlayButtonProps) => {
         right: 5,
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
-        bgcolor: '#1DB954',
+        bgcolor: APP_GREEN,
         boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.3)',
         transition: 'opacity 0.3s ease, transform 0.3s ease',
         '&:hover': {
-          bgcolor: '#1DB954',
+          bgcolor: APP_GREEN,
         },
       }}
     >

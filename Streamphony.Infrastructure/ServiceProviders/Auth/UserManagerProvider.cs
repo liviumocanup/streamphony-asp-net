@@ -22,4 +22,9 @@ public class UserManagerProvider(UserManager<User> userManager) : IUserManagerPr
     {
         return _userManager.FindByIdAsync(userId);
     }
+    
+    public Task CreateAsync(User user, string password)
+    {
+        return _userManager.CreateAsync(user, password);
+    }
 }

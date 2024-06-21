@@ -1,7 +1,7 @@
 import { TabPanel } from '../TabPanel';
 import { AccessTime as TimeIcon } from '@mui/icons-material';
 import DashboardTable from '../DashboardTable';
-import useGetCurrentUserSongs from '../../hooks/useGetSongs';
+import useGetCurrentArtistSongs from '../../hooks/useGetCurrentArtistSongs';
 import { formatDateTime, formatDuration } from '../../../../shared/utils';
 import { useMemo } from 'react';
 import { Song } from '../../../../shared/Interfaces';
@@ -50,7 +50,7 @@ const prepareSongData = (songs: Song[]) =>
   }));
 
 const SongsTabPanel = ({ value, index }: SongsTabPanelProps) => {
-  const { data: songs, isPending, isError } = useGetCurrentUserSongs();
+  const { data: songs, isPending, isError } = useGetCurrentArtistSongs();
 
   const items = useMemo(() => (songs ? prepareSongData(songs) : []), [songs]);
 

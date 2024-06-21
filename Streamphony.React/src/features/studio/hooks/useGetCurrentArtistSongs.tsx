@@ -1,13 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { API_URL, CREATE_SONG_ENDPOINT } from '../../../shared/constants';
+import {
+  API_URL,
+  CURRENT_USER_SONGS_ENDPOINT,
+} from '../../../shared/constants';
 import { useMemo } from 'react';
 import useAuthContext from '../../../hooks/context/useAuthContext';
 
-const endpoint = `${CREATE_SONG_ENDPOINT}/current`;
-
-const useGetCurrentUserSongs = () => {
-  const { getToken } = useAuthContext();
+const useGetCurrentArtistSongs = () => {
+  const { isArtist, getToken } = useAuthContext();
   const token = getToken();
 
   const config = useMemo(
@@ -19,7 +20,10 @@ const useGetCurrentUserSongs = () => {
 
   const getSongs = async () => {
     try {
-      const res = await axios.get(`${API_URL}/${endpoint}`, config);
+      const res = await axios.get(
+        `${API_URL}/${CURRENT_USER_SONGS_ENDPOINT}`,
+        config,
+      );
 
       const items = res.data;
 
@@ -35,8 +39,9 @@ const useGetCurrentUserSongs = () => {
   return useQuery({
     queryKey: ['songsDashboard', token],
     queryFn: getSongs,
-    enabled: !!token,
+    enabled: !!token && isArtist,
+    retry: false,
   });
 };
 
-export default useGetCurrentUserSongs;
+export default useGetCurrentArtistSongs;

@@ -1,18 +1,18 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import React from 'react';
 import { REGISTER_ARTIST_ROUTE } from './routes';
-import useArtistContext from '../hooks/context/useArtistContext';
 import ProtectedRoute from './ProtectedRoute';
+import useAuthContext from '../hooks/context/useAuthContext';
 
 interface ArtistRouteProps {
   children: React.ReactNode;
 }
 
 const ArtistRoute = ({ children }: ArtistRouteProps) => {
-  const { isArtistLinked } = useArtistContext();
+  const { isArtist } = useAuthContext();
   const location = useLocation();
 
-  if (!isArtistLinked) {
+  if (!isArtist) {
     return (
       <Navigate to={REGISTER_ARTIST_ROUTE} state={{ from: location }} replace />
     );

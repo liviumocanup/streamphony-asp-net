@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Streamphony.Application.App.Artists.Commands;
 using Streamphony.Application.App.Artists.Queries;
 using Streamphony.Application.App.Artists.DTOs;
+using Streamphony.Application.App.Auth.Commands;
 using Streamphony.Application.App.BlobStorage.Commands;
 using Streamphony.Application.Common;
 using Streamphony.Application.Common.Enum;
+using Streamphony.WebAPI.Extensions;
 using Streamphony.WebAPI.Filters;
 
 namespace Streamphony.WebAPI.Controllers;
@@ -17,28 +19,28 @@ public class ArtistController(IMediator mediator) : AppBaseController
     private readonly IMediator _mediator = mediator;
 
     [HttpPost]
-    [ExtractUserId]
+    [Authorize(Policy = "UserPolicy")]
     [ValidateModel]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<ArtistResponseDto>> CreateArtist(ArtistCreationDto artistDto)
+    public async Task<IActionResult> CreateArtist(ArtistCreationDto artistDto)
     {
-        if (HttpContext.Items["UserId"] is not Guid userId)
-            return Unauthorized("ID is missing from the context");
-        
+        var userId = User.GetUserId();
+
         var createdArtistDto = await _mediator.Send(new CreateArtist(artistDto, userId));
-        var profilePictureUrl = await _mediator.Send(new CommitBlob(artistDto.ProfilePictureId, userId, createdArtistDto.Id, BlobType.ProfilePicture.ToString()));
-        
-        createdArtistDto.ProfilePictureUrl = profilePictureUrl;
-        
-        return CreatedAtAction(nameof(CreateArtist), new { id = createdArtistDto.Id }, createdArtistDto);
+        await _mediator.Send(new CommitBlob(artistDto.ProfilePictureId, userId, createdArtistDto.Id,
+            BlobType.ProfilePicture.ToString()));
+        var result = await _mediator.Send(new RefreshToken(userId));
+
+        return Ok(result);
     }
 
     [HttpPut]
     [ValidateModel]
+    [Authorize(Policy = "ArtistPolicy")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -85,16 +87,25 @@ public class ArtistController(IMediator mediator) : AppBaseController
         return Ok(artistDto);
     }
 
-    [HttpDelete("{id}")]
-    [ExtractUserId]
+    [HttpGet("current")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<ArtistResponseDto>> GetArtistDetailsForCurrentUser()
+    {
+        var userId = User.GetUserId();
+
+        var artist = await _mediator.Send(new GetArtistForUser(userId));
+        return Ok(artist);
+    }
+
+    [HttpDelete("{id:guid}")]
+    [Authorize(Policy = "ArtistPolicy")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteArtist(Guid id)
     {
-        if (HttpContext.Items["UserId"] is not Guid userId)
-            return Unauthorized();
-        
+        var userId = User.GetUserId();
+
         await _mediator.Send(new DeleteArtist(id, userId));
         return NoContent();
     }

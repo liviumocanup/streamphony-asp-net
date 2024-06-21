@@ -2,7 +2,7 @@ import { Box, IconButton, Typography } from '@mui/material';
 import '../../App.css';
 import { Helmet } from 'react-helmet-async';
 import { APP_TITLE } from '../../shared/constants';
-import AppBarWrapper from './AppBarWrapper';
+import AppBarWrapper from '../../shared/drawer/AppBarWrapper';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import RegisterArtistForm from './components/RegisterArtistForm';
 import { useNavigate } from 'react-router-dom';

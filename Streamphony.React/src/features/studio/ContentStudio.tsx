@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { APP_TITLE } from '../../shared/constants';
 import Box from '@mui/material/Box';
-import AppBarWrapper from '../accountCabinet/AppBarWrapper';
+import AppBarWrapper from '../../shared/drawer/AppBarWrapper';
 import { Toolbar, Typography } from '@mui/material';
 import DashboardTabs from './components/DashboardTabs';
 

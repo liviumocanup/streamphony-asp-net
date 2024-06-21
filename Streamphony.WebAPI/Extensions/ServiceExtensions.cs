@@ -21,6 +21,7 @@ public static class ServiceExtensions
         builder.Services.AddCorsPolicy();
         builder.Services.AddInfrastructure(builder.Configuration);
         builder.Services.AddApplication();
+        builder.Services.AddPolicies();
 
         // Serilog configuration
         builder.Services.AddSerilog((serv, lc) => lc

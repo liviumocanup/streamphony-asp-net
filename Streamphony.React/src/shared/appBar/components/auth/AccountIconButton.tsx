@@ -1,7 +1,8 @@
-import { Avatar, IconButton, Tooltip } from '@mui/material';
+import { Avatar, IconButton, Skeleton, Tooltip } from '@mui/material';
 import React from 'react';
-import useArtistContext from '../../../hooks/context/useArtistContext';
-import useTokenStorage from '../../../hooks/localStorage/useTokenStorage';
+import useTokenStorage from '../../../../hooks/localStorage/useTokenStorage';
+import useGetCurrentArtistDetails from '../../../../hooks/useGetCurrentArtistDetails';
+import useAuthContext from '../../../../hooks/context/useAuthContext';
 
 interface AccountIconButtonProps {
   open: boolean;
@@ -9,9 +10,19 @@ interface AccountIconButtonProps {
 }
 
 const AccountIconButton = ({ open, openMenu }: AccountIconButtonProps) => {
-  const { isArtistLinked, pfpUrl } = useArtistContext();
-  const { getUserClaims } = useTokenStorage();
-  const { firstName, lastName } = getUserClaims();
+  const { isArtist } = useAuthContext();
+  const { getTokenClaims } = useTokenStorage();
+  const { data: artist, isPending, isLoading } = useGetCurrentArtistDetails();
+
+  const tokenClaims = getTokenClaims();
+  const firstName = tokenClaims?.firstName || '';
+  const lastName = tokenClaims?.lastName || '';
+  const pfpUrl = artist?.pfpUrl || '';
+  console.log('pfpUrl: ', pfpUrl);
+  console.log('artist: ', artist);
+
+  if (isPending && isLoading)
+    return <Skeleton variant={'circular'} width={35} height={35} />;
 
   return (
     <Tooltip title="Account Settings">
@@ -22,7 +33,7 @@ const AccountIconButton = ({ open, openMenu }: AccountIconButtonProps) => {
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
       >
-        {isArtistLinked ? (
+        {isArtist ? (
           <Avatar src={pfpUrl} sx={{ width: 35, height: 35 }} />
         ) : (
           <Avatar

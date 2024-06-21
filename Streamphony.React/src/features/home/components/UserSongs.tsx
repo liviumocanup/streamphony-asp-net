@@ -1,19 +1,23 @@
 import Section from './Section';
-import useGetCurrentUserSongs from '../../studio/hooks/useGetSongs';
+import useGetCurrentArtistSongs from '../../studio/hooks/useGetCurrentArtistSongs';
 
 const UserSongs = () => {
-  const { data: songs, isPending, isError } = useGetCurrentUserSongs();
-  const items = songs?.map((song) => ({
-    name: song.title,
-    coverUrl: song.coverUrl,
-    resourceUrl: song.audioUrl,
-    description: 'Artist',
-    resource: song,
-  }));
+  const {
+    data: songs,
+    isPending,
+    isLoading,
+    isError,
+  } = useGetCurrentArtistSongs();
+  const items =
+    songs?.map((song) => ({
+      name: song.title,
+      coverUrl: song.coverUrl,
+      resourceUrl: song.audioUrl,
+      description: 'Artist',
+      resource: song,
+    })) || [];
 
-  console.log('SENDING REQUEST');
-
-  if (isPending) return <div>Loading...</div>;
+  if (isPending && isLoading) return <div>Loading...</div>;
 
   if (isError) return <div>Error...</div>;
 

@@ -30,14 +30,20 @@ public class RegisterUserHandler(
         if (userDb != null)
             _loggingService.LogAndThrowDuplicateException(nameof(User), nameof(userDto.Username), userDto.Username,
                 LogAction.Create);
-        
+
         userDb = await _userManagerProvider.FindByEmailAsync(userDto.Email);
         if (userDb != null)
             _loggingService.LogAndThrowDuplicateException(nameof(User), nameof(userDto.Email), userDto.Email,
                 LogAction.Create);
 
-        var token = await _authenticationService.Register(userEntity, userDto.Password, userDto.FirstName,
-            userDto.LastName, userDto.Role.ToString());
+        await _userManagerProvider.CreateAsync(userEntity, userDto.Password);
+
+        userDb = await _userManagerProvider.FindByNameAsync(userDto.Username);
+        if (userDb == null)
+            _loggingService.LogAndThrowNotFoundException(nameof(User), nameof(userDto.Username), userDto.Username);
+        
+        var token = await _authenticationService.Register(userDb!.Id, userDto.FirstName, userDto.LastName,
+            userDto.Role.ToString());
 
         return new AuthResultDto(token);
     }

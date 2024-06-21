@@ -9,7 +9,6 @@ using Streamphony.WebAPI.Filters;
 
 namespace Streamphony.WebAPI.Controllers;
 
-// TODO: policy instead of Roles
 [Route("api/genres")]
 [Authorize(Roles = "Admin")]
 public class GenreController(IMediator mediator) : AppBaseController

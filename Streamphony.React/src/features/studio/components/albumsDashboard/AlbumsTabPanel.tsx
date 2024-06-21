@@ -1,7 +1,7 @@
 import { TabPanel } from '../TabPanel';
 import { AccessTime as TimeIcon, PlayArrow } from '@mui/icons-material';
 import DashboardTable from '../DashboardTable';
-import useGetCurrentUserSongs from '../../hooks/useGetSongs';
+import useGetCurrentArtistSongs from '../../hooks/useGetCurrentArtistSongs';
 import { Avatar, Box } from '@mui/material';
 
 interface AlbumsTabPanelProps {
@@ -55,7 +55,7 @@ const headers = [
 ];
 
 const AlbumsTabPanel = ({ value, index }: AlbumsTabPanelProps) => {
-  const { data: songs, isPending, isError } = useGetCurrentUserSongs();
+  const { data: songs, isPending, isError } = useGetCurrentArtistSongs();
   const items = songs;
   console.log('Items: ', items);
   console.log('Songs: ', songs);

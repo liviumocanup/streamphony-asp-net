@@ -1,4 +1,4 @@
-import { Button, IconButton, Toolbar, Typography } from '@mui/material';
+import { IconButton, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from 'react-router-dom';
 import { APP_TITLE } from '../constants';
@@ -9,6 +9,8 @@ import { StyledAppBar } from './AppBarStyle';
 import { ReactNode } from 'react';
 import { HOME_ROUTE } from '../../routes/routes';
 import StudioCreateButton from './StudioCreateButton';
+import LogInButton from './components/auth/LogInButton';
+import SignUpButton from './components/auth/SignUpButton';
 
 interface AppBarProps {
   open: boolean;
@@ -69,23 +71,9 @@ const AppBar = ({
           <UserAvatar menuItems={avatarItems} />
         ) : (
           <>
-            <Button
-              component={Link}
-              to="/signUp"
-              color="inherit"
-              sx={{ mr: 1 }}
-            >
-              Sign Up
-            </Button>
+            <SignUpButton />
 
-            <Button
-              component={Link}
-              to="/logIn"
-              color="inherit"
-              variant="outlined"
-            >
-              Log in
-            </Button>
+            <LogInButton />
           </>
         )}
       </Toolbar>

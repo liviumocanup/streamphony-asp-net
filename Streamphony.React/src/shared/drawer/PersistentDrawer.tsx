@@ -1,8 +1,8 @@
 import { IconButton, Drawer } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import SidebarItems from '../../../shared/drawer/SidebarItems';
-import { DrawerHeader } from '../styles/DrawerHeaderStyle';
-import '../Home.css';
+import SidebarItems from './SidebarItems';
+import { DrawerHeader } from './styles/DrawerHeaderStyle';
+import '../../features/home/Home.css';
 
 interface SidebarProps {
   open: boolean;

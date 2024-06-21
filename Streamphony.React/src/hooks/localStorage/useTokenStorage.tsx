@@ -5,7 +5,7 @@ import { jwtDecode } from 'jwt-decode';
 const useTokenStorage = () => {
   const { getItem, setItem, removeItem } = useLocalStorage(LS_TOKEN_KEY);
 
-  const getUserClaims = () => {
+  const getTokenClaims = () => {
     const token = getItem();
     if (token) {
       try {
@@ -14,6 +14,7 @@ const useTokenStorage = () => {
         return {
           firstName: decoded.FirstName,
           lastName: decoded.LastName,
+          artistId: decoded.ArtistId,
         };
       } catch (error) {
         console.error('Failed to decode token:', error);
@@ -28,7 +29,7 @@ const useTokenStorage = () => {
 
   return {
     getToken,
-    getUserClaims,
+    getTokenClaims,
     setToken,
     removeToken,
   };

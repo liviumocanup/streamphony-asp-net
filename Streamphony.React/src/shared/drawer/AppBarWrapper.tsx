@@ -1,14 +1,16 @@
 import { Box } from '@mui/material';
 import '../../App.css';
 import { ReactNode, useState } from 'react';
-import AppBar from '../../shared/appBar/AppBar';
-import PersistentDrawer from '../home/components/PersistentDrawer';
-import { DrawerHeader } from '../home/styles/DrawerHeaderStyle';
-import { Main } from '../home/styles/MainStyle';
+import AppBar from '../appBar/AppBar';
+import PersistentDrawer from './PersistentDrawer';
+import { DrawerHeader } from './styles/DrawerHeaderStyle';
+import { Main } from './styles/MainStyle';
+import AudioPlayer from '../audioPlayer/AudioPlayer';
 
 interface AppBarWrapperProps {
   children: ReactNode;
   showCreate?: boolean;
+  showPlayer?: boolean;
 }
 
 const drawerWidth = 240;
@@ -16,6 +18,7 @@ const drawerWidth = 240;
 const AppBarWrapper = ({
   children,
   showCreate = false,
+  showPlayer = false,
 }: AppBarWrapperProps) => {
   const [open, setOpen] = useState(false);
 
@@ -50,6 +53,9 @@ const AppBarWrapper = ({
       <Main open={open} drawerWidth={drawerWidth}>
         <DrawerHeader />
         {children}
+        {showPlayer && (
+          <AudioPlayer isDrawerOpen={open} drawerWidth={drawerWidth} />
+        )}
       </Main>
     </Box>
   );

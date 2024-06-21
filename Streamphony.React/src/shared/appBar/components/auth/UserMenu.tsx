@@ -1,14 +1,14 @@
 import { Divider, Menu } from '@mui/material';
 import { Logout, PersonOutline, Settings } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import useAuthContext from '../../../hooks/context/useAuthContext';
-import MenuItemWithIcon from './MenuItemWithIcon';
+import useAuthContext from '../../../../hooks/context/useAuthContext';
+import MenuItemWithIcon from '../MenuItemWithIcon';
 import { ReactNode } from 'react';
 import {
   ACCOUNT_ROUTE,
   HOME_ROUTE,
   SETTINGS_ROUTE,
-} from '../../../routes/routes';
+} from '../../../../routes/routes';
 
 interface UserMenuProps {
   anchorEl: null | HTMLElement;

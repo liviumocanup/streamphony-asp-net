@@ -4,15 +4,17 @@ import { Helmet } from 'react-helmet-async';
 import { APP_TITLE } from '../../shared/constants';
 import AccountCabSection from './components/AccountCabSection';
 import SecurityCabSection from './components/SecurityCabSection';
-import AppBarWrapper from './AppBarWrapper';
-import LoadingSpinner from '../../shared/LoadingSpinner';
+import AppBarWrapper from '../../shared/drawer/AppBarWrapper';
 import useTokenStorage from '../../hooks/localStorage/useTokenStorage';
-import useArtistContext from '../../hooks/context/useArtistContext';
+import useAuthContext from '../../hooks/context/useAuthContext';
 
 const AccountCabinet = () => {
-  const { isArtistLinked } = useArtistContext();
-  const { getUserClaims } = useTokenStorage();
-  const { firstName, lastName } = getUserClaims();
+  const { isArtist } = useAuthContext();
+  const { getTokenClaims } = useTokenStorage();
+
+  const tokenClaims = getTokenClaims();
+  const firstName = tokenClaims?.firstName || '';
+  const lastName = tokenClaims?.lastName || '';
 
   return (
     <>
@@ -26,7 +28,7 @@ const AccountCabinet = () => {
           <Box className="CenteredContainer">
             <Toolbar />
 
-            <AccountCabSection isArtist={isArtistLinked} />
+            <AccountCabSection isArtist={isArtist} />
 
             <SecurityCabSection />
           </Box>

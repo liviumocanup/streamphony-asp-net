@@ -1,10 +1,21 @@
 export const API_URL = 'http://localhost:5207/api';
 // process.env.REACT_APP_DE;
-export const LOG_IN_ENDPOINT = 'auth/login';
-export const SIGN_UP_ENDPOINT = 'auth/register';
-export const REGISTER_ARTIST_ENDPOINT = 'artists';
-export const CREATE_SONG_ENDPOINT = 'songsDashboard';
+
+const AUTH_PATH = 'auth';
+export const LOG_IN_ENDPOINT = `${AUTH_PATH}/login`;
+export const SIGN_UP_ENDPOINT = `${AUTH_PATH}/register`;
+export const REFRESH_TOKEN_ENDPOINT = `${AUTH_PATH}/refresh`;
+
 export const UPLOAD_BLOB_ENDPOINT = 'blobs';
+
+export const SONG_ENDPOINT = 'songs';
+export const CURRENT_USER_SONGS_ENDPOINT = `${SONG_ENDPOINT}/user/current`;
+
+export const ARTIST_ENDPOINT = 'artists';
+export const CURRENT_USER_ARTIST_ENDPOINT = `${ARTIST_ENDPOINT}/current`;
+
+export const ALBUM_ENDPOINT = 'albums';
+export const USER_ENDPOINT = 'users';
 
 export const LS_TOKEN_KEY = 'token';
 export const LS_THEME_KEY = 'theme';
@@ -38,3 +49,5 @@ export enum BlobType {
   SongCover = 'SongCover',
   AlbumCover = 'AlbumCover',
 }
+
+export const APP_GREEN = '#1DB954';

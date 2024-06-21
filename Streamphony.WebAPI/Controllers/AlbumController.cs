@@ -10,6 +10,7 @@ using Streamphony.WebAPI.Filters;
 namespace Streamphony.WebAPI.Controllers;
 
 [Route("api/albums")]
+[Authorize(Policy = "ArtistPolicy")]
 public class AlbumController(IMediator mediator) : AppBaseController
 {
     private readonly IMediator _mediator = mediator;
