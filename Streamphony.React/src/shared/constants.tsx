@@ -1,3 +1,6 @@
+export const AUTH0_DOMAIN = 'dev-jvf2cje0ljzcgdis.us.auth0.com';
+export const AUTH0_CLIENT_ID = 'M3cFuX1na4lgS5QcR4se1bIEYoirhTTG';
+
 export const API_URL = 'http://localhost:5207/api';
 // process.env.REACT_APP_DE;
 export const LOG_IN_ENDPOINT = 'auth/login';
@@ -38,3 +41,5 @@ export enum BlobType {
   SongCover = 'SongCover',
   AlbumCover = 'AlbumCover',
 }
+
+export const APP_GREEN = '#4caf50';

@@ -1,14 +1,10 @@
 import { Divider, Menu } from '@mui/material';
 import { Logout, PersonOutline, Settings } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import useAuthContext from '../../../hooks/context/useAuthContext';
-import MenuItemWithIcon from './MenuItemWithIcon';
+import MenuItemWithIcon from '../appBar/components/MenuItemWithIcon';
 import { ReactNode } from 'react';
-import {
-  ACCOUNT_ROUTE,
-  HOME_ROUTE,
-  SETTINGS_ROUTE,
-} from '../../../routes/routes';
+import { ACCOUNT_ROUTE, SETTINGS_ROUTE } from '../../routes/routes';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface UserMenuProps {
   anchorEl: null | HTMLElement;
@@ -19,7 +15,7 @@ interface UserMenuProps {
 
 const UserMenu = ({ anchorEl, open, closeMenu, items }: UserMenuProps) => {
   const navigate = useNavigate();
-  const { logOut } = useAuthContext();
+  const { logout } = useAuth0();
 
   const navigateToPage = (path: string) => {
     closeMenu();
@@ -28,10 +24,6 @@ const UserMenu = ({ anchorEl, open, closeMenu, items }: UserMenuProps) => {
 
   const navigateToAccount = () => navigateToPage(ACCOUNT_ROUTE);
   const navigateToSettings = () => navigateToPage(SETTINGS_ROUTE);
-  const handleLogOut = () => {
-    logOut();
-    navigate(HOME_ROUTE);
-  };
 
   const itemList = [
     <MenuItemWithIcon
@@ -54,7 +46,9 @@ const UserMenu = ({ anchorEl, open, closeMenu, items }: UserMenuProps) => {
       key="logout"
       text="Log out"
       icon={<Logout fontSize="small" />}
-      onClick={handleLogOut}
+      onClick={() =>
+        logout({ logoutParams: { returnTo: window.location.origin } })
+      }
     />,
   ];
 

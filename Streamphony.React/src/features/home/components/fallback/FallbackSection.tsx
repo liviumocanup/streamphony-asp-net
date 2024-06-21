@@ -12,7 +12,7 @@ const FallbackSection = ({
   return (
     <FallbackSectionContainer>
       <Grid container spacing={2}>
-        {[...Array(7)].map((_, index) => (
+        {[...Array(6)].map((_, index) => (
           <FallbackCard key={index} index={index} imageVariant={imageVariant} />
         ))}
       </Grid>

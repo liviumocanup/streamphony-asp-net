@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Streamphony.Domain.Models.Auth;
-using Streamphony.Infrastructure.Configurations;
+using Streamphony.Infrastructure.Options;
 using Streamphony.Infrastructure.Persistence.Contexts;
 
 namespace Streamphony.Infrastructure.Extensions;
@@ -14,11 +15,11 @@ public static class AuthenticationExtensions
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services,
         IConfiguration configuration)
     {
-        var jwtSettings = new JwtSettings();
-        configuration.Bind(nameof(JwtSettings), jwtSettings);
+        var authSettings = new AuthSettings();
+        configuration.Bind(nameof(AuthSettings), authSettings);
 
-        var jwtSection = configuration.GetSection(nameof(JwtSettings));
-        services.Configure<JwtSettings>(jwtSection);
+        var authSection = configuration.GetSection(nameof(AuthSettings));
+        services.Configure<AuthSettings>(authSection);
 
         services.AddAuthentication(options =>
         {
@@ -28,21 +29,12 @@ public static class AuthenticationExtensions
         }).AddJwtBearer(options =>
         {
             options.SaveToken = true;
+            options.Authority = authSettings.Authority;
+            options.Audience = authSettings.Audience;
             options.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = jwtSettings.GetSymmetricSecurityKey(),
-
-                ValidateIssuer = true,
-                ValidIssuer = jwtSettings.Issuer,
-
-                ValidateAudience = true,
-                ValidAudiences = jwtSettings.Audiences,
-
-                ValidateLifetime = true
+                NameClaimType = ClaimTypes.NameIdentifier
             };
-            options.ClaimsIssuer = jwtSettings.Issuer;
-            options.Audience = jwtSettings.Audiences[0];
         });
 
         services.AddIdentityCore<User>(options =>

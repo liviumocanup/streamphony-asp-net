@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Authorization;
 using Serilog;
 using Serilog.Events;
 using Streamphony.Application.Extensions;
 using Streamphony.Infrastructure.Extensions;
+using Streamphony.WebAPI.Authorization;
 
 namespace Streamphony.WebAPI.Extensions;
 
@@ -19,6 +21,7 @@ public static class ServiceExtensions
 
         builder.Services.AddSwagger();
         builder.Services.AddCorsPolicy();
+        builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
         builder.Services.AddInfrastructure(builder.Configuration);
         builder.Services.AddApplication();
 

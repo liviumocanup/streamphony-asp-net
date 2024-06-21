@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { APP_TITLE } from '../../shared/constants';
 import AccountCabSection from './components/AccountCabSection';
 import SecurityCabSection from './components/SecurityCabSection';
-import AppBarWrapper from './AppBarWrapper';
+import AppBarWrapper from '../../shared/drawer/AppBarWrapper';
 import LoadingSpinner from '../../shared/LoadingSpinner';
 import useTokenStorage from '../../hooks/localStorage/useTokenStorage';
 import useArtistContext from '../../hooks/context/useArtistContext';

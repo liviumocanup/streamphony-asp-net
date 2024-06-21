@@ -9,6 +9,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment()) app.UseSwaggerDocumentation();
 
 app.UseCors("ClientPermission");
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseHttpsRedirection();
 app.UseRequestTiming();
 app.UseExceptionHandling();

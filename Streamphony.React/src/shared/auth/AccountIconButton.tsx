@@ -1,7 +1,8 @@
 import { Avatar, IconButton, Tooltip } from '@mui/material';
 import React from 'react';
-import useArtistContext from '../../../hooks/context/useArtistContext';
-import useTokenStorage from '../../../hooks/localStorage/useTokenStorage';
+import useArtistContext from '../../hooks/context/useArtistContext';
+import useAuth from '../../hooks/useAuth';
+import LoadingSpinner from '../LoadingSpinner';
 
 interface AccountIconButtonProps {
   open: boolean;
@@ -10,8 +11,10 @@ interface AccountIconButtonProps {
 
 const AccountIconButton = ({ open, openMenu }: AccountIconButtonProps) => {
   const { isArtistLinked, pfpUrl } = useArtistContext();
-  const { getUserClaims } = useTokenStorage();
-  const { firstName, lastName } = getUserClaims();
+  const { user, isLoading } = useAuth();
+  console.log('user', user?.picture);
+
+  if (isLoading) return <LoadingSpinner />;
 
   return (
     <Tooltip title="Account Settings">
@@ -23,18 +26,17 @@ const AccountIconButton = ({ open, openMenu }: AccountIconButtonProps) => {
         aria-expanded={open ? 'true' : undefined}
       >
         {isArtistLinked ? (
-          <Avatar src={pfpUrl} sx={{ width: 35, height: 35 }} />
+          <Avatar src={user?.picture} sx={{ width: 35, height: 35 }} />
         ) : (
           <Avatar
             sx={{
               bgcolor: 'primary.main',
+              src: user?.picture,
               width: 35,
               height: 35,
               fontSize: 15,
             }}
-          >
-            {firstName[0] + lastName[0]}
-          </Avatar>
+          />
         )}
       </IconButton>
     </Tooltip>

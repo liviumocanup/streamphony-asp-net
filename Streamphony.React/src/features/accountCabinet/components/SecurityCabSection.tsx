@@ -1,18 +1,10 @@
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import CabinetSection from './CabinetSection';
-import useAuthContext from '../../../hooks/context/useAuthContext';
-import { useNavigate } from 'react-router-dom';
-import { HOME_ROUTE } from '../../../routes/routes';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const AccountCabSection = () => {
-  const { logOut } = useAuthContext();
-  const navigate = useNavigate();
-
-  const handleLogOut = () => {
-    logOut();
-    navigate(HOME_ROUTE);
-  };
+  const { logout } = useAuth0();
 
   const securityItems = [
     {
@@ -20,7 +12,12 @@ const AccountCabSection = () => {
       icon: <DeleteOutlineOutlinedIcon />,
       onClick: () => {},
     },
-    { name: 'Log Out', icon: <ExitToAppIcon />, onClick: handleLogOut },
+    {
+      name: 'Log Out',
+      icon: <ExitToAppIcon />,
+      onClick: () =>
+        logout({ logoutParams: { returnTo: window.location.origin } }),
+    },
   ];
 
   return (

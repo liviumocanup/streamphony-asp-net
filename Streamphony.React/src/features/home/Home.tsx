@@ -1,31 +1,18 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import Box from '@mui/material/Box';
 import AppBar from '../../shared/appBar/AppBar';
-import PersistentDrawer from './components/PersistentDrawer';
-import Feed from './components/Feed';
-import { Main } from './styles/MainStyle';
-import { DrawerHeader } from './styles/DrawerHeaderStyle';
+import PersistentDrawer from '../../shared/drawer/PersistentDrawer';
+import { Main } from '../../shared/drawer/styles/MainStyle';
+import { DrawerHeader } from '../../shared/drawer/styles/DrawerHeaderStyle';
 import { Helmet } from 'react-helmet-async';
 import { APP_TITLE } from '../../shared/constants';
-import useGetUserDetails from '../../hooks/useGetUserDetails';
-
-const drawerWidth = 240;
+import AppBarWrapper from '../../shared/drawer/AppBarWrapper';
+import AudioPlayer from '../../shared/audioPlayer/AudioPlayer';
+import FallbackFeed from './components/fallback/FallbackFeed';
+import Feed from './components/Feed';
 
 const Home = () => {
-  const [open, setOpen] = useState(true);
-  const { data: user } = useGetUserDetails();
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
+  // const Feed = lazy(() => import('./components/Feed'));
 
   return (
     <>
@@ -37,29 +24,17 @@ const Home = () => {
         />
       </Helmet>
 
-      <Box
-        sx={{
-          display: 'flex',
-          bgcolor: 'background.default',
-        }}
-      >
-        <AppBar
-          open={open}
-          handleDrawerOpen={handleDrawerOpen}
-          drawerWidth={drawerWidth}
-        />
+      <AppBarWrapper
+        children={
+          <>
+            <Suspense fallback={<FallbackFeed />}>
+              <Feed />
+            </Suspense>
 
-        <PersistentDrawer
-          open={open}
-          handleDrawerClose={handleDrawerClose}
-          drawerWidth={drawerWidth}
-        />
-
-        <Main open={open} drawerWidth={drawerWidth}>
-          <DrawerHeader />
-          <Feed open={open} drawerWidth={drawerWidth} />
-        </Main>
-      </Box>
+            <AudioPlayer />
+          </>
+        }
+      />
     </>
   );
 };

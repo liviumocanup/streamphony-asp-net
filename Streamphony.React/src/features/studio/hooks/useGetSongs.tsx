@@ -2,19 +2,18 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { API_URL, CREATE_SONG_ENDPOINT } from '../../../shared/constants';
 import { useMemo } from 'react';
-import useAuthContext from '../../../hooks/context/useAuthContext';
+import useAuth from '../../../hooks/useAuth';
 
 const endpoint = `${CREATE_SONG_ENDPOINT}/current`;
 
 const useGetCurrentUserSongs = () => {
-  const { getToken } = useAuthContext();
-  const token = getToken();
+  const { user } = useAuth();
 
   const config = useMemo(
     () => ({
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${user?.sub}` },
     }),
-    [token],
+    [user],
   );
 
   const getSongs = async () => {
@@ -33,9 +32,9 @@ const useGetCurrentUserSongs = () => {
   };
 
   return useQuery({
-    queryKey: ['songsDashboard', token],
+    queryKey: ['songsDashboard', user?.sub],
     queryFn: getSongs,
-    enabled: !!token,
+    enabled: !!user,
   });
 };
 

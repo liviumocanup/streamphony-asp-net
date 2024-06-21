@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Streamphony.Application.Abstractions.Configurations;
-using Streamphony.Infrastructure.Configurations;
+using Streamphony.Infrastructure.Options;
 
 namespace Streamphony.Infrastructure.Extensions;
 

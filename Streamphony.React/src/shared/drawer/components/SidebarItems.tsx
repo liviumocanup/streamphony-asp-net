@@ -3,17 +3,17 @@ import HomeIcon from '@mui/icons-material/Home';
 import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import SettingsIcon from '@mui/icons-material/Settings';
-import RoundedHoverButton from '../RoundedHoverButton';
-import useAuthContext from '../../hooks/context/useAuthContext';
+import RoundedHoverButton from '../../RoundedHoverButton';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import {
   HOME_ROUTE,
   LIBRARY_ROUTE,
   SETTINGS_ROUTE,
   STUDIO_ROUTE,
-} from '../../routes/routes';
+} from '../../../routes/routes';
 import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
 import { ReactElement } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface MenuItems {
   name: string;
@@ -47,9 +47,13 @@ const defaultMenuItems = (navigate: NavigateFunction, logOut: () => void) => [
 
 const SidebarItems = ({ menuItems }: SidebarItemsProps) => {
   const navigate = useNavigate();
-  const { logOut } = useAuthContext();
+  const { logout } = useAuth0();
 
-  const items = menuItems || defaultMenuItems(navigate, logOut);
+  const items =
+    menuItems ||
+    defaultMenuItems(navigate, () =>
+      logout({ logoutParams: { returnTo: window.location.origin } }),
+    );
 
   return (
     <Box

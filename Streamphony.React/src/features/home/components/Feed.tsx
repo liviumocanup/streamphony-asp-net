@@ -3,23 +3,21 @@ import useFetchImages from '../hooks/useFetchImages';
 import { Suspense } from 'react';
 import Section from './Section';
 import FallbackSection from './fallback/FallbackSection';
-import useAuthContext from '../../../hooks/context/useAuthContext';
 import UserSongs from './UserSongs';
-import AudioPlayer from '../../../shared/audioPlayer/AudioPlayer';
+import FallbackFeed from './fallback/FallbackFeed';
+import { useAuth0 } from '@auth0/auth0-react';
+import useGetAlbums from '../hooks/useGetAlbums';
 
-interface FeedProps {
-  open: boolean;
-  drawerWidth: number;
-}
+const Feed = () => {
+  const { user, isAuthenticated, isLoading } = useAuth0();
 
-const Feed = ({ open, drawerWidth }: FeedProps) => {
-  const { isLoggedIn } = useAuthContext();
+  if (isLoading) return <FallbackFeed />;
 
   return (
     <>
-      {isLoggedIn ? (
+      {isAuthenticated ? (
         <Suspense fallback={<FallbackSection imageVariant={'circular'} />}>
-          <UserSongs />
+          <UserSongs user={user} />
         </Suspense>
       ) : null}
 
@@ -34,14 +32,6 @@ const Feed = ({ open, drawerWidth }: FeedProps) => {
       {/*<Suspense fallback={<FallbackSection />}>*/}
       {/*  <FeaturedPlaylists />*/}
       {/*</Suspense>*/}
-
-      <AudioPlayer
-        url="http://127.0.0.1:10000/devstoreaccount1/draft/songs/0fce21a9-d4d8-482d-87ef-261b8076f221"
-        title="Song Title"
-        artist="Artist Name"
-        isDrawerOpen={open}
-        drawerWidth={drawerWidth}
-      />
     </>
   );
 };

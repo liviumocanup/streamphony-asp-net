@@ -24,8 +24,6 @@ public class BlobController(IMediator mediator) : AppBaseController
             ContentType = file.ContentType,
             Content = file.OpenReadStream()
         };
-        
-        Console.WriteLine(blobType);
 
         var blobDto = await mediator.Send(new UploadBlob(blobRequestDto, userId, blobType), cancellationToken);
 

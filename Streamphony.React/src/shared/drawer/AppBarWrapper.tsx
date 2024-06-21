@@ -1,10 +1,10 @@
 import { Box } from '@mui/material';
 import '../../App.css';
 import { ReactNode, useState } from 'react';
-import AppBar from '../../shared/appBar/AppBar';
-import PersistentDrawer from '../home/components/PersistentDrawer';
-import { DrawerHeader } from '../home/styles/DrawerHeaderStyle';
-import { Main } from '../home/styles/MainStyle';
+import AppBar from '../appBar/AppBar';
+import PersistentDrawer from './PersistentDrawer';
+import { DrawerHeader } from './styles/DrawerHeaderStyle';
+import { Main } from './styles/MainStyle';
 
 interface AppBarWrapperProps {
   children: ReactNode;

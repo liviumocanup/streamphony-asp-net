@@ -2,13 +2,13 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Streamphony.Infrastructure.Configurations;
+using Streamphony.Infrastructure.Options;
 
 namespace Streamphony.Infrastructure.ServiceProviders.Auth;
 
-public class TokenService(IOptions<JwtSettings> jwtOptions) : ITokenService
+public class TokenService(IOptions<AuthSettings> jwtOptions) : ITokenService
 {
-    private readonly JwtSettings _settings = jwtOptions.Value;
+    private readonly AuthSettings _settings = jwtOptions.Value;
 
     private static JwtSecurityTokenHandler TokenHandler => new();
 
@@ -30,10 +30,10 @@ public class TokenService(IOptions<JwtSettings> jwtOptions) : ITokenService
         {
             Subject = identity,
             Expires = DateTime.UtcNow.AddDays(7),
-            Audience = _settings.Audiences[0],
-            Issuer = _settings.Issuer,
-            SigningCredentials = new SigningCredentials(_settings.GetSymmetricSecurityKey(),
-                SecurityAlgorithms.HmacSha256Signature)
+            // Audience = _settings.Audiences[0],
+            // Issuer = _settings.Issuer,
+            // SigningCredentials = new SigningCredentials(_settings.GetSymmetricSecurityKey(),
+            //     SecurityAlgorithms.HmacSha256Signature)
         };
     }
 }

@@ -1,14 +1,16 @@
-import { Button, IconButton, Toolbar, Typography } from '@mui/material';
+import { IconButton, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from 'react-router-dom';
 import { APP_TITLE } from '../constants';
-import UserAvatar from './UserAvatar';
+import UserAvatar from '../auth/UserAvatar';
 import ThemeToggleButton from './components/ThemeToggleButton';
-import useAuthContext from '../../hooks/context/useAuthContext';
 import { StyledAppBar } from './AppBarStyle';
 import { ReactNode } from 'react';
 import { HOME_ROUTE } from '../../routes/routes';
 import StudioCreateButton from './StudioCreateButton';
+import LogInButton from '../auth/LogInButton';
+import SignUpButton from '../auth/SignUpButton';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface AppBarProps {
   open: boolean;
@@ -25,7 +27,7 @@ const AppBar = ({
   avatarItems,
   showCreate = false,
 }: AppBarProps) => {
-  const { isLoggedIn } = useAuthContext();
+  const { isAuthenticated } = useAuth0();
 
   return (
     <StyledAppBar
@@ -65,27 +67,12 @@ const AppBar = ({
 
         {showCreate && <StudioCreateButton />}
 
-        {isLoggedIn ? (
+        {isAuthenticated ? (
           <UserAvatar menuItems={avatarItems} />
         ) : (
           <>
-            <Button
-              component={Link}
-              to="/signUp"
-              color="inherit"
-              sx={{ mr: 1 }}
-            >
-              Sign Up
-            </Button>
-
-            <Button
-              component={Link}
-              to="/logIn"
-              color="inherit"
-              variant="outlined"
-            >
-              Log in
-            </Button>
+            <SignUpButton />
+            <LogInButton />
           </>
         )}
       </Toolbar>

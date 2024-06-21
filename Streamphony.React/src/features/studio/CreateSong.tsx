@@ -3,7 +3,7 @@ import '../../App.css';
 import { Helmet } from 'react-helmet-async';
 import { APP_TITLE } from '../../shared/constants';
 import CreateSongForm from './components/upload/CreateSongForm';
-import AppBarWrapper from '../accountCabinet/AppBarWrapper';
+import AppBarWrapper from '../../shared/drawer/AppBarWrapper';
 
 const CreateSong = () => {
   return (

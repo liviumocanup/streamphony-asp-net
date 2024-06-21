@@ -1,6 +1,6 @@
 import React from 'react';
-import AccountIconButton from './components/AccountIconButton';
-import UserMenu from './components/UserMenu';
+import AccountIconButton from './AccountIconButton';
+import UserMenu from './UserMenu';
 
 interface UserAvatarProps {
   menuItems?: React.ReactNode[];

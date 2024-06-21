@@ -1,6 +1,6 @@
 ﻿using Streamphony.Application.Abstractions.Configurations;
 
-namespace Streamphony.Infrastructure.Configurations;
+namespace Streamphony.Infrastructure.Options;
 
 public class FileStorageSettings : IFileStorageSettings
 {

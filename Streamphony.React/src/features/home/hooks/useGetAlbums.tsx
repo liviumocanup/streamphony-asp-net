@@ -7,14 +7,13 @@ import useAuthContext from '../../../hooks/context/useAuthContext';
 const endpoint = 'albums';
 
 const useGetAlbums = () => {
-  const { getToken } = useAuthContext();
-  const token = getToken();
+  const { user } = useAuthContext();
 
   const config = useMemo(
     () => ({
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${user.sub}` },
     }),
-    [token],
+    [user],
   );
 
   const getAlbums = async () => {
