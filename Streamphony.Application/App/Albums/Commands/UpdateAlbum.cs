@@ -2,7 +2,7 @@ using MediatR;
 using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Services;
-using Streamphony.Application.App.Albums.Responses;
+using Streamphony.Application.App.Albums.DTOs;
 using Streamphony.Application.Common.Enum;
 using Streamphony.Domain.Models;
 
@@ -42,10 +42,10 @@ public class UpdateAlbumHandler(
 
     private async Task ValidateOwnership(AlbumDto albumDto, CancellationToken cancellationToken)
     {
-        var artist = await _validationService.GetExistingEntity(_unitOfWork.ArtistRepository, albumDto.OwnerId,
-            cancellationToken, LogAction.Get);
-
-        if (artist.OwnedAlbums.All(album => album.Id != albumDto.Id))
-            _logger.LogAndThrowNotAuthorizedException(nameof(Album), albumDto.Id, nameof(Artist), albumDto.OwnerId);
+        // var artist = await _validationService.GetExistingEntity(_unitOfWork.ArtistRepository, albumDto.OwnerId,
+        //     cancellationToken, LogAction.Get);
+        //
+        // if (artist.OwnedAlbums.All(album => album.Id != albumDto.Id))
+        //     _logger.LogAndThrowNotAuthorizedException(nameof(Album), albumDto.Id, nameof(Artist), albumDto.OwnerId);
     }
 }

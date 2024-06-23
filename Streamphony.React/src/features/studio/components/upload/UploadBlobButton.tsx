@@ -3,7 +3,7 @@ import { Box, Button, Typography } from '@mui/material';
 import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import FileUploadRoundedIcon from '@mui/icons-material/FileUploadRounded';
 import LoadingSpinner from '../../../../shared/LoadingSpinner';
-import { BlobFile } from '../../../../shared/Interfaces';
+import { BlobFile } from '../../../../shared/interfaces/Interfaces';
 import { displayAlert } from '../../../../shared/utils';
 
 interface UploadBlobButtonProps {

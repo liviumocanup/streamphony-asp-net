@@ -1,4 +1,4 @@
-import { CreateSongData } from '../../../shared/Interfaces';
+import { CreateSongData } from '../../../shared/interfaces/Interfaces';
 import axios from 'axios';
 import { API_URL, SONG_ENDPOINT } from '../../../shared/constants';
 import { useMutation } from '@tanstack/react-query';

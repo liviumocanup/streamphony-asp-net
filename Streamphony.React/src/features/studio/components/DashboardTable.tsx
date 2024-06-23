@@ -1,6 +1,6 @@
 import { Table, TableContainer } from '@mui/material';
 import DashboardTableHead from './DashboardTableHead';
-import { TableHeader } from '../../../shared/Interfaces';
+import { TableHeader } from '../../../shared/interfaces/Interfaces';
 import DashboardTableBody from './DashboardTableBody';
 
 interface ContentTableProps {

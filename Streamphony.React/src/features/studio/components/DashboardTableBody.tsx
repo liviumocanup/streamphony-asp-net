@@ -1,5 +1,5 @@
 import { TableBody, TableCell, TableRow } from '@mui/material';
-import { TableHeader } from '../../../shared/Interfaces';
+import { TableHeader } from '../../../shared/interfaces/Interfaces';
 import { useState } from 'react';
 
 interface ContentTableBodyProps {

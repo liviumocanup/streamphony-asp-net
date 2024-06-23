@@ -4,9 +4,10 @@ import DashboardTable from '../DashboardTable';
 import useGetCurrentArtistSongs from '../../hooks/useGetCurrentArtistSongs';
 import { formatDateTime, formatDuration } from '../../../../shared/utils';
 import { useMemo } from 'react';
-import { Song } from '../../../../shared/Interfaces';
-import PlayButtonCell from './PlayButtonCell';
 import TitleCell from './TitleCell';
+import { SongDetails } from '../../../../shared/interfaces/EntityDetailsInterfaces';
+import DurationCell from '../DurationCell';
+import { ItemType } from '../../../../shared/interfaces/Interfaces';
 
 interface SongsTabPanelProps {
   value: number;
@@ -19,17 +20,23 @@ const headers = [
     propertyName: 'id',
     centered: true,
     width: '4%',
-    renderCell: (_item: Song, index: number, _isHovered: boolean) => index + 1,
+    renderCell: (_item: SongDetails, index: number) => index + 1,
   },
   {
     label: 'Title',
     propertyName: 'title',
     width: '40%',
-    renderCell: (item: Song) => (
-      <TitleCell itemId={item.id} title={item.title} coverUrl={item.coverUrl} />
+    renderCell: (item: SongDetails) => (
+      <TitleCell
+        songId={item.id}
+        title={item.title}
+        artist={item.artist.stageName}
+        artistId={item.artist.id}
+        coverUrl={item.coverUrl}
+      />
     ),
   },
-  { label: 'Album', propertyName: 'albumId', width: '25%' },
+  { label: 'Album', propertyName: 'albumName', width: '25%' },
   { label: 'Date Added', propertyName: 'dateAdded' },
   {
     label: 'Duration',
@@ -37,15 +44,23 @@ const headers = [
     centered: true,
     width: '10%',
     icon: <TimeIcon />,
+    renderCell: (item: any, _index: number, isHovered: boolean) => (
+      <DurationCell
+        duration={item.duration}
+        itemId={item.id}
+        isHovered={isHovered}
+        itemType={ItemType.SONG}
+      />
+    ),
   },
 ];
 
-const prepareSongData = (songs: Song[]) =>
-  songs.map((song: Song) => ({
+const prepareSongData = (songs: SongDetails[]) =>
+  songs.map((song: SongDetails) => ({
     ...song,
-    duration: formatDuration(song.duration),
+    duration: formatDuration({ timeSpan: song.duration }),
     dateAdded: formatDateTime(song.createdAt),
-    albumId: song.albumId || '-',
+    albumName: song.album?.title || '-',
     coverUrl: song.coverUrl || '',
   }));
 

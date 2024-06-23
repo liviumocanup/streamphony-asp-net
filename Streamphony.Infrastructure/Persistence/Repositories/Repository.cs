@@ -60,10 +60,10 @@ public class Repository<T>(ApplicationDbContext context) : IRepository<T> where 
     }
 
     public async Task<(PaginatedResult<TDto>, IEnumerable<T>)> GetAllPaginated<TDto>(PagedRequest pagedRequest,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken, Func<IQueryable<T>, IQueryable<T>>? include = null)
         where TDto : class
     {
-        return await _context.Set<T>().CreatePaginatedResultAsync<T, TDto>(pagedRequest, cancellationToken);
+        return await _context.Set<T>().CreatePaginatedResultAsync<T, TDto>(pagedRequest, cancellationToken, include);
     }
 
     private IQueryable<T> IncludeProperties(params Expression<Func<T, object>>[] includeProperties)

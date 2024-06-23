@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
 import { AUDIO_CONTENT_TYPE } from '../../../../shared/constants';
-import { BlobFile } from '../../../../shared/Interfaces';
+import { BlobFile } from '../../../../shared/interfaces/Interfaces';
 
 interface UploadDialogProps {
   open: boolean;

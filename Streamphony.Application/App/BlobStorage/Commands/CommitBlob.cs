@@ -41,7 +41,7 @@ public class CommitBlobHandler(
             ownerId = artistId!.Value;
         }
         
-        if (blob.OwnerId != ownerId) throw new UnauthorizedAccessException("You are not the owner of this blob");
+        if (blob.OwnerId != ownerId) throw new UnauthorizedAccessException($"You are not the owner of this {blobType} blob");
         if (blob.ContainerName != BlobContainer.Draft) throw new InvalidOperationException("Blob is already committed");
         
         ValidateContentType(blob.ContentType, blobType);

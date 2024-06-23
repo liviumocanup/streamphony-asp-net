@@ -8,7 +8,7 @@ using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.App.Songs.Commands;
 
-public record UpdateSong(SongRequestDto SongDto, Guid UserId) : IRequest<SongDto>;
+public record UpdateSong(SongDto SongDto, Guid UserId) : IRequest<SongDto>;
 
 public class UpdateSongHandler(
     IUnitOfWork unitOfWork,
@@ -31,10 +31,10 @@ public class UpdateSongHandler(
         var songDb = await _validationService.GetExistingEntity(_unitOfWork.SongRepository, songDto.Id,
             cancellationToken);
         await ValidateOwnership(songDto, userId, cancellationToken);
-        await _validationService.AssertNavigationEntityExists<Song, Genre>(_unitOfWork.GenreRepository, songDto.GenreId,
-            cancellationToken, logAction: LogAction.Update);
-        await _validationService.AssertNavigationEntityExists<Song, Album>(_unitOfWork.AlbumRepository, songDto.AlbumId,
-            cancellationToken, logAction: LogAction.Update);
+        // await _validationService.AssertNavigationEntityExists<Song, Genre>(_unitOfWork.GenreRepository, songDto.GenreId,
+        //     cancellationToken, logAction: LogAction.Update);
+        // await _validationService.AssertNavigationEntityExists<Song, Album>(_unitOfWork.AlbumRepository, songDto.AlbumId,
+        //     cancellationToken, logAction: LogAction.Update);
         await _validationService.EnsureArtistUniquePropertyExceptId(duplicateTitleForOtherSongs, userId,
             nameof(songDto.Title), songDto.Title, songDto.Id, cancellationToken);
 
@@ -45,7 +45,7 @@ public class UpdateSongHandler(
         return _mapper.Map<SongDto>(songDb);
     }
 
-    private async Task ValidateOwnership(SongRequestDto songDto, Guid userId, CancellationToken cancellationToken)
+    private async Task ValidateOwnership(SongDto songDto, Guid userId, CancellationToken cancellationToken)
     {
         var artist = await _validationService.GetExistingEntity(_unitOfWork.ArtistRepository, userId,
             cancellationToken, LogAction.Get);

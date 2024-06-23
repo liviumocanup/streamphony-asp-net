@@ -3,28 +3,36 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ACCOUNT_ROUTE, STUDIO_ROUTE } from '../../../../routes/routes';
-import { Alert, Box, Button, Typography } from '@mui/material';
-import LoadingSpinner from '../../../../shared/LoadingSpinner';
-import createSongSchema from '../ValidationSchema';
+import { Alert, Box, Snackbar, Typography } from '@mui/material';
+import { createSongSchema } from '../ValidationSchema';
 import useCreateSong from '../../hooks/useCreateSong';
 import FormInput from '../../../auth/components/FormInput';
 import ImageGuidelineText from './ImageGuidelineText';
 import {
   AUDIO_CONTENT_TYPE,
-  BlobType,
   IMAGE_CONTENT_TYPE,
 } from '../../../../shared/constants';
 import UploadImageBox from './UploadImageBox';
 import UploadBlobButton from './UploadBlobButton';
 import { useEffect, useState } from 'react';
 import useUploadBlob from '../../hooks/useUploadBlob';
-import { BlobFile } from '../../../../shared/Interfaces';
+import {
+  BlobFile,
+  BlobType,
+} from '../../../../shared/interfaces/EntitiesInterfaces';
+import FormNavigationButtons from '../FormNavigationButtons';
+import SongSelect from '../SongSelect';
+import GenreSelect from '../GenreSelect';
+import { SongDetails } from '../../../../shared/interfaces/EntityDetailsInterfaces';
 
 type FormData = InferType<typeof createSongSchema>;
 
 const CreateSongForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [genre, setGenre] = useState<SongDetails[]>([]);
+  const [open, setOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
   const [songBlob, setSongBlob] = useState<BlobFile | null>(
     location.state?.songBlob,
   );
@@ -77,6 +85,13 @@ const CreateSongForm = () => {
     handleSongFileChange(location.state?.songBlob);
   }, []);
 
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
+
   const {
     handleSubmit,
     control,
@@ -86,7 +101,6 @@ const CreateSongForm = () => {
     defaultValues: {
       title: songBlob!.name,
       genre: '',
-      album: '',
     },
   });
 
@@ -100,7 +114,8 @@ const CreateSongForm = () => {
       const songFileId = songBlob?.id;
 
       if (!coverFileId || !songFileId) {
-        console.log('Missing cover or song file');
+        setSnackbarMessage('Missing cover. Please upload a picture.');
+        setOpen(true);
         return;
       }
 
@@ -108,11 +123,8 @@ const CreateSongForm = () => {
         title: data.title,
         coverFileId: coverFileId,
         audioFileId: songFileId,
-        genre: data.genre,
-        album: data.album,
+        genreId: genre[0].id,
       };
-
-      console.log(apiData);
 
       await createSong(apiData);
       navigate(STUDIO_ROUTE);
@@ -164,51 +176,20 @@ const CreateSongForm = () => {
       />
 
       <Typography fontWeight={'bold'} sx={{ mb: 1.5 }}>
-        And what Genre does it have?
+        Does it have a Genre?
       </Typography>
-      <FormInput
-        name={'genre'}
-        type={'text'}
-        label={'Genre'}
-        control={control}
-        errors={errors}
+      <GenreSelect selectedGenre={genre} setSelectedGenre={setGenre} />
+
+      <FormNavigationButtons
+        isPending={isFormPending || isImagePending}
+        navigateBack={navigateBack}
       />
 
-      <Typography fontWeight={'bold'} sx={{ mb: 1.5 }}>
-        Is it part of an Album?
-      </Typography>
-      <FormInput
-        name={'album'}
-        type={'text'}
-        label={'Album'}
-        control={control}
-        errors={errors}
-      />
-
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2, mb: 2 }}>
-        <Button
-          onClick={navigateBack}
-          variant="outlined"
-          aria-label="Cancel"
-          disabled={isFormPending}
-          sx={{ mr: 3 }}
-        >
-          Cancel
-        </Button>
-
-        <Button
-          variant="contained"
-          type="submit"
-          aria-label="Create"
-          disabled={isFormPending}
-        >
-          {isFormPending || isSongPending || isImagePending ? (
-            <LoadingSpinner />
-          ) : (
-            'Create'
-          )}
-        </Button>
-      </Box>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
 
       {songFormError && (
         <Alert variant="outlined" severity="error">

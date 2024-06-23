@@ -9,7 +9,7 @@ const ContentStudio = () => {
   return (
     <>
       <Helmet>
-        <title>Artist Content - ${APP_TITLE}</title>
+        <title>Artist Content - {APP_TITLE}</title>
         <meta name="description" content="Your content studio" />
       </Helmet>
 

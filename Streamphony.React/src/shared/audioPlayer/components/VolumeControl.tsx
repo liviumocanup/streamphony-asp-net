@@ -1,6 +1,12 @@
-import { VolumeUpRounded as VolumeUpIcon } from '@mui/icons-material';
+import {
+  VolumeUpRounded as VolumeUpIcon,
+  VolumeOffRounded as VolumeOffIcon,
+  QueueMusicRounded as QueueIcon,
+} from '@mui/icons-material';
 import AudioSlider from './AudioSlider';
-import { Box } from '@mui/material';
+import { Box, IconButton } from '@mui/material';
+import { useState } from 'react';
+import TemporaryDrawer from '../../drawer/TemporaryDrawer';
 
 interface VolumeControlProps {
   volume: number;
@@ -8,6 +14,16 @@ interface VolumeControlProps {
 }
 
 const VolumeControl = ({ volume, setVolume }: VolumeControlProps) => {
+  const [open, setOpen] = useState(false);
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+
   return (
     <Box
       sx={{
@@ -15,10 +31,17 @@ const VolumeControl = ({ volume, setVolume }: VolumeControlProps) => {
         mr: 3,
         alignItems: 'center',
         justifyContent: 'flex-end',
-        width: '30%',
+        width: '20%',
       }}
     >
-      <VolumeUpIcon sx={{ mr: 1 }} />
+      <IconButton onClick={handleDrawerOpen}>
+        <QueueIcon />
+      </IconButton>
+
+      <IconButton sx={{ mr: 0.5 }}>
+        <VolumeUpIcon />
+      </IconButton>
+
       <AudioSlider
         position={volume}
         setPosition={setVolume}
@@ -28,6 +51,8 @@ const VolumeControl = ({ volume, setVolume }: VolumeControlProps) => {
         step={0.01}
         width="25%"
       />
+
+      <TemporaryDrawer open={open} handleDrawerClose={handleDrawerClose} />
     </Box>
   );
 };

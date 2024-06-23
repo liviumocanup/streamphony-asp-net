@@ -8,6 +8,6 @@ public class ArtistDtoValidator : AbstractValidator<ArtistDto>
 {
     public ArtistDtoValidator()
     {
-        Include(new ArtistCreationDtoValidator());
+        
     }
 }

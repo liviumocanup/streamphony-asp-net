@@ -1,5 +1,5 @@
 import { Box, SxProps, Typography } from '@mui/material';
-import { BlobFile } from '../../../../shared/Interfaces';
+import { BlobFile } from '../../../../shared/interfaces/Interfaces';
 import { displayAlert } from '../../../../shared/utils';
 import { Theme } from '@mui/material/styles';
 

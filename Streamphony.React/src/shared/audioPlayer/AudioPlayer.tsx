@@ -16,7 +16,7 @@ const AudioPlayer = ({
   drawerWidth = 0,
 }: AudioPlayerProps) => {
   const theme = useTheme();
-  const { currentTrack, isPlaying, togglePlay, updateStoppedAt } =
+  const { currentTrack, isPlaying, togglePlay, updateStoppedAt, playNext } =
     useAudioPlayerContext();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [position, setPosition] = useState(currentTrack.stoppedAt);
@@ -47,12 +47,18 @@ const AudioPlayer = ({
       updateStoppedAt(audio.currentTime);
     };
 
+    const handleEnded = () => {
+      playNext();
+    };
+
     audio.addEventListener('timeupdate', updateTime);
+    audio.addEventListener('ended', handleEnded);
 
     return () => {
       audio.removeEventListener('timeupdate', updateTime);
+      audio.removeEventListener('ended', handleEnded);
     };
-  }, []);
+  }, [playNext, updateStoppedAt]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -61,6 +67,8 @@ const AudioPlayer = ({
     if (audio.src !== currentTrack.audioUrl) {
       audio.src = currentTrack.audioUrl;
       audio.currentTime = currentTrack.stoppedAt;
+
+      if (!isPlaying) togglePlay();
     }
 
     if (isPlaying) {
@@ -70,7 +78,7 @@ const AudioPlayer = ({
     } else {
       audio.pause();
     }
-  }, [currentTrack, isPlaying]);
+  }, [currentTrack, isPlaying, togglePlay]);
 
   return (
     <Box
@@ -83,7 +91,7 @@ const AudioPlayer = ({
         zIndex: 1000,
         width: isDrawerOpen ? `calc(100% - ${drawerWidth}px)` : '100%',
         boxShadow: '0 -2px 10px rgba(0,0,0,0.3)',
-        bgcolor: theme.palette.background.paper,
+        bgcolor: 'background.paper',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -107,7 +115,7 @@ const AudioPlayer = ({
         alignItems="center"
         sx={{ flex: '1', textAlign: 'center', ml: 4, minWidth: '200px' }}
       >
-        <PlayerControls isPlaying={isPlaying} togglePlayPause={togglePlay} />
+        <PlayerControls />
 
         <ProgressBar
           position={position}

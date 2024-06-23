@@ -1,10 +1,9 @@
 using Mapster;
-using Streamphony.Application.App.Albums.Responses;
+using Streamphony.Application.App.Albums.DTOs;
 using Streamphony.Application.App.Artists.DTOs;
 using Streamphony.Application.App.Auth.Responses;
 using Streamphony.Application.App.BlobStorage.DTOs;
 using Streamphony.Application.App.Genres.Responses;
-using Streamphony.Application.App.Preferences.Responses;
 using Streamphony.Application.App.Songs.DTOs;
 using Streamphony.Application.App.Users.Responses;
 using Streamphony.Domain.Models;
@@ -30,28 +29,37 @@ public static class MapsterConfig
         GlobalConfig.NewConfig<BlobDto, BlobFile>().PreserveReference(true);
 
         GlobalConfig.NewConfig<Artist, ArtistCreationDto>().PreserveReference(true);
-        GlobalConfig.NewConfig<Artist, ArtistDto>().PreserveReference(true);
-        GlobalConfig.NewConfig<Artist, ArtistDetailsDto>().PreserveReference(true);
-        GlobalConfig.NewConfig<Artist, ArtistResponseDto>()
+        GlobalConfig.NewConfig<Artist, ArtistDetailsDto>()
+            .Map(src => src.ProfilePictureUrl, dest => dest.ProfilePictureBlob.Url)
+            .PreserveReference(true);
+        GlobalConfig.NewConfig<Artist, ArtistDto>()
             .Map(src => src.ProfilePictureUrl, dest => dest.ProfilePictureBlob.Url)
             .PreserveReference(true);
 
         GlobalConfig.NewConfig<Song, SongCreationDto>().PreserveReference(true);
-        GlobalConfig.NewConfig<Song, SongDto>().PreserveReference(true);
-        GlobalConfig.NewConfig<Song, SongResponseDto>()
+        GlobalConfig.NewConfig<Song, SongDto>()
             .Map(src => src.CoverUrl, dest => dest.CoverBlob.Url)
             .Map(src => src.AudioUrl, dest => dest.AudioBlob.Url)
+            .PreserveReference(true);
+        GlobalConfig.NewConfig<Song, SongDetailsDto>()
+            .Map(src => src.CoverUrl, dest => dest.CoverBlob.Url)
+            .Map(src => src.AudioUrl, dest => dest.AudioBlob.Url)
+            .Map(src => src.Artist, dest => dest.Owner)
             .PreserveReference(true);
 
         GlobalConfig.NewConfig<Genre, GenreCreationDto>().PreserveReference(true);
         GlobalConfig.NewConfig<Genre, GenreDto>().PreserveReference(true);
         GlobalConfig.NewConfig<Genre, GenreDetailsDto>().PreserveReference(true);
 
-        GlobalConfig.NewConfig<Preference, PreferenceDto>().PreserveReference(true);
+        GlobalConfig.NewConfig<AlbumArtist, ArtistCollaboratorsDto>().PreserveReference(true);
 
         GlobalConfig.NewConfig<Album, AlbumCreationDto>().PreserveReference(true);
-        GlobalConfig.NewConfig<Album, AlbumDto>().PreserveReference(true);
-        GlobalConfig.NewConfig<Album, AlbumDetailsDto>().PreserveReference(true);
+        GlobalConfig.NewConfig<Album, AlbumDto>()
+            .Map(src => src.CoverUrl, dest => dest.CoverBlob.Url)
+            .PreserveReference(true);
+        GlobalConfig.NewConfig<Album, AlbumDetailsDto>()
+            .Map(src => src.CoverUrl, dest => dest.CoverBlob.Url)
+            .PreserveReference(true);
 
         GlobalConfig.Compile();
     }

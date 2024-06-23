@@ -10,6 +10,7 @@ public interface IUnitOfWork
     public IGenreRepository GenreRepository { get; }
     public IPreferenceRepository PreferenceRepository { get; }
     public IBlobRepository BlobRepository { get; }
+    public IAlbumArtistRepository AlbumArtistRepository { get; }
     Task SaveAsync(CancellationToken cancellationToken);
     Task BeginTransactionAsync(CancellationToken cancellationToken);
     Task CommitTransactionAsync(CancellationToken cancellationToken);

@@ -8,13 +8,9 @@ public class ArtistCreationDtoValidator : AbstractValidator<ArtistCreationDto>
 {
     public ArtistCreationDtoValidator()
     {
-        RuleFor(artist => artist.FirstName)
+        RuleFor(artist => artist.StageName)
             .NotEmpty()
-            .MaximumLength(50);
-
-        RuleFor(artist => artist.LastName)
-            .NotEmpty()
-            .MaximumLength(50);
+            .MaximumLength(100);
 
         RuleFor(artist => artist.DateOfBirth)
             .DateNotInFuture();

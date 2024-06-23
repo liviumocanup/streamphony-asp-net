@@ -8,8 +8,7 @@ const yearError =
   'Please enter the year of your birth date using four digits (e.g., 1990).';
 
 const registerArtistSchema = object({
-  firstName: string().required('First name is required'),
-  lastName: string().required('Last name is required'),
+  stageName: string().required('Name is required'),
   day: number()
     .typeError(dayError)
     .min(1, dayError)

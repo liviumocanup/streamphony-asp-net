@@ -1,8 +1,14 @@
 import { TabPanel } from '../TabPanel';
-import { AccessTime as TimeIcon, PlayArrow } from '@mui/icons-material';
+import { AccessTime as TimeIcon } from '@mui/icons-material';
 import DashboardTable from '../DashboardTable';
-import useGetCurrentArtistSongs from '../../hooks/useGetCurrentArtistSongs';
-import { Avatar, Box } from '@mui/material';
+import { formatDateTime, formatDuration } from '../../../../shared/utils';
+import { useMemo } from 'react';
+import useGetCurrentArtistAlbums from '../../hooks/useGetCurrentArtistAlbums';
+import TitleCell from '../songsDashboard/TitleCell';
+import { AlbumDetails } from '../../../../shared/interfaces/EntityDetailsInterfaces';
+import MoreOptionsButton from '../MoreOptionsButton';
+import DurationCell from '../DurationCell';
+import { ItemType } from '../../../../shared/interfaces/Interfaces';
 
 interface AlbumsTabPanelProps {
   value: number;
@@ -15,35 +21,23 @@ const headers = [
     propertyName: 'id',
     centered: true,
     width: '4%',
-    function: (item, index, isHovered) =>
-      isHovered ? (
-        <PlayArrow sx={{ color: 'text.primary', fontSize: 20 }} />
-      ) : (
-        index + 1
-      ),
+    renderCell: (_item: AlbumDetails, index: number) => index + 1,
   },
   {
     label: 'Title',
     propertyName: 'title',
     width: '40%',
-    function: (item, _index, _isHovered) => (
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <Avatar
-          src={item.coverUrl || ''}
-          sx={{
-            width: 48,
-            height: 48,
-            marginRight: 2,
-            bgcolor: 'background.paper',
-            mr: 1.5,
-          }}
-          variant="rounded"
-          alt={item.title}
-        />
-        {item.title}
-      </Box>
+    renderCell: (item: AlbumDetails) => (
+      <TitleCell
+        songId={item.id}
+        title={item.title}
+        coverUrl={item.coverUrl}
+        artist={item.owner.stageName}
+        artistId={item.owner.id}
+      />
     ),
   },
+  { label: 'Songs', propertyName: 'songNumber', width: '25%' },
   { label: 'Date Added', propertyName: 'dateAdded' },
   {
     label: 'Duration',
@@ -51,18 +45,37 @@ const headers = [
     centered: true,
     width: '10%',
     icon: <TimeIcon />,
+    renderCell: (item: any, _index: number, isHovered: boolean) => (
+      <DurationCell
+        duration={item.duration}
+        itemId={item.id}
+        isHovered={isHovered}
+        itemType={ItemType.ALBUM}
+      />
+    ),
   },
 ];
 
+const prepareAlbumData = (albums: AlbumDetails[]) =>
+  albums.map((album: AlbumDetails) => ({
+    ...album,
+    duration: formatDuration({ timeSpan: album.totalDuration }),
+    dateAdded: formatDateTime(album.createdAt),
+    songNumber: album.songs.length,
+    coverUrl: album.coverUrl || '',
+  }));
+
 const AlbumsTabPanel = ({ value, index }: AlbumsTabPanelProps) => {
-  const { data: songs, isPending, isError } = useGetCurrentArtistSongs();
-  const items = songs;
-  console.log('Items: ', items);
-  console.log('Songs: ', songs);
+  const { data: albums, isPending, isError } = useGetCurrentArtistAlbums();
+
+  const items = useMemo(
+    () => (albums ? prepareAlbumData(albums) : []),
+    [albums],
+  );
 
   if (isPending) return <div>Loading...</div>;
 
-  if (isError) return <div>Error fetching songs</div>;
+  if (isError) return <div>Error fetching albums</div>;
 
   return (
     <TabPanel value={value} index={index}>
@@ -71,4 +84,4 @@ const AlbumsTabPanel = ({ value, index }: AlbumsTabPanelProps) => {
   );
 };
 
-export default SongsTabPanel;
+export default AlbumsTabPanel;

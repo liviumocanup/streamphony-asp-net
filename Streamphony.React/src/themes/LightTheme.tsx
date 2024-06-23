@@ -4,14 +4,14 @@ const LightTheme = createTheme({
   palette: {
     mode: 'light',
     text: {
-      primary: '#213547',
+      primary: '#000',
     },
     background: {
-      default: '#ffffff',
-      paper: '#f9f9f9',
+      default: '#edede9',
+      paper: '#e3d5ca',
     },
     action: {
-      hover: '#ececec',
+      hover: '#d5bdaf',
     },
   },
 });

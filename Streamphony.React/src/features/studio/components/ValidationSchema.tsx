@@ -1,9 +1,13 @@
 import { object, string } from 'yup';
 
 export const createSongSchema = object({
-  title: string().required('Title is required'),
+  title: string()
+    .required('Title is required')
+    .max(50, 'Title should not be longer than 50 characters.'),
   genre: string(),
-  album: string(),
 }).required();
 
-export default createSongSchema;
+export const createAlbumSchema = object({
+  title: string().required('Title is required'),
+  releaseDate: string(),
+}).required();

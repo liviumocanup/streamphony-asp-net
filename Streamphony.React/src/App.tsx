@@ -9,6 +9,7 @@ import NotFoundPage from './routes/NotFoundPage';
 import GuestRoute from './routes/GuestRoute';
 import {
   ACCOUNT_ROUTE,
+  ADD_ALBUM_ROUTE,
   ADD_SONG_ROUTE,
   HOME_ROUTE,
   LOG_IN_ROUTE,
@@ -21,6 +22,11 @@ import AuthProvider from './context/providers/AuthProvider';
 import ContentStudio from './features/studio/ContentStudio';
 import CreateSong from './features/studio/CreateSong';
 import AudioPlayerProvider from './context/providers/AudioPlayerProvider';
+import CreateAlbum from './features/studio/CreateAlbum';
+import { ItemType } from './shared/interfaces/Interfaces';
+import AlbumView from './features/viewDetails/AlbumView';
+import ArtistView from './features/viewDetails/ArtistView';
+import SongView from './features/viewDetails/SongView';
 
 const queryClient = new QueryClient();
 
@@ -78,6 +84,17 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path={ADD_ALBUM_ROUTE}
+              element={
+                <ProtectedRoute>
+                  <CreateAlbum />
+                </ProtectedRoute>
+              }
+            />
+            <Route path={`/${ItemType.ALBUM}/:id`} element={<AlbumView />} />
+            <Route path={`/${ItemType.ARTIST}/:id`} element={<ArtistView />} />
+            <Route path={`/${ItemType.SONG}/:id`} element={<SongView />} />
             <Route path={HOME_ROUTE} element={<Home />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>

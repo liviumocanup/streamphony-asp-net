@@ -5,7 +5,7 @@ using Streamphony.Infrastructure.Validators.CreationDTOs;
 
 namespace Streamphony.Infrastructure.Validators.DTOs;
 
-public class SongDtoValidator : AbstractValidator<SongResponseDto>
+public class SongDtoValidator : AbstractValidator<SongDto>
 {
     public SongDtoValidator()
     {

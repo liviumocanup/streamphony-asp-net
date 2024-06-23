@@ -7,16 +7,20 @@ import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../../../shared/LoadingSpinner';
 import { ACCOUNT_ROUTE, HOME_ROUTE } from '../../../routes/routes';
 import useRegisterArtist from '../hooks/useRegisterArtist';
-import NameInput from '../../auth/components/NameInput';
 import DateOfBirthInput from './DateOfBirthInput';
 import FormSection from './FormSection';
-import { BlobFile, RegisterArtistData } from '../../../shared/Interfaces';
+import { RegisterArtistData } from '../../../shared/interfaces/Interfaces';
 import { format } from 'date-fns';
 import UploadImageBox from '../../studio/components/upload/UploadImageBox';
-import { BlobType, IMAGE_CONTENT_TYPE } from '../../../shared/constants';
+import { IMAGE_CONTENT_TYPE } from '../../../shared/constants';
 import ImageGuidelineText from '../../studio/components/upload/ImageGuidelineText';
 import { useState } from 'react';
 import useUploadBlob from '../../studio/hooks/useUploadBlob';
+import FormInput from '../../auth/components/FormInput';
+import {
+  BlobFile,
+  BlobType,
+} from '../../../shared/interfaces/EntitiesInterfaces';
 
 type FormData = InferType<typeof registerArtistSchema>;
 
@@ -38,8 +42,7 @@ const RegisterArtistForm = () => {
   } = useForm<FormData>({
     resolver: yupResolver(registerArtistSchema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
+      stageName: '',
       day: '',
       month: '',
       year: '',
@@ -77,8 +80,7 @@ const RegisterArtistForm = () => {
     );
 
     const apiData: RegisterArtistData = {
-      firstName: data.firstName,
-      lastName: data.lastName,
+      stageName: data.stageName,
       dateOfBirth: dateOfBirth,
       profilePictureId: pfpBlobId,
     };
@@ -112,10 +114,17 @@ const RegisterArtistForm = () => {
       </Box>
 
       <FormSection
-        sectionName={'Name'}
+        sectionName={'Stage Name'}
         description={'This name will appear on your Artist profile'}
       />
-      <NameInput control={control} errors={errors} />
+      <FormInput
+        name={'stageName'}
+        type={'text'}
+        label={'Name'}
+        control={control}
+        errors={errors}
+        sx={{ flex: 1, mb: 1 }}
+      />
 
       <FormSection
         sectionName={'Date of Birth'}

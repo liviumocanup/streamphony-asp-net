@@ -4,17 +4,14 @@ import {
   PlayCircleFilledRounded as PlayIcon,
   SkipNextRounded as SkipNextIcon,
   SkipPreviousRounded as SkipPreviousIcon,
+  LoopRounded as LoopIcon,
 } from '@mui/icons-material';
+import useAudioPlayerContext from '../../../hooks/context/useAudioPlayerContext';
 
-interface PlayerControlsProps {
-  isPlaying: boolean;
-  togglePlayPause: () => void;
-}
+const PlayerControls = () => {
+  const { isPlaying, togglePlay, playNext, playPrevious } =
+    useAudioPlayerContext();
 
-const PlayerControls = ({
-  isPlaying,
-  togglePlayPause,
-}: PlayerControlsProps) => {
   return (
     <Box
       display="flex"
@@ -22,13 +19,17 @@ const PlayerControls = ({
       alignItems="center"
       sx={{ mt: 1.5 }}
     >
-      <IconButton aria-label="previous" sx={{ m: 0, p: 0, mr: 1 }}>
+      <IconButton
+        aria-label="previous"
+        onClick={playPrevious}
+        sx={{ m: 0, p: 0, mr: 1 }}
+      >
         <SkipPreviousIcon sx={{ height: 30, width: 30 }} />
       </IconButton>
 
       <IconButton
         aria-label="play/pause"
-        onClick={togglePlayPause}
+        onClick={togglePlay}
         sx={{ m: 0, p: 0 }}
       >
         {isPlaying ? (
@@ -38,8 +39,16 @@ const PlayerControls = ({
         )}
       </IconButton>
 
-      <IconButton aria-label="next" sx={{ m: 0, p: 0, ml: 1 }}>
+      <IconButton
+        aria-label="next"
+        onClick={playNext}
+        sx={{ m: 0, p: 0, ml: 1 }}
+      >
         <SkipNextIcon sx={{ height: 34, width: 34 }} />
+      </IconButton>
+
+      <IconButton>
+        <LoopIcon />
       </IconButton>
     </Box>
   );

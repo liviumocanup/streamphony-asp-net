@@ -23,15 +23,7 @@ public class GetArtistByIdHandler(
 
     public async Task<ArtistDetailsDto> Handle(GetArtistById request, CancellationToken cancellationToken)
     {
-        var artist = await _validationService.GetExistingEntityWithInclude<Artist>(
-            _unitOfWork.ArtistRepository.GetByIdWithInclude,
-            request.Id,
-            LogAction.Get,
-            cancellationToken,
-            artist => artist.UploadedSongs,
-            artist => artist.Preference,
-            artist => artist.OwnedAlbums
-        );
+        var artist = await _unitOfWork.ArtistRepository.GetByIdWithBlobs(request.Id, cancellationToken);
 
         _logger.LogSuccess(nameof(Artist), artist.Id, LogAction.Get);
         return _mapper.Map<ArtistDetailsDto>(artist);

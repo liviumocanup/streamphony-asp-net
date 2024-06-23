@@ -1,4 +1,4 @@
-import { SignUpData } from '../../../shared/Interfaces';
+import { SignUpData } from '../../../shared/interfaces/Interfaces';
 import axios from 'axios';
 import { API_URL, SIGN_UP_ENDPOINT } from '../../../shared/constants';
 import { useMutation } from '@tanstack/react-query';

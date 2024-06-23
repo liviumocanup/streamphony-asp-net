@@ -25,14 +25,10 @@ const useGetCurrentArtistSongs = () => {
         config,
       );
 
-      const items = res.data;
-
-      console.log(res.data);
-
-      return items;
+      return res.data;
     } catch (err: any) {
-      console.error('Failed to fetch albums:', err.response?.data);
-      throw new Error(err.response?.data?.errors || 'Error fetching albums');
+      console.error('Failed to fetch songs:', err.response?.data);
+      throw new Error(err.response?.data?.errors || 'Error fetching songs');
     }
   };
 

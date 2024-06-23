@@ -17,14 +17,10 @@ const useRefreshToken = () => {
 
   const refreshToken = async () => {
     try {
-      console.log('Refreshing.');
-
       const res = await axios.get(
         `${API_URL}/${REFRESH_TOKEN_ENDPOINT}`,
         config,
       );
-
-      console.log('Response: ', res.data);
 
       const response = res.data;
       const token = response.accessToken;

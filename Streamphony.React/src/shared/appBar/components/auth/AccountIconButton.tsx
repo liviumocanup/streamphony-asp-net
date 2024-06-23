@@ -18,8 +18,6 @@ const AccountIconButton = ({ open, openMenu }: AccountIconButtonProps) => {
   const firstName = tokenClaims?.firstName || '';
   const lastName = tokenClaims?.lastName || '';
   const pfpUrl = artist?.pfpUrl || '';
-  console.log('pfpUrl: ', pfpUrl);
-  console.log('artist: ', artist);
 
   if (isPending && isLoading)
     return <Skeleton variant={'circular'} width={35} height={35} />;

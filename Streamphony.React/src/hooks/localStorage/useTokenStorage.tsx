@@ -14,6 +14,7 @@ const useTokenStorage = () => {
         return {
           firstName: decoded.FirstName,
           lastName: decoded.LastName,
+          userId: decoded.sub,
           artistId: decoded.ArtistId,
         };
       } catch (error) {

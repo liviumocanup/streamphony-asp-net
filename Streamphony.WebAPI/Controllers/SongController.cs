@@ -25,7 +25,7 @@ public class SongController(IMediator mediator) : AppBaseController
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<SongResponseDto>> CreateSong(SongCreationDto songCreationDto)
+    public async Task<ActionResult<SongDto>> CreateSong(SongCreationDto songCreationDto)
     {
         var userId = User.GetUserId();
         
@@ -46,7 +46,7 @@ public class SongController(IMediator mediator) : AppBaseController
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<SongDto>> UpdateSong(SongRequestDto songDto)
+    public async Task<ActionResult<SongDto>> UpdateSong(SongDto songDto)
     {
         var userId = User.GetUserId();
         
@@ -57,7 +57,7 @@ public class SongController(IMediator mediator) : AppBaseController
     [HttpGet]
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<PaginatedResult<SongResponseDto>>> GetAllSongs([FromQuery] int pageNumber = 1,
+    public async Task<ActionResult<PaginatedResult<SongDetailsDto>>> GetAllSongs([FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 10)
     {
         var pagedRequest = new PagedRequest
@@ -74,7 +74,7 @@ public class SongController(IMediator mediator) : AppBaseController
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<PaginatedResult<SongDto>>> GetAllSongsFiltered(PagedRequest pagedRequest)
+    public async Task<ActionResult<PaginatedResult<SongDetailsDto>>> GetAllSongsFiltered(PagedRequest pagedRequest)
     {
         var songs = await _mediator.Send(new GetAllSongs(pagedRequest));
         return Ok(songs);
@@ -82,31 +82,33 @@ public class SongController(IMediator mediator) : AppBaseController
     
     [HttpGet("user/current")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<SongResponseDto>>> GetSongsForCurrentUser()
+    public async Task<ActionResult<IEnumerable<SongDetailsDto>>> GetSongsForCurrentUser()
     {
         var userId = User.GetUserId();
 
-        var songs = await _mediator.Send(new GetSongForArtist(userId));
+        var songs = await _mediator.Send(new GetSongsForArtist(userId));
         return Ok(songs);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<SongDto>> GetSongById(Guid id)
+    public async Task<ActionResult<SongDetailsDto>> GetSongById(Guid id)
     {
         var songDto = await _mediator.Send(new GetSongById(id));
         return Ok(songDto);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteSong(Guid id)
     {
-        // await _mediator.Send(new DeleteSong(id));
+        var userId = User.GetUserId();
+        
+        await _mediator.Send(new DeleteSong(id, userId));
         return NoContent();
     }
 }

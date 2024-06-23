@@ -4,8 +4,7 @@ namespace Streamphony.Domain.Models;
 
 public class Artist : BaseEntity
 {
-    public required string FirstName { get; set; }
-    public required string LastName { get; set; }
+    public required string StageName { get; set; }
     public required DateOnly DateOfBirth { get; set; }
 
     public Guid ProfilePictureBlobId { get; set; }

@@ -21,5 +21,5 @@ public interface IRepository<T> where T : BaseEntity
     Task<T> Update(T entity, CancellationToken cancellationToken);
 
     Task<(PaginatedResult<TDto>, IEnumerable<T>)> GetAllPaginated<TDto>(PagedRequest pagedRequest,
-        CancellationToken cancellationToken) where TDto : class;
+        CancellationToken cancellationToken, Func<IQueryable<T>, IQueryable<T>>? include = null) where TDto : class;
 }

@@ -10,12 +10,19 @@ export const UPLOAD_BLOB_ENDPOINT = 'blobs';
 
 export const SONG_ENDPOINT = 'songs';
 export const CURRENT_USER_SONGS_ENDPOINT = `${SONG_ENDPOINT}/user/current`;
+export const SONG_FILTERED_ENDPOINT = `${SONG_ENDPOINT}/filtered`;
 
 export const ARTIST_ENDPOINT = 'artists';
 export const CURRENT_USER_ARTIST_ENDPOINT = `${ARTIST_ENDPOINT}/current`;
+export const ARTIST_FILTERED_ENDPOINT = `${ARTIST_ENDPOINT}/filtered`;
 
 export const ALBUM_ENDPOINT = 'albums';
+export const CURRENT_USER_ALBUMS_ENDPOINT = `${ALBUM_ENDPOINT}/user/current`;
+
 export const USER_ENDPOINT = 'users';
+
+export const GENRE_ENDPOINT = 'genres';
+export const GENRE_FILTERED_ENDPOINT = `${GENRE_ENDPOINT}/filtered`;
 
 export const LS_TOKEN_KEY = 'token';
 export const LS_THEME_KEY = 'theme';
@@ -42,12 +49,5 @@ export const MIN_AGE = 13;
 
 export const IMAGE_CONTENT_TYPE = 'image/png, image/jpeg';
 export const AUDIO_CONTENT_TYPE = 'audio/mpeg, audio/wav';
-
-export enum BlobType {
-  Song = 'Song',
-  ProfilePicture = 'ProfilePicture',
-  SongCover = 'SongCover',
-  AlbumCover = 'AlbumCover',
-}
 
 export const APP_GREEN = '#1DB954';

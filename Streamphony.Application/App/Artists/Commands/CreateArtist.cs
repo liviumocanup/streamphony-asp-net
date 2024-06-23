@@ -9,7 +9,7 @@ using Streamphony.Domain.Models.Auth;
 
 namespace Streamphony.Application.App.Artists.Commands;
 
-public record CreateArtist(ArtistCreationDto ArtistCreationDto, Guid UserId) : IRequest<ArtistResponseDto>;
+public record CreateArtist(ArtistCreationDto ArtistCreationDto, Guid UserId) : IRequest<ArtistDto>;
 
 public class CreateArtistHandler(
     IUnitOfWork unitOfWork,
@@ -17,7 +17,7 @@ public class CreateArtistHandler(
     ILoggingService logger,
     IUserManagerProvider userManagerProvider,
     IValidationService validationService)
-    : IRequestHandler<CreateArtist, ArtistResponseDto>
+    : IRequestHandler<CreateArtist, ArtistDto>
 {
     private readonly ILoggingService _logger = logger;
     private readonly IMappingProvider _mapper = mapper;
@@ -25,7 +25,7 @@ public class CreateArtistHandler(
     private readonly IUserManagerProvider _userManagerProvider = userManagerProvider;
     private readonly IValidationService _validationService = validationService;
 
-    public async Task<ArtistResponseDto> Handle(CreateArtist request, CancellationToken cancellationToken)
+    public async Task<ArtistDto> Handle(CreateArtist request, CancellationToken cancellationToken)
     {
         var artistCreationDto = request.ArtistCreationDto;
         var userId = request.UserId;
@@ -46,6 +46,6 @@ public class CreateArtistHandler(
         await _unitOfWork.SaveAsync(cancellationToken);
         
         _logger.LogSuccess(nameof(Artist), artistDb.Id);
-        return _mapper.Map<ArtistResponseDto>(artistDb);
+        return _mapper.Map<ArtistDto>(artistDb);
     }
 }

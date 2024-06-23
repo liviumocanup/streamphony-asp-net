@@ -9,4 +9,7 @@ public interface IAlbumRepository : IRepository<Album>
 
     Task<IEnumerable<Album>> GetByOwnerIdAndTitleWhereIdNotEqual(Guid ownerId, string title, Guid albumId,
         CancellationToken cancellationToken);
+    
+    Task<IEnumerable<Album>> GetByOwnerIdWithBlobs(Guid ownerId, CancellationToken cancellationToken);
+    Task<Album?> GetByIdWithBlobs(Guid albumId, CancellationToken cancellationToken);
 }

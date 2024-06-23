@@ -3,6 +3,7 @@ import { Box, Tab, Tabs } from '@mui/material';
 import { a11yProps, TabPanel } from './TabPanel';
 import '../ContentStudio.css';
 import SongsTabPanel from './songsDashboard/SongsTabPanel';
+import AlbumsTabPanel from './albumsDashboard/AlbumsTabPanel';
 
 const DashboardTabs = () => {
   const [value, setValue] = useState(0);
@@ -35,9 +36,7 @@ const DashboardTabs = () => {
 
       <SongsTabPanel value={value} index={0} />
 
-      <TabPanel value={value} index={1}>
-        Albums
-      </TabPanel>
+      <AlbumsTabPanel value={value} index={1} />
 
       <TabPanel value={value} index={2}>
         Playlists

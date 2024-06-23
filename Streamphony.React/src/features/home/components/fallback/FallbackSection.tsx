@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import FallbackSectionContainer from './FallbackSectionContainer';
 import FallbackCard from './FallbackCard';
 
@@ -11,11 +11,33 @@ const FallbackSection = ({
 }: FallbackSectionProps) => {
   return (
     <FallbackSectionContainer>
-      <Grid container spacing={2}>
-        {[...Array(7)].map((_, index) => (
-          <FallbackCard key={index} index={index} imageVariant={imageVariant} />
-        ))}
-      </Grid>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          overflow: 'hidden',
+          position: 'relative',
+        }}
+      >
+        <Box
+          sx={{
+            mr: 6,
+            ml: 4,
+          }}
+        >
+          <Grid container spacing={2}>
+            {[...Array(6)].map((_, index) => (
+              <FallbackCard
+                key={index}
+                index={index}
+                imageVariant={imageVariant}
+              />
+            ))}
+          </Grid>
+        </Box>
+      </Box>
     </FallbackSectionContainer>
   );
 };

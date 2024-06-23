@@ -2,21 +2,45 @@ import { Alert, SxProps } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { format, parseISO } from 'date-fns';
 
+export const fallbackTrack = {
+  id: '',
+  coverUrl: '',
+  audioUrl: '',
+  title: '',
+  artist: '',
+  album: '',
+  duration: 0,
+  stoppedAt: 0,
+  autoPlay: false,
+  resource: [],
+};
+
 export const formatDateTime = (dateTime: string) => {
   const date = parseISO(dateTime);
 
   return format(date, 'MMMM dd, yyyy');
 };
 
-export const formatDuration = (timeSpan: string) => {
+interface formatDurationProps {
+  timeSpan: string;
+  withLabel?: boolean;
+}
+
+export const formatDuration = ({
+  timeSpan,
+  withLabel = false,
+}: formatDurationProps) => {
   const parts = timeSpan.split(':');
   if (parts.length === 3) {
     const hours = parseInt(parts[0], 10);
     const minutes = parseInt(parts[1], 10);
-    const seconds = parseInt(parts[2], 10); // We ignore the fractional seconds.
+    const seconds = parseInt(parts[2], 10);
+    if (withLabel) {
+      return `${hours > 0 ? `${hours} h ` : ''}${minutes} min ${seconds} sec`;
+    }
     return `${hours > 0 ? `${hours}:` : ''}${minutes}:${seconds.toString().padStart(2, '0')}`;
   }
-  return timeSpan; // Return original if format is unexpected
+  return timeSpan;
 };
 
 export const durationToSeconds = (duration: string): number => {

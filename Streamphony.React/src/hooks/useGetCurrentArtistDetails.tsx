@@ -26,8 +26,7 @@ const useGetCurrentArtistDetails = () => {
 
       return {
         id: response.id,
-        firstName: response.firstName,
-        lastName: response.lastName,
+        stageName: response.stageName,
         dateOfBirth: response.dateOfBirth,
         pfpUrl: response.profilePictureUrl,
         createdAt: response.createdAt,

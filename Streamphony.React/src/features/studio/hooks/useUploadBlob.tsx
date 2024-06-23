@@ -1,12 +1,9 @@
 import axios from 'axios';
-import {
-  API_URL,
-  BlobType,
-  UPLOAD_BLOB_ENDPOINT,
-} from '../../../shared/constants';
+import { API_URL, UPLOAD_BLOB_ENDPOINT } from '../../../shared/constants';
 import { useMutation } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import useAuthContext from '../../../hooks/context/useAuthContext';
+import { BlobType } from '../../../shared/interfaces/EntitiesInterfaces';
 
 const useUploadBlob = () => {
   const { getToken } = useAuthContext();

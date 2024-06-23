@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from 'react';
 import { Avatar, Box, IconButton } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import LoadingSpinner from '../../../../shared/LoadingSpinner';
-import { BlobFile } from '../../../../shared/Interfaces';
+import { BlobFile } from '../../../../shared/interfaces/Interfaces';
 
 interface UploadImageBoxProps {
   contentType: string;
@@ -48,8 +48,8 @@ const UploadImageBox = ({
       onMouseLeave={() => setIsHovered(false)}
       sx={{
         position: 'relative',
-        height: '160px',
-        width: '160px',
+        height: '150px',
+        width: '150px',
         mb: 5,
         mr: 4,
         '&:hover': {
@@ -62,8 +62,8 @@ const UploadImageBox = ({
         variant={avatarVariant}
         src={blob?.url || ''}
         sx={{
-          height: '160px',
-          width: '160px',
+          height: '150px',
+          width: '150px',
         }}
       />
 

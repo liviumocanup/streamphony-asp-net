@@ -42,8 +42,6 @@ const useManageAuth = () => {
     setIsArtist(false);
   };
 
-  console.log(isLoggedIn, isArtist);
-
   return { isLoggedIn, isArtist, getToken, tokenRefresh, logOut };
 };
 

@@ -8,20 +8,20 @@ using Streamphony.Domain.Models.Auth;
 
 namespace Streamphony.Application.App.Songs.Queries;
 
-public record GetSongForArtist(Guid Id) : IRequest<IEnumerable<SongResponseDto>>;
+public record GetSongsForArtist(Guid Id) : IRequest<IEnumerable<SongDetailsDto>>;
 
 public class GetSongsForArtistHandler(
     IUnitOfWork unitOfWork,
     IMappingProvider mapper,
     IValidationService validationService,
-    IUserManagerProvider userManagerProvider) : IRequestHandler<GetSongForArtist, IEnumerable<SongResponseDto>>
+    IUserManagerProvider userManagerProvider) : IRequestHandler<GetSongsForArtist, IEnumerable<SongDetailsDto>>
 {
     private readonly IMappingProvider _mapper = mapper;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IValidationService _validationService = validationService;
     private readonly IUserManagerProvider _userManagerProvider = userManagerProvider;
 
-    public async Task<IEnumerable<SongResponseDto>> Handle(GetSongForArtist request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<SongDetailsDto>> Handle(GetSongsForArtist request, CancellationToken cancellationToken)
     {
         var userDb = await _validationService.GetExistingEntity(_userManagerProvider, request.Id, cancellationToken);
         var artistId = userDb.ArtistId;
@@ -29,6 +29,6 @@ public class GetSongsForArtistHandler(
 
         var songs = await _unitOfWork.SongRepository.GetByOwnerIdWithBlobs(artistId!.Value, cancellationToken);
 
-        return _mapper.Map<IEnumerable<SongResponseDto>>(songs);
+        return _mapper.Map<IEnumerable<SongDetailsDto>>(songs);
     }
 }

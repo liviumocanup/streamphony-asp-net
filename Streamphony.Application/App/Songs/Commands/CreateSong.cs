@@ -8,7 +8,7 @@ using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.App.Songs.Commands;
 
-public record CreateSong(SongCreationDto SongCreationDto, Guid UserId) : IRequest<SongResponseDto>;
+public record CreateSong(SongCreationDto SongCreationDto, Guid UserId) : IRequest<SongDto>;
 
 public class CreateSongHandler(
     IUnitOfWork unitOfWork,
@@ -16,7 +16,7 @@ public class CreateSongHandler(
     ILoggingService logger,
     IValidationService validationService,
     IUserManagerProvider userManagerProvider)
-    : IRequestHandler<CreateSong, SongResponseDto>
+    : IRequestHandler<CreateSong, SongDto>
 {
     private readonly ILoggingService _logger = logger;
     private readonly IMappingProvider _mapper = mapper;
@@ -24,7 +24,7 @@ public class CreateSongHandler(
     private readonly IValidationService _validationService = validationService;
     private readonly IUserManagerProvider _userManagerProvider = userManagerProvider;
 
-    public async Task<SongResponseDto> Handle(CreateSong request, CancellationToken cancellationToken)
+    public async Task<SongDto> Handle(CreateSong request, CancellationToken cancellationToken)
     {
         var songCreationDto = request.SongCreationDto;
         var userId = request.UserId;
@@ -33,7 +33,7 @@ public class CreateSongHandler(
         var userDb = await _validationService.GetExistingEntity(_userManagerProvider, userId, cancellationToken);
         var artistId = userDb.ArtistId;
         
-        await _validationService.AssertNavigationEntityExists<BlobFile, Artist>(_unitOfWork.ArtistRepository,
+        await _validationService.AssertNavigationEntityExists<Song, Artist>(_unitOfWork.ArtistRepository,
             artistId, cancellationToken, isNavRequired: true);
         await _validationService.AssertNavigationEntityExists<Song, Genre>(_unitOfWork.GenreRepository,
             songCreationDto.GenreId, cancellationToken);
@@ -57,6 +57,6 @@ public class CreateSongHandler(
         await _unitOfWork.SaveAsync(cancellationToken);
         
         _logger.LogSuccess(nameof(Song), songDb.Id);
-        return _mapper.Map<SongResponseDto>(songDb);
+        return _mapper.Map<SongDto>(songDb);
     }
 }

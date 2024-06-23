@@ -12,4 +12,7 @@ public interface ISongRepository : IRepository<Song>
 
     Task<IEnumerable<Song>> GetByOwnerIdAndTitleWhereIdNotEqual(Guid ownerId, string title, Guid songId,
         CancellationToken cancellationToken);
+    
+    Task<IEnumerable<Song>> GetByIdsWithBlobs(IEnumerable<Guid> ids, CancellationToken cancellationToken);
+    Task<Song?> GetByIdWithBlobs(Guid songId, CancellationToken cancellationToken);
 }

@@ -16,8 +16,25 @@ public class ArtistRepository(ApplicationDbContext context) : Repository<Artist>
     
     public async Task<Artist?> GetByOwnerIdWithBlobs(Guid ownerId, CancellationToken cancellationToken)
     {
-        return await _context.Artists
+        return await IncludeAllRelatedBlobs()
+            .SingleOrDefaultAsync(artist => artist.UserId == ownerId, cancellationToken);
+    }
+    
+    public async Task<Artist?> GetByIdWithBlobs(Guid artistId, CancellationToken cancellationToken)
+    {
+        return await IncludeAllRelatedBlobs()
+            .SingleOrDefaultAsync(artist => artist.Id == artistId, cancellationToken);
+    }
+    
+    private IQueryable<Artist> IncludeAllRelatedBlobs()
+    {
+        return _context.Artists
             .Include(artist => artist.ProfilePictureBlob)
-            .FirstOrDefaultAsync(artist => artist.UserId == ownerId, cancellationToken);
+            .Include(artist => artist.OwnedAlbums)
+            .ThenInclude(album => album.CoverBlob)
+            .Include(artist => artist.UploadedSongs)
+            .ThenInclude(song => song.CoverBlob)
+            .Include(artist => artist.UploadedSongs)
+            .ThenInclude(song => song.AudioBlob);
     }
 }

@@ -8,8 +8,7 @@ public class ArtistConfig : IEntityTypeConfiguration<Artist>
 {
     public void Configure(EntityTypeBuilder<Artist> builder)
     {
-        builder.Property(artist => artist.FirstName).IsRequired().HasMaxLength(50);
-        builder.Property(artist => artist.LastName).IsRequired().HasMaxLength(50);
+        builder.Property(artist => artist.StageName).IsRequired().HasMaxLength(100);
         builder.Property(artist => artist.DateOfBirth).IsRequired();
         
         builder.HasOne(artist => artist.ProfilePictureBlob)

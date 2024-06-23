@@ -1,4 +1,4 @@
-import { LogInData } from '../../../shared/Interfaces';
+import { LogInData } from '../../../shared/interfaces/Interfaces';
 import axios from 'axios';
 import { API_URL, LOG_IN_ENDPOINT } from '../../../shared/constants';
 import { useMutation } from '@tanstack/react-query';

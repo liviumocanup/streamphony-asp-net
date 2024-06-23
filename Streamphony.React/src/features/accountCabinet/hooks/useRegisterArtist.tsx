@@ -1,4 +1,4 @@
-import { RegisterArtistData } from '../../../shared/Interfaces';
+import { RegisterArtistData } from '../../../shared/interfaces/Interfaces';
 import axios from 'axios';
 import { API_URL, ARTIST_ENDPOINT } from '../../../shared/constants';
 import { useMutation } from '@tanstack/react-query';
@@ -16,7 +16,6 @@ const useRegisterArtist = () => {
     [token],
   );
 
-  // TODO: CHANGING ARTIST DETAILS
   const addArtist = async (newArtist: RegisterArtistData) => {
     try {
       const res = await axios.post(

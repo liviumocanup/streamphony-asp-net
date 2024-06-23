@@ -38,6 +38,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IGenreRepository, GenreRepository>();
         services.AddScoped<IPreferenceRepository, PreferenceRepository>();
         services.AddScoped<IBlobRepository, BlobRepository>();
+        services.AddScoped<IAlbumArtistRepository, AlbumArtistRepository>();
         
         // Mapping provider with Mapster
         services.AddScoped<IMappingProvider, MapsterProvider>();
