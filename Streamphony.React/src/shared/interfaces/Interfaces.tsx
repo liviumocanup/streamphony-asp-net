@@ -29,6 +29,12 @@ export interface CreateSongData {
   albumId?: string;
 }
 
+export interface EditSongData {
+  id: string;
+  title: string;
+  coverBlobId: string;
+}
+
 export interface CreateAlbumData {
   title: string;
   releaseDate: string;

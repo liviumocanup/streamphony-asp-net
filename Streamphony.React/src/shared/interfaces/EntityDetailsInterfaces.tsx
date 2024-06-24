@@ -1,4 +1,10 @@
-import { Album, Artist, ArtistRole, Song } from './EntitiesInterfaces';
+import {
+  Album,
+  Artist,
+  ArtistRole,
+  BlobFile,
+  Song,
+} from './EntitiesInterfaces';
 
 export interface SongDetails {
   id: string;
@@ -9,6 +15,7 @@ export interface SongDetails {
   artist: Artist;
   album?: Album;
   genre?: string;
+  coverBlob: BlobFile;
   createdAt: string;
   updatedAt: string;
 }

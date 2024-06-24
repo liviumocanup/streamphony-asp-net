@@ -6,7 +6,7 @@ const useGetPopularArtists = (pageNumber = 1, pageSize = 10) => {
   const getArtists = async () => {
     try {
       //wait 5 seconds
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      // await new Promise((resolve) => setTimeout(resolve, 5000));
       const res = await axios.get(`${API_URL}/${ARTIST_ENDPOINT}`, {
         params: { pageNumber, pageSize },
       });

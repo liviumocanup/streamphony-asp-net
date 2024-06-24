@@ -38,7 +38,7 @@ const ArtistViewDetails = ({ artist }: Props) => {
           top: 0,
           height: '375px',
           width: '100%',
-          bgcolor: 'gray',
+          backgroundImage: 'linear-gradient(to bottom, #1DB954, #121212)',
           zIndex: 1,
         }}
       />

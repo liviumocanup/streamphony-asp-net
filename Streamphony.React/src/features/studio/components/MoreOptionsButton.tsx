@@ -7,6 +7,7 @@ import IosShareOutlinedIcon from '@mui/icons-material/IosShareOutlined';
 import { ItemType } from '../../../shared/interfaces/Interfaces';
 import useDelete from '../../viewDetails/hooks/useDelete';
 import LoadingSpinner from '../../../shared/LoadingSpinner';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   itemId: string;
@@ -17,6 +18,7 @@ const MoreOptionsButton = ({ itemId, itemType }: Props) => {
   const { mutate: deleteEntity, isPending, isError, isSuccess } = useDelete();
   const [menuOpen, setMenuOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const navigate = useNavigate();
 
   if (isSuccess) window.location.reload();
 
@@ -38,13 +40,11 @@ const MoreOptionsButton = ({ itemId, itemType }: Props) => {
   };
 
   const handleEdit = () => {
-    console.log('Edit clicked', endpoint, itemId);
-    // deleteEntity({ endpoint, entityId: itemId });
+    navigate(`/edit/${endpoint}/${itemId}`);
     handleClose();
   };
 
   const handleDelete = () => {
-    console.log('Edit clicked', endpoint, itemId);
     deleteEntity({ endpoint, entityId: itemId });
     handleClose();
   };

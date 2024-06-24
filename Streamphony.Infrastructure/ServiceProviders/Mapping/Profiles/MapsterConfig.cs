@@ -37,6 +37,7 @@ public static class MapsterConfig
             .PreserveReference(true);
 
         GlobalConfig.NewConfig<Song, SongCreationDto>().PreserveReference(true);
+        GlobalConfig.NewConfig<Song, SongEditRequestDto>().PreserveReference(true);
         GlobalConfig.NewConfig<Song, SongDto>()
             .Map(src => src.CoverUrl, dest => dest.CoverBlob.Url)
             .Map(src => src.AudioUrl, dest => dest.AudioBlob.Url)

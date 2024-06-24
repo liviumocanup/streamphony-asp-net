@@ -46,11 +46,13 @@ public class SongController(IMediator mediator) : AppBaseController
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<SongDto>> UpdateSong(SongDto songDto)
+    public async Task<ActionResult<SongDto>> UpdateSong(SongEditRequestDto songDto)
     {
         var userId = User.GetUserId();
         
         var updatedSongDto = await _mediator.Send(new UpdateSong(songDto, userId));
+        await _mediator.Send(new CommitBlob(songDto.CoverBlobId, userId, songDto.Id, BlobType.SongCover.ToString()));
+        
         return Ok(updatedSongDto);
     }
 

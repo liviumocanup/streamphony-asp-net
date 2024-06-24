@@ -27,6 +27,7 @@ import { ItemType } from './shared/interfaces/Interfaces';
 import AlbumView from './features/viewDetails/AlbumView';
 import ArtistView from './features/viewDetails/ArtistView';
 import SongView from './features/viewDetails/SongView';
+import EditSong from './features/studio/EditSong';
 
 const queryClient = new QueryClient();
 
@@ -92,6 +93,7 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
+            <Route path={`/edit/${ItemType.SONG}/:id`} element={<EditSong />} />
             <Route path={`/${ItemType.ALBUM}/:id`} element={<AlbumView />} />
             <Route path={`/${ItemType.ARTIST}/:id`} element={<ArtistView />} />
             <Route path={`/${ItemType.SONG}/:id`} element={<SongView />} />
