@@ -11,9 +11,5 @@ public class AlbumCreationDtoValidator : AbstractValidator<AlbumCreationDto>
         RuleFor(album => album.Title)
             .NotEmpty()
             .MaximumLength(50);
-
-        // RuleFor(album => album.CoverImageUrl)
-        //     .MaximumLength(1000)
-        //     .ValidUrl();
     }
 }

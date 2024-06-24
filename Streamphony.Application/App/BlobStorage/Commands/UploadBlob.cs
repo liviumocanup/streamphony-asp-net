@@ -48,9 +48,6 @@ public class UploadBlobHandler(
             await _validationService.AssertNavigationEntityExists<User, Artist>(_unitOfWork.ArtistRepository, artistId, cancellationToken, isNavRequired: true);
             ownerId = artistId!.Value;
         }
-        
-        Console.WriteLine(blobType);
-        Console.WriteLine(ownerId);
 
         ValidateFileSize(blobRequestDto.Length, isAudio);
         var fileExtension = ValidateFileExtension(blobRequestDto.FileName, blobRequestDto.ContentType, isAudio);
