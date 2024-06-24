@@ -1,71 +1,25 @@
-import { artists, albums, playlists } from '../../../shared/dummy_data';
-import useFetchImages from '../hooks/useFetchImages';
-import UserAlbums from './UserAlbums';
 import { Suspense } from 'react';
-import Section from './Section';
 import FallbackSection from './fallback/FallbackSection';
-import useAuthStatus from '../../../hooks/useAuthStatus';
+import PopularArtists from './PopularArtists';
+import PopularSongs from './PopularSongs';
+import PopularAlbums from './PopularAlbums';
+import { Box } from '@mui/material';
 
 const Feed = () => {
-  const isLoggedIn = useAuthStatus();
-
   return (
-    <>
-      {isLoggedIn ? (
-        <Suspense fallback={<FallbackSection imageVariant={'circular'} />}>
-          <UserAlbums />
-        </Suspense>
-      ) : null}
-
+    <Box sx={{ mb: 15 }}>
       <Suspense fallback={<FallbackSection imageVariant={'circular'} />}>
-        <PopularArtists />
+        <PopularArtists imageVariant={'circular'} />
       </Suspense>
 
       <Suspense fallback={<FallbackSection />}>
-        <PopularAlbums />
+        <PopularSongs imageVariant={'rounded'} />
       </Suspense>
 
       <Suspense fallback={<FallbackSection />}>
-        <FeaturedPlaylists />
+        <PopularAlbums imageVariant={'rounded'} />
       </Suspense>
-    </>
-  );
-};
-
-const PopularArtists = () => {
-  const { imageUrls: artistImages } = useFetchImages(artists);
-
-  return (
-    <Section
-      items={artists}
-      imageUrls={artistImages}
-      sectionTitle="Popular artists"
-      imageVariant="circular"
-    />
-  );
-};
-
-const PopularAlbums = () => {
-  const { imageUrls: albumImages } = useFetchImages(albums);
-
-  return (
-    <Section
-      items={albums}
-      imageUrls={albumImages}
-      sectionTitle="Popular albums"
-    />
-  );
-};
-
-const FeaturedPlaylists = () => {
-  const { imageUrls: playlistImages } = useFetchImages(playlists);
-
-  return (
-    <Section
-      items={playlists}
-      imageUrls={playlistImages}
-      sectionTitle="Featured playlists"
-    />
+    </Box>
   );
 };
 

@@ -1,5 +1,5 @@
 using FluentValidation;
-using Streamphony.Application.App.Albums.Responses;
+using Streamphony.Application.App.Albums.DTOs;
 using Streamphony.Infrastructure.Extensions;
 
 namespace Streamphony.Infrastructure.Validators.CreationDTOs;
@@ -11,9 +11,5 @@ public class AlbumCreationDtoValidator : AbstractValidator<AlbumCreationDto>
         RuleFor(album => album.Title)
             .NotEmpty()
             .MaximumLength(50);
-
-        RuleFor(album => album.CoverImageUrl)
-            .MaximumLength(1000)
-            .ValidUrl();
     }
 }

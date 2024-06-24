@@ -1,17 +1,18 @@
 using MediatR;
-using Streamphony.Domain.Models;
 using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Services;
-using Streamphony.Application.Common;
+using Streamphony.Application.Common.Enum;
+using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.App.Genres.Commands;
 
 public record DeleteGenre(Guid Id) : IRequest<bool>;
 
-public class DeleteGenreHandler(IUnitOfWork unitOfWork, ILoggingService logger, IValidationService validationService) : IRequestHandler<DeleteGenre, bool>
+public class DeleteGenreHandler(IUnitOfWork unitOfWork, ILoggingService logger, IValidationService validationService)
+    : IRequestHandler<DeleteGenre, bool>
 {
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ILoggingService _logger = logger;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IValidationService _validationService = validationService;
 
     public async Task<bool> Handle(DeleteGenre request, CancellationToken cancellationToken)

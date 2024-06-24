@@ -1,53 +1,51 @@
 using MediatR;
-using Streamphony.Domain.Models;
 using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Services;
-using Streamphony.Application.App.Songs.Responses;
-using Streamphony.Application.Common;
+using Streamphony.Application.App.Songs.DTOs;
+using Streamphony.Application.Common.Enum;
+using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.App.Songs.Commands;
 
-public record UpdateSong(SongDto SongDto) : IRequest<SongDto>;
+public record UpdateSong(SongEditRequestDto SongDto, Guid UserId) : IRequest<SongDto>;
 
-public class UpdateSongHandler : IRequestHandler<UpdateSong, SongDto>
+public class UpdateSongHandler(
+    IUnitOfWork unitOfWork,
+    IMappingProvider mapper,
+    ILoggingService logger,
+    IValidationService validationService)
+    : IRequestHandler<UpdateSong, SongDto>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IMappingProvider _mapper;
-    private readonly ILoggingService _logger;
-    private readonly IValidationService _validationService;
-
-    public UpdateSongHandler(IUnitOfWork unitOfWork, IMappingProvider mapper, ILoggingService logger, IValidationService validationService)
-    {
-        _unitOfWork = unitOfWork;
-        _mapper = mapper;
-        _logger = logger;
-        _validationService = validationService;
-    }
+    private readonly ILoggingService _logger = logger;
+    private readonly IMappingProvider _mapper = mapper;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IValidationService _validationService = validationService;
 
     public async Task<SongDto> Handle(UpdateSong request, CancellationToken cancellationToken)
     {
         var songDto = request.SongDto;
+        var userId = request.UserId;
         var duplicateTitleForOtherSongs = _unitOfWork.SongRepository.GetByOwnerIdAndTitleWhereIdNotEqual;
+        
+        var songDb = await _validationService.GetExistingEntity(_unitOfWork.SongRepository, songDto.Id,
+            cancellationToken);
+        await ValidateOwnership(songDto, userId, cancellationToken);
+        await _validationService.EnsureArtistUniquePropertyExceptId(duplicateTitleForOtherSongs, userId,
+            nameof(songDto.Title), songDto.Title, songDto.Id, cancellationToken);
 
-        var song = await _validationService.GetExistingEntity(_unitOfWork.SongRepository, songDto.Id, cancellationToken);
-        await ValidateOwnership(songDto, cancellationToken);
-        await _validationService.AssertNavigationEntityExists<Song, Genre>(_unitOfWork.GenreRepository, songDto.GenreId, cancellationToken, LogAction.Update);
-        await _validationService.AssertNavigationEntityExists<Song, Album>(_unitOfWork.AlbumRepository, songDto.AlbumId, cancellationToken, LogAction.Update);
-        await _validationService.EnsureArtistUniquePropertyExceptId(duplicateTitleForOtherSongs, songDto.OwnerId, nameof(songDto.Title), songDto.Title, songDto.Id, cancellationToken);
-
-        _mapper.Map(songDto, song);
+        _mapper.Map(songDto, songDb);
         await _unitOfWork.SaveAsync(cancellationToken);
 
-        _logger.LogSuccess(nameof(Song), song.Id, LogAction.Update);
-        return _mapper.Map<SongDto>(song);
+        _logger.LogSuccess(nameof(Song), songDb.Id, LogAction.Update);
+        return _mapper.Map<SongDto>(songDb);
     }
 
-    private async Task ValidateOwnership(SongDto songDto, CancellationToken cancellationToken)
+    private async Task ValidateOwnership(SongEditRequestDto songDto, Guid userId, CancellationToken cancellationToken)
     {
-        var artist = await _validationService.GetExistingEntity(_unitOfWork.ArtistRepository, songDto.OwnerId, cancellationToken, LogAction.Get);
+        var artist = await _unitOfWork.ArtistRepository.FindByUserIdAsync(userId, cancellationToken);
 
-        if (!artist.UploadedSongs.Any(song => song.Id == songDto.Id))
-            _logger.LogAndThrowNotAuthorizedException(nameof(Song), songDto.Id, nameof(Artist), songDto.OwnerId);
+        if (artist!.UploadedSongs.All(song => song.Id != songDto.Id))
+            _logger.LogAndThrowNotAuthorizedException(nameof(Song), songDto.Id, nameof(Artist), userId);
     }
 }

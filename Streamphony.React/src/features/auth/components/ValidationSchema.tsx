@@ -1,6 +1,6 @@
 import { object, string } from 'yup';
 
-export const registerSchema = object({
+export const registerUserSchema = object({
   firstName: string().required('First name is required'),
   lastName: string().required('Last name is required'),
   username: string()

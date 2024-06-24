@@ -4,8 +4,8 @@ namespace Streamphony.WebAPI.Middlewares;
 
 public class RequestTimerMiddleware(RequestDelegate next, ILogger<RequestTimerMiddleware> logger)
 {
-    private readonly RequestDelegate _next = next;
     private readonly ILogger<RequestTimerMiddleware> _logger = logger;
+    private readonly RequestDelegate _next = next;
 
     public async Task InvokeAsync(HttpContext context)
     {
@@ -15,8 +15,8 @@ public class RequestTimerMiddleware(RequestDelegate next, ILogger<RequestTimerMi
 
         stopwatch.Stop();
         _logger.LogInformation("Request [{Method} {Url}] completed in {Duration}ms",
-            context.Request?.Method,
-            context.Request?.Path.Value,
+            context.Request.Method,
+            context.Request.Path.Value,
             stopwatch.ElapsedMilliseconds);
     }
 }

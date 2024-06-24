@@ -14,6 +14,11 @@ Developed with [ASP.NET](https://dotnet.microsoft.com/en-us/apps/aspnet) for an 
 
 ## Configuration
 
+Run Azurite:
+```bash
+azurite --silent --location c:\azurite --debug c:\azurite\debug.log
+```
+
 1. Set up the SQL Server with Docker, by pulling the image and starting the container with the following commands:
 ```bash
 docker pull mcr.microsoft.com/mssql/server

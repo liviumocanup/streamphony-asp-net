@@ -14,8 +14,10 @@ public class GenreRepository(ApplicationDbContext context) : Repository<Genre>(c
         return await _context.Genres.FirstOrDefaultAsync(genre => genre.Name == name, cancellationToken);
     }
 
-    public async Task<IEnumerable<Genre>> GetByNameWhereIdNotEqual(string name, Guid genreId, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Genre>> GetByNameWhereIdNotEqual(string name, Guid genreId,
+        CancellationToken cancellationToken)
     {
-        return await _context.Genres.Where(genre => genre.Name == name && genre.Id != genreId).ToListAsync(cancellationToken);
+        return await _context.Genres.Where(genre => genre.Name == name && genre.Id != genreId)
+            .ToListAsync(cancellationToken);
     }
 }

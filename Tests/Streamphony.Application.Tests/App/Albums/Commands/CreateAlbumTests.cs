@@ -4,25 +4,16 @@ using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Services;
 using Streamphony.Application.App.Albums.Commands;
 using Streamphony.Application.App.Albums.Responses;
+using Streamphony.Application.Common;
 using Streamphony.Application.Exceptions;
-using Streamphony.Application.Services;
 using Streamphony.Domain.Models;
+using Streamphony.Domain.Models.Auth;
 
 namespace Streamphony.Application.Tests.App.Albums.Commands;
 
 [TestFixture]
 public class CreateAlbumTests
 {
-    private AlbumCreationDto _albumCreationDto;
-    private Album _albumEntity;
-    private AlbumDto _albumDto;
-
-    private Mock<IUnitOfWork> _unitOfWorkMock;
-    private Mock<IMappingProvider> _mapperMock;
-    private Mock<ILoggingService> _loggerMock;
-    private Mock<IValidationService> _validationServiceMock;
-    private CreateAlbumHandler _handler;
-
     [SetUp]
     public void Setup()
     {
@@ -56,9 +47,19 @@ public class CreateAlbumTests
         _mapperMock = new Mock<IMappingProvider>();
         _loggerMock = new Mock<ILoggingService>();
         _validationServiceMock = new Mock<IValidationService>();
-        _handler = new CreateAlbumHandler(_unitOfWorkMock.Object, _mapperMock.Object, _loggerMock.Object, _validationServiceMock.Object);
-
+        _handler = new CreateAlbumHandler(_unitOfWorkMock.Object, _mapperMock.Object, _loggerMock.Object,
+            _validationServiceMock.Object);
     }
+
+    private AlbumCreationDto _albumCreationDto;
+    private Album _albumEntity;
+    private AlbumDto _albumDto;
+
+    private Mock<IUnitOfWork> _unitOfWorkMock;
+    private Mock<IMappingProvider> _mapperMock;
+    private Mock<ILoggingService> _loggerMock;
+    private Mock<IValidationService> _validationServiceMock;
+    private CreateAlbumHandler _handler;
 
     [Test]
     public async Task Handle_SuccessfulCreation_ReturnsAlbumDto()
@@ -68,7 +69,8 @@ public class CreateAlbumTests
         var createdAlbum = _albumEntity;
 
         _mapperMock.Setup(m => m.Map<Album>(_albumCreationDto)).Returns(createdAlbum);
-        _unitOfWorkMock.Setup(u => u.AlbumRepository.Add(createdAlbum, It.IsAny<CancellationToken>())).ReturnsAsync(createdAlbum);
+        _unitOfWorkMock.Setup(u => u.AlbumRepository.Add(createdAlbum, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(createdAlbum);
         _mapperMock.Setup(m => m.Map<AlbumDto>(createdAlbum)).Returns(_albumDto);
 
         // Act
@@ -92,12 +94,18 @@ public class CreateAlbumTests
         var ownerId = _albumCreationDto.OwnerId;
         var exception = new NotFoundException("Owner not found.");
 
-        _unitOfWorkMock.Setup(u => u.AlbumRepository.GetByOwnerIdAndTitle(ownerId, _albumCreationDto.Title, CancellationToken.None)).ReturnsAsync((Album)null!);
-        _validationServiceMock.Setup(v => v.AssertNavigationEntityExists<Album, User>(_unitOfWorkMock.Object.UserRepository, ownerId, CancellationToken.None, LogAction.Create))
-                            .ThrowsAsync(exception);
+        _unitOfWorkMock
+            .Setup(
+                u => u.AlbumRepository.GetByOwnerIdAndTitle(ownerId, _albumCreationDto.Title, CancellationToken.None))
+            .ReturnsAsync((Album)null!);
+        _validationServiceMock.Setup(v =>
+                v.AssertNavigationEntityExists<Album, User>(_unitOfWorkMock.Object.UserRepository, ownerId,
+                    CancellationToken.None, LogAction.Create))
+            .ThrowsAsync(exception);
 
         // Act & Assert
-        var ex = Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(createAlbumCommand, CancellationToken.None));
+        var ex = Assert.ThrowsAsync<NotFoundException>(
+            () => _handler.Handle(createAlbumCommand, CancellationToken.None));
         Assert.That(ex, Is.EqualTo(exception));
     }
 }

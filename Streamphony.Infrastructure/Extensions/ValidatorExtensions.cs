@@ -6,7 +6,8 @@ public static class ValidatorExtensions
 {
     public static IRuleBuilderOptions<T, DateOnly> DateNotInFuture<T>(this IRuleBuilder<T, DateOnly> ruleBuilder)
     {
-        return ruleBuilder.Must(date => date <= DateOnly.FromDateTime(DateTime.UtcNow)).WithMessage("{PropertyName} cannot be in the future");
+        return ruleBuilder.Must(date => date <= DateOnly.FromDateTime(DateTime.UtcNow))
+            .WithMessage("{PropertyName} cannot be in the future");
     }
 
     public static IRuleBuilderOptions<T, string?> ValidUrl<T>(this IRuleBuilder<T, string?> ruleBuilder)

@@ -7,7 +7,7 @@ public class RegisterUserDtoValidator : AbstractValidator<RegisterUserDto>
 {
     public RegisterUserDtoValidator()
     {
-        RuleFor(user => user.UserName)
+        RuleFor(user => user.Username)
             .NotEmpty()
             .MaximumLength(50);
 

@@ -4,7 +4,7 @@ import HomeSkeleton from '../../../../shared/HomeSkeleton';
 
 interface FallbackCardProps {
   index: number;
-  imageVariant?: 'rounded' | 'circular';
+  imageVariant: 'rounded' | 'circular';
 }
 
 const FallbackCard = ({ index, imageVariant }: FallbackCardProps) => {
@@ -15,26 +15,35 @@ const FallbackCard = ({ index, imageVariant }: FallbackCardProps) => {
         sx={{
           backgroundColor: 'background.paper',
           color: 'text.primary',
+          position: 'relative',
         }}
       >
-        <HomeSkeleton variant={imageVariant}>
-          <Avatar
-            variant={imageVariant}
-            sx={{
-              bgcolor: 'primary.main',
-              width: 185,
-              height: 185,
-              mb: 1,
-            }}
-          />
-        </HomeSkeleton>
+        <Box
+          sx={{ position: 'relative', width: 'fit-content', margin: 'auto' }}
+        >
+          <HomeSkeleton variant={imageVariant}>
+            <Avatar
+              variant={imageVariant}
+              sx={{
+                bgcolor: 'primary.main',
+                display: 'block',
+                // maxWidth: '185px',
+                // maxHeight: '185px',
+                // width: 'auto',
+                // height: 'auto',
+                width: 185,
+                height: 185,
+              }}
+            />
+          </HomeSkeleton>
 
-        <Typography variant="subtitle1" align="left" width="90%">
-          <HomeSkeleton />
-        </Typography>
-        <Typography variant="body2" align="left" width="40%">
-          <HomeSkeleton />
-        </Typography>
+          <Typography variant="subtitle1" align="left" width="90%">
+            <HomeSkeleton />
+          </Typography>
+          <Typography variant="body2" align="left" width="40%">
+            <HomeSkeleton />
+          </Typography>
+        </Box>
       </Box>
     </Grid>
   );

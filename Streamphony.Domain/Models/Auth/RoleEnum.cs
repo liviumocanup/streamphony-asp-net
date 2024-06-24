@@ -1,8 +1,8 @@
-namespace Streamphony.Domain.Models.Auth
+namespace Streamphony.Domain.Models.Auth;
+
+public enum RoleEnum
 {
-    public enum RoleEnum
-    {
-        Admin,
-        User
-    }
+    User,
+    Artist,
+    Admin,
 }

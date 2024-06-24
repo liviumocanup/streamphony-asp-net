@@ -28,9 +28,11 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CoverImageUrl")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                    b.Property<Guid>("CoverBlobId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uniqueidentifier");
@@ -43,7 +45,16 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<TimeSpan>("TotalDuration")
+                        .HasColumnType("time");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CoverBlobId")
+                        .IsUnique();
 
                     b.HasIndex("OwnerId");
 
@@ -55,19 +66,33 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Streamphony.Domain.Models.AlbumArtist", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("AlbumId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ArtistId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Role")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("AlbumId", "ArtistId", "Role");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("ArtistId");
+
+                    b.HasIndex("AlbumId", "ArtistId", "Role")
+                        .IsUnique();
 
                     b.ToTable("AlbumArtists");
                 });
@@ -78,24 +103,33 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateOnly>("DateOfBirth")
                         .HasColumnType("date");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<Guid>("ProfilePictureBlobId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("LastName")
+                    b.Property<string>("StageName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("ProfilePictureUrl")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ProfilePictureBlobId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Artists");
                 });
@@ -160,6 +194,9 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<Guid?>("ArtistId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -297,11 +334,63 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                     b.ToTable("UserRoles", "Auth");
                 });
 
+            modelBuilder.Entity("Streamphony.Domain.Models.BlobFile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ContainerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<TimeSpan?>("Duration")
+                        .HasColumnType("time");
+
+                    b.Property<string>("Extension")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("Length")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("RelatedEntityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("StorageKey")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BlobFiles");
+                });
+
             modelBuilder.Entity("Streamphony.Domain.Models.Genre", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -312,6 +401,9 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -326,12 +418,18 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("DarkMode")
                         .HasColumnType("bit");
 
                     b.Property<string>("Language")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -347,6 +445,15 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                     b.Property<Guid?>("AlbumId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("AudioBlobId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CoverBlobId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<TimeSpan>("Duration")
                         .HasColumnType("time");
 
@@ -361,14 +468,18 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AlbumId");
+
+                    b.HasIndex("AudioBlobId")
+                        .IsUnique();
+
+                    b.HasIndex("CoverBlobId")
+                        .IsUnique();
 
                     b.HasIndex("GenreId");
 
@@ -382,11 +493,19 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Streamphony.Domain.Models.Album", b =>
                 {
+                    b.HasOne("Streamphony.Domain.Models.BlobFile", "CoverBlob")
+                        .WithOne()
+                        .HasForeignKey("Streamphony.Domain.Models.Album", "CoverBlobId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("Streamphony.Domain.Models.Artist", "Owner")
                         .WithMany("OwnedAlbums")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("CoverBlob");
 
                     b.Navigation("Owner");
                 });
@@ -394,7 +513,7 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Streamphony.Domain.Models.AlbumArtist", b =>
                 {
                     b.HasOne("Streamphony.Domain.Models.Album", "Album")
-                        .WithMany("Artists")
+                        .WithMany("Collaborators")
                         .HasForeignKey("AlbumId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -408,6 +527,25 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                     b.Navigation("Album");
 
                     b.Navigation("Artist");
+                });
+
+            modelBuilder.Entity("Streamphony.Domain.Models.Artist", b =>
+                {
+                    b.HasOne("Streamphony.Domain.Models.BlobFile", "ProfilePictureBlob")
+                        .WithOne()
+                        .HasForeignKey("Streamphony.Domain.Models.Artist", "ProfilePictureBlobId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Streamphony.Domain.Models.Auth.User", "User")
+                        .WithOne("Artist")
+                        .HasForeignKey("Streamphony.Domain.Models.Artist", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProfilePictureBlob");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Streamphony.Domain.Models.Auth.RoleClaim", b =>
@@ -479,6 +617,18 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                         .HasForeignKey("AlbumId")
                         .OnDelete(DeleteBehavior.SetNull);
 
+                    b.HasOne("Streamphony.Domain.Models.BlobFile", "AudioBlob")
+                        .WithOne()
+                        .HasForeignKey("Streamphony.Domain.Models.Song", "AudioBlobId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Streamphony.Domain.Models.BlobFile", "CoverBlob")
+                        .WithOne()
+                        .HasForeignKey("Streamphony.Domain.Models.Song", "CoverBlobId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("Streamphony.Domain.Models.Genre", "Genre")
                         .WithMany("Songs")
                         .HasForeignKey("GenreId")
@@ -492,6 +642,10 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
 
                     b.Navigation("Album");
 
+                    b.Navigation("AudioBlob");
+
+                    b.Navigation("CoverBlob");
+
                     b.Navigation("Genre");
 
                     b.Navigation("Owner");
@@ -499,7 +653,7 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Streamphony.Domain.Models.Album", b =>
                 {
-                    b.Navigation("Artists");
+                    b.Navigation("Collaborators");
 
                     b.Navigation("Songs");
                 });
@@ -514,6 +668,11 @@ namespace Streamphony.Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("UploadedSongs");
+                });
+
+            modelBuilder.Entity("Streamphony.Domain.Models.Auth.User", b =>
+                {
+                    b.Navigation("Artist");
                 });
 
             modelBuilder.Entity("Streamphony.Domain.Models.Genre", b =>

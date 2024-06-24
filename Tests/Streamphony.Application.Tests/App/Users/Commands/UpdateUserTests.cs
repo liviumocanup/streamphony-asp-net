@@ -2,25 +2,13 @@ using Moq;
 using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Services;
-using Streamphony.Application.App.Users.Commands;
-using Streamphony.Application.App.Users.Responses;
 using Streamphony.Application.Exceptions;
-using Streamphony.Application.Services;
-using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.Tests.App.Users.Commands;
 
 [TestFixture]
 public class UpdateUserTests
 {
-    private Mock<IUnitOfWork> _unitOfWorkMock;
-    private Mock<IMappingProvider> _mapperMock;
-    private Mock<ILoggingService> _loggerMock;
-    private Mock<IValidationService> _validationServiceMock;
-    private UpdateUserHandler _handler;
-    private UserDto _userDto;
-    private User _existingUser;
-
     [SetUp]
     public void Setup()
     {
@@ -28,7 +16,8 @@ public class UpdateUserTests
         _mapperMock = new Mock<IMappingProvider>();
         _loggerMock = new Mock<ILoggingService>();
         _validationServiceMock = new Mock<IValidationService>();
-        _handler = new UpdateUserHandler(_unitOfWorkMock.Object, _mapperMock.Object, _loggerMock.Object, _validationServiceMock.Object);
+        _handler = new UpdateUserHandler(_unitOfWorkMock.Object, _mapperMock.Object, _loggerMock.Object,
+            _validationServiceMock.Object);
 
         _userDto = new UserDto
         {
@@ -51,11 +40,21 @@ public class UpdateUserTests
         _mapperMock.Setup(m => m.Map(_userDto, _existingUser)).Verifiable();
         _mapperMock.Setup(m => m.Map<UserDto>(_existingUser)).Returns(_userDto);
 
-        _unitOfWorkMock.Setup(u => u.UserRepository.GetByUsernameOrEmailWhereIdNotEqual(_userDto.Username, _userDto.Email, _userDto.Id, It.IsAny<CancellationToken>()))
-                        .ReturnsAsync((User)null!);
-        _validationServiceMock.Setup(v => v.GetExistingEntity(_unitOfWorkMock.Object.UserRepository, _userDto.Id, It.IsAny<CancellationToken>(), LogAction.Update))
-                                .ReturnsAsync(_existingUser);
+        _unitOfWorkMock.Setup(u => u.UserRepository.GetByUsernameOrEmailWhereIdNotEqual(_userDto.Username,
+                _userDto.Email, _userDto.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((User)null!);
+        _validationServiceMock.Setup(v => v.GetExistingEntity(_unitOfWorkMock.Object.UserRepository, _userDto.Id,
+                It.IsAny<CancellationToken>(), LogAction.Update))
+            .ReturnsAsync(_existingUser);
     }
+
+    private Mock<IUnitOfWork> _unitOfWorkMock;
+    private Mock<IMappingProvider> _mapperMock;
+    private Mock<ILoggingService> _loggerMock;
+    private Mock<IValidationService> _validationServiceMock;
+    private UpdateUserHandler _handler;
+    private UserDto _userDto;
+    private User _existingUser;
 
     [Test]
     public async Task Handle_ValidUpdate_UpdatesUserSuccessfully()
@@ -82,12 +81,15 @@ public class UpdateUserTests
         var conflictingUser = _existingUser;
         conflictingUser.Id = Guid.NewGuid();
         conflictingUser.Username = _userDto.Username;
-        _unitOfWorkMock.Setup(u => u.UserRepository.GetByUsernameOrEmailWhereIdNotEqual(_userDto.Username, _userDto.Email, _userDto.Id, It.IsAny<CancellationToken>()))
-                       .ReturnsAsync(conflictingUser);
+        _unitOfWorkMock.Setup(u => u.UserRepository.GetByUsernameOrEmailWhereIdNotEqual(_userDto.Username,
+                _userDto.Email, _userDto.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(conflictingUser);
 
         var duplicateException = new DuplicateException("User with username already exists.");
-        _loggerMock.Setup(l => l.LogAndThrowDuplicateException(nameof(User), nameof(_userDto.Username), _userDto.Username, LogAction.Update))
-                    .Throws(duplicateException);
+        _loggerMock.Setup(l =>
+                l.LogAndThrowDuplicateException(nameof(User), nameof(_userDto.Username), _userDto.Username,
+                    LogAction.Update))
+            .Throws(duplicateException);
 
         // Act & Assert
         Assert.ThrowsAsync<DuplicateException>(() => _handler.Handle(updateUserCommand, CancellationToken.None));
@@ -103,12 +105,14 @@ public class UpdateUserTests
         var conflictingUser = _existingUser;
         conflictingUser.Id = Guid.NewGuid();
         conflictingUser.Email = _userDto.Email;
-        _unitOfWorkMock.Setup(u => u.UserRepository.GetByUsernameOrEmailWhereIdNotEqual(_userDto.Username, _userDto.Email, _userDto.Id, It.IsAny<CancellationToken>()))
-                       .ReturnsAsync(conflictingUser);
+        _unitOfWorkMock.Setup(u => u.UserRepository.GetByUsernameOrEmailWhereIdNotEqual(_userDto.Username,
+                _userDto.Email, _userDto.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(conflictingUser);
 
         var duplicateException = new DuplicateException("User with email already exists.");
-        _loggerMock.Setup(l => l.LogAndThrowDuplicateException(nameof(User), nameof(_userDto.Email), _userDto.Email, LogAction.Update))
-                    .Throws(duplicateException);
+        _loggerMock.Setup(l =>
+                l.LogAndThrowDuplicateException(nameof(User), nameof(_userDto.Email), _userDto.Email, LogAction.Update))
+            .Throws(duplicateException);
 
         // Act & Assert
         Assert.ThrowsAsync<DuplicateException>(() => _handler.Handle(updateUserCommand, CancellationToken.None));

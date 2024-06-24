@@ -9,7 +9,6 @@ using Streamphony.WebAPI.Filters;
 
 namespace Streamphony.WebAPI.Controllers;
 
-// TODO: policy instead of Roles
 [Route("api/genres")]
 [Authorize(Roles = "Admin")]
 public class GenreController(IMediator mediator) : AppBaseController
@@ -26,7 +25,7 @@ public class GenreController(IMediator mediator) : AppBaseController
     public async Task<ActionResult<GenreDto>> CreateGenre(GenreCreationDto genreDto)
     {
         var createdGenreDto = await _mediator.Send(new CreateGenre(genreDto));
-        return CreatedAtAction(nameof(GetGenreById), new { id = createdGenreDto.Id }, createdGenreDto);
+        return CreatedAtAction(nameof(CreateGenre), new { id = createdGenreDto.Id }, createdGenreDto);
     }
 
     [HttpPut]
@@ -46,9 +45,10 @@ public class GenreController(IMediator mediator) : AppBaseController
     [HttpGet]
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<PaginatedResult<GenreDto>>> GetAllGenres([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+    public async Task<ActionResult<PaginatedResult<GenreDto>>> GetAllGenres([FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10)
     {
-        var pagedRequest = new PagedRequest()
+        var pagedRequest = new PagedRequest
         {
             PageNumber = pageNumber,
             PageSize = pageSize

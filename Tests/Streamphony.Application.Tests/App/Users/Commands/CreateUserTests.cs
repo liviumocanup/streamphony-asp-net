@@ -2,25 +2,13 @@ using Moq;
 using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Services;
-using Streamphony.Application.App.Users.Commands;
-using Streamphony.Application.App.Users.Responses;
 using Streamphony.Application.Exceptions;
-using Streamphony.Application.Services;
-using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.Tests.App.Users.Commands;
 
 [TestFixture]
 public class CreateUserTests
 {
-    private Mock<IUnitOfWork> _unitOfWorkMock;
-    private Mock<IMappingProvider> _mapperMock;
-    private Mock<ILoggingService> _loggerMock;
-    private CreateUserHandler _handler;
-    private UserCreationDto _userCreationDto;
-    private User _userEntity;
-    private UserDto _userDto;
-
     [SetUp]
     public void Setup()
     {
@@ -61,10 +49,21 @@ public class CreateUserTests
         _mapperMock.Setup(m => m.Map<User>(_userCreationDto)).Returns(_userEntity);
         _mapperMock.Setup(m => m.Map<UserDto>(_userEntity)).Returns(_userDto);
 
-        _unitOfWorkMock.Setup(u => u.UserRepository.GetByUsernameOrEmail(_userCreationDto.Username, _userCreationDto.Email, It.IsAny<CancellationToken>()))
-                       .ReturnsAsync((User)null!);
-        _unitOfWorkMock.Setup(u => u.UserRepository.Add(_userEntity, It.IsAny<CancellationToken>())).ReturnsAsync(_userEntity);
+        _unitOfWorkMock.Setup(u =>
+                u.UserRepository.GetByUsernameOrEmail(_userCreationDto.Username, _userCreationDto.Email,
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync((User)null!);
+        _unitOfWorkMock.Setup(u => u.UserRepository.Add(_userEntity, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_userEntity);
     }
+
+    private Mock<IUnitOfWork> _unitOfWorkMock;
+    private Mock<IMappingProvider> _mapperMock;
+    private Mock<ILoggingService> _loggerMock;
+    private CreateUserHandler _handler;
+    private UserCreationDto _userCreationDto;
+    private User _userEntity;
+    private UserDto _userDto;
 
     [Test]
     public async Task Handle_UserIsValid_CreatesUserSuccessfully()
@@ -89,12 +88,15 @@ public class CreateUserTests
 
         var existingUser = _userEntity;
         existingUser.Email = "different@example.com";
-        _unitOfWorkMock.Setup(u => u.UserRepository.GetByUsernameOrEmail(_userCreationDto.Username, _userCreationDto.Email, It.IsAny<CancellationToken>()))
-                       .ReturnsAsync(existingUser);
+        _unitOfWorkMock.Setup(u =>
+                u.UserRepository.GetByUsernameOrEmail(_userCreationDto.Username, _userCreationDto.Email,
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(existingUser);
 
         var duplicateException = new DuplicateException("User already exists.");
-        _loggerMock.Setup(l => l.LogAndThrowDuplicateException(nameof(User), nameof(_userCreationDto.Username), _userCreationDto.Username, LogAction.Create))
-                   .Throws(duplicateException);
+        _loggerMock.Setup(l => l.LogAndThrowDuplicateException(nameof(User), nameof(_userCreationDto.Username),
+                _userCreationDto.Username, LogAction.Create))
+            .Throws(duplicateException);
 
         // Act & Assert
         Assert.ThrowsAsync<DuplicateException>(() => _handler.Handle(createUserCommand, CancellationToken.None));
@@ -109,12 +111,15 @@ public class CreateUserTests
 
         var existingUser = _userEntity;
         existingUser.Username = "different";
-        _unitOfWorkMock.Setup(u => u.UserRepository.GetByUsernameOrEmail(_userCreationDto.Username, _userCreationDto.Email, It.IsAny<CancellationToken>()))
-                        .ReturnsAsync(existingUser);
+        _unitOfWorkMock.Setup(u =>
+                u.UserRepository.GetByUsernameOrEmail(_userCreationDto.Username, _userCreationDto.Email,
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(existingUser);
 
         var duplicateException = new DuplicateException("User already exists.");
-        _loggerMock.Setup(l => l.LogAndThrowDuplicateException(nameof(User), nameof(_userCreationDto.Email), _userCreationDto.Email, LogAction.Create))
-                        .Throws(duplicateException);
+        _loggerMock.Setup(l => l.LogAndThrowDuplicateException(nameof(User), nameof(_userCreationDto.Email),
+                _userCreationDto.Email, LogAction.Create))
+            .Throws(duplicateException);
 
         // Act & Assert
         Assert.ThrowsAsync<DuplicateException>(() => _handler.Handle(createUserCommand, CancellationToken.None));

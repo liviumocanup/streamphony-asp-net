@@ -1,17 +1,18 @@
-import { LogInData } from '../../../shared/Interfaces';
+import { LogInData } from '../../../shared/interfaces/Interfaces';
 import axios from 'axios';
-import { backendUrl, logInEndpoint } from '../../../shared/constants';
+import { API_URL, LOG_IN_ENDPOINT } from '../../../shared/constants';
 import { useMutation } from '@tanstack/react-query';
-import useTokenStorage from '../../../hooks/localStorage/useTokenStorage';
+import useAuthContext from '../../../hooks/context/useAuthContext';
 
 const useLogIn = () => {
-  const { setToken } = useTokenStorage();
+  const { tokenRefresh } = useAuthContext();
 
   const verifyCredentials = async (user: LogInData) => {
     try {
-      const res = await axios.post(`${backendUrl}/${logInEndpoint}`, user);
-      setToken(res.data.accessToken);
-      return res.data;
+      const res = await axios.post(`${API_URL}/${LOG_IN_ENDPOINT}`, user);
+
+      const token = res.data.accessToken;
+      tokenRefresh(token);
     } catch (err: any) {
       if (axios.isAxiosError(err)) {
         throw new Error(err.response?.data.errors[0]);
@@ -24,6 +25,7 @@ const useLogIn = () => {
 
   return useMutation({
     mutationFn: verifyCredentials,
+    retry: false,
   });
 };
 

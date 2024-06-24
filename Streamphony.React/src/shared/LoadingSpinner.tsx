@@ -1,7 +1,14 @@
-import { CircularProgress } from '@mui/material';
+import { CircularProgress, SxProps } from '@mui/material';
+import { Theme } from '@mui/material/styles';
 
-const LoadingSpinner = () => {
-  return <CircularProgress size={25} sx={{ color: 'background.default' }} />;
+interface LoadingSpinnerProps {
+  sx?: SxProps<Theme>;
+}
+
+const LoadingSpinner = ({
+  sx = { color: 'background.default' },
+}: LoadingSpinnerProps) => {
+  return <CircularProgress size={25} sx={sx} />;
 };
 
 export default LoadingSpinner;

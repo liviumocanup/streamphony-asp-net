@@ -1,8 +1,22 @@
-.Centered {
+.CenteredContainer {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.WidthCentered {
   display: flex;
   align-items: center;
   flex-direction: column;
   justify-content: center;
   width: 100vw;
-  min-height: 95vh;
+}
+
+.HeightCentered {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
 }

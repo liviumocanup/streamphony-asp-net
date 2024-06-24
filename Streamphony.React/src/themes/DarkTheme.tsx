@@ -7,11 +7,11 @@ const DarkTheme = createTheme({
       primary: '#ffffff',
     },
     background: {
-      default: '#212121',
+      default: '#121212',
       paper: '#171717',
     },
     action: {
-      hover: '#2f2f2f',
+      hover: '#232323',
     },
   },
 });

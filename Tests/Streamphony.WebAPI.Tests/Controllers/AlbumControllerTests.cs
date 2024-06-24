@@ -11,9 +11,6 @@ namespace Streamphony.WebAPI.Tests.Controllers;
 [TestFixture]
 public class AlbumControllerTests
 {
-    private CustomWebApplicationFactory _factory;
-    private HttpClient _client;
-
     [SetUp]
     public void SetUp()
     {
@@ -24,6 +21,20 @@ public class AlbumControllerTests
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         Utilities.InitializeDbForTests(db);
     }
+
+    [TearDown]
+    public void TearDown()
+    {
+        using var scope = _factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        db.Database.EnsureDeleted();
+
+        _client.Dispose();
+        _factory.Dispose();
+    }
+
+    private CustomWebApplicationFactory _factory;
+    private HttpClient _client;
 
     [Test]
     public async Task CreateAlbum_Success_ReturnsCreated()
@@ -66,7 +77,7 @@ public class AlbumControllerTests
     public async Task CreateAlbum_OwnerDoesNotExist_ReturnsNotFound()
     {
         // Arrange
-        Guid ownerGuid = Guid.NewGuid();
+        var ownerGuid = Guid.NewGuid();
         var albumDto = new AlbumCreationDto { Title = "New Album", OwnerId = ownerGuid };
 
         // Act
@@ -96,7 +107,9 @@ public class AlbumControllerTests
         Assert.Multiple(() =>
         {
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Conflict));
-            Assert.That(content, Does.Contain($"Album with Title '{albumDto.Title}' already exists for User with Id '{albumDto.OwnerId}'."));
+            Assert.That(content,
+                Does.Contain(
+                    $"Album with Title '{albumDto.Title}' already exists for User with Id '{albumDto.OwnerId}'."));
         });
     }
 
@@ -104,7 +117,8 @@ public class AlbumControllerTests
     public async Task UpdateAlbum_Success_ReturnsOk()
     {
         // Arrange
-        var updateAlbumDto = new AlbumDto { Id = Utilities.AlbumId1, Title = "Updated Album", OwnerId = Utilities.UserId1 };
+        var updateAlbumDto = new AlbumDto
+            { Id = Utilities.AlbumId1, Title = "Updated Album", OwnerId = Utilities.UserId1 };
 
         // Act
         var response = await _client.PutAsJsonAsync("api/albums", updateAlbumDto);
@@ -140,8 +154,9 @@ public class AlbumControllerTests
     public async Task UpdateAlbum_AlbumNotInDb_ReturnsNotFound()
     {
         // Arrange
-        Guid albumId = Guid.NewGuid();
-        var nonExistingAlbumDto = new AlbumDto { Id = albumId, Title = "Non-Existing Album", OwnerId = Utilities.UserId1 };
+        var albumId = Guid.NewGuid();
+        var nonExistingAlbumDto = new AlbumDto
+            { Id = albumId, Title = "Non-Existing Album", OwnerId = Utilities.UserId1 };
 
         // Act
         var response = await _client.PutAsJsonAsync("api/albums", nonExistingAlbumDto);
@@ -159,7 +174,8 @@ public class AlbumControllerTests
     public async Task UpdateAlbum_UserAlreadyHasAlbumWithDuplicateTitle_ReturnsConflict()
     {
         // Arrange
-        var conflictingUpdateAlbumDto = new AlbumDto { Id = Utilities.AlbumId1, Title = "UpdatedAlbum", OwnerId = Utilities.UserId1, };
+        var conflictingUpdateAlbumDto = new AlbumDto
+            { Id = Utilities.AlbumId1, Title = "UpdatedAlbum", OwnerId = Utilities.UserId1 };
 
         // Act
         var response = await _client.PutAsJsonAsync("api/albums", conflictingUpdateAlbumDto);
@@ -169,7 +185,9 @@ public class AlbumControllerTests
         Assert.Multiple(() =>
         {
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Conflict));
-            Assert.That(content, Does.Contain($"Album with Title 'UpdatedAlbum' already exists for User with Id '{Utilities.UserId1}'."));
+            Assert.That(content,
+                Does.Contain(
+                    $"Album with Title 'UpdatedAlbum' already exists for User with Id '{Utilities.UserId1}'."));
         });
     }
 
@@ -260,16 +278,5 @@ public class AlbumControllerTests
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
             Assert.That(content, Does.Contain($"Album with Id '{nonExistingId}' not found."));
         });
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
-        using var scope = _factory.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        db.Database.EnsureDeleted();
-
-        _client.Dispose();
-        _factory.Dispose();
     }
 }

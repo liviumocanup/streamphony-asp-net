@@ -1,7 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
-using Streamphony.Application.App.Users.Responses;
 using Streamphony.Infrastructure.Persistence.Contexts;
 using Streamphony.WebAPI.Tests.Factories;
 using Streamphony.WebAPI.Tests.Helpers;
@@ -11,9 +10,6 @@ namespace Streamphony.WebAPI.Tests.Controllers;
 [TestFixture]
 public class UserControllerTests
 {
-    private CustomWebApplicationFactory _factory;
-    private HttpClient _client;
-
     [SetUp]
     public void SetUp()
     {
@@ -24,6 +20,20 @@ public class UserControllerTests
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         Utilities.InitializeDbForTests(db);
     }
+
+    [TearDown]
+    public void TearDown()
+    {
+        using var scope = _factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        db.Database.EnsureDeleted();
+
+        _client.Dispose();
+        _factory.Dispose();
+    }
+
+    private CustomWebApplicationFactory _factory;
+    private HttpClient _client;
 
     [Test]
     public async Task CreateUser_Success_ReturnsCreated()
@@ -152,7 +162,7 @@ public class UserControllerTests
     public async Task UpdateUser_UserNotInDb_ReturnsNotFound()
     {
         // Arrange
-        Guid userId = Guid.NewGuid();
+        var userId = Guid.NewGuid();
         var nonExistingUserDto = new UserDto
         {
             Id = userId,
@@ -178,7 +188,7 @@ public class UserControllerTests
     public async Task UpdateUser_AnotherUserAlreadyHasUsername_ReturnsConflict()
     {
         // Arrange
-        Guid userId = Utilities.UserId1;
+        var userId = Utilities.UserId1;
         var conflictingUpdateUserDto = new UserDto
         {
             Id = userId,
@@ -196,7 +206,8 @@ public class UserControllerTests
         Assert.Multiple(() =>
         {
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Conflict));
-            Assert.That(content, Does.Contain($"User with Username '{conflictingUpdateUserDto.Username}' already exists."));
+            Assert.That(content,
+                Does.Contain($"User with Username '{conflictingUpdateUserDto.Username}' already exists."));
         });
     }
 
@@ -291,16 +302,5 @@ public class UserControllerTests
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
             Assert.That(content, Does.Contain($"User with Id '{nonExistingId}' not found."));
         });
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
-        using var scope = _factory.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        db.Database.EnsureDeleted();
-
-        _client.Dispose();
-        _factory.Dispose();
     }
 }

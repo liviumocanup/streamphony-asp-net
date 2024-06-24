@@ -11,9 +11,6 @@ namespace Streamphony.WebAPI.Tests.Controllers;
 [TestFixture]
 public class SongControllerTests
 {
-    private CustomWebApplicationFactory _factory;
-    private HttpClient _client;
-
     [SetUp]
     public void SetUp()
     {
@@ -24,6 +21,20 @@ public class SongControllerTests
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         Utilities.InitializeDbForTests(db);
     }
+
+    [TearDown]
+    public void TearDown()
+    {
+        using var scope = _factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        db.Database.EnsureDeleted();
+
+        _client.Dispose();
+        _factory.Dispose();
+    }
+
+    private CustomWebApplicationFactory _factory;
+    private HttpClient _client;
 
     [Test]
     public async Task CreateSong_Success_ReturnsCreated()
@@ -96,7 +107,9 @@ public class SongControllerTests
         Assert.Multiple(() =>
         {
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Conflict));
-            Assert.That(content, Does.Contain($"Song with Title 'TestSong' already exists for User with Id '{Utilities.DbSong1.OwnerId}'."));
+            Assert.That(content,
+                Does.Contain(
+                    $"Song with Title 'TestSong' already exists for User with Id '{Utilities.DbSong1.OwnerId}'."));
         });
     }
 
@@ -185,7 +198,7 @@ public class SongControllerTests
     public async Task UpdateSong_SongNotInDb_ReturnsNotFound()
     {
         // Arrange
-        Guid songId = Guid.NewGuid();
+        var songId = Guid.NewGuid();
         var nonExistingSongDto = new SongDto
         {
             Id = songId,
@@ -228,7 +241,8 @@ public class SongControllerTests
         Assert.Multiple(() =>
         {
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Conflict));
-            Assert.That(content, Does.Contain($"Song with Title 'UpdatedSong' already exists for User with Id '{Utilities.UserId1}'."));
+            Assert.That(content,
+                Does.Contain($"Song with Title 'UpdatedSong' already exists for User with Id '{Utilities.UserId1}'."));
         });
     }
 
@@ -253,7 +267,8 @@ public class SongControllerTests
         Assert.Multiple(() =>
         {
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
-            Assert.That(content, Does.Contain($"User with Id '{Utilities.UserId2}' does not own Song with Id '{Utilities.SongId1}'."));
+            Assert.That(content,
+                Does.Contain($"User with Id '{Utilities.UserId2}' does not own Song with Id '{Utilities.SongId1}'."));
         });
     }
 
@@ -344,16 +359,5 @@ public class SongControllerTests
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
             Assert.That(content, Does.Contain($"Song with Id '{nonExistingId}' not found."));
         });
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
-        using var scope = _factory.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        db.Database.EnsureDeleted();
-
-        _client.Dispose();
-        _factory.Dispose();
     }
 }

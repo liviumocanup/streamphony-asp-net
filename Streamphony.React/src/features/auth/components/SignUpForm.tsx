@@ -1,33 +1,42 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Alert, Button, TextField } from '@mui/material';
+import { Alert, Button } from '@mui/material';
 import { InferType } from 'yup';
-import { registerSchema } from './ValidationSchema';
+import { registerUserSchema } from './ValidationSchema';
 import { useNavigate } from 'react-router-dom';
 import PasswordInput from './PasswordInput';
 import LoadingSpinner from '../../../shared/LoadingSpinner';
 import useSignUp from '../hooks/useSignUp';
+import { HOME_ROUTE } from '../../../routes/routes';
+import UsernameInput from './UsernameInput';
+import EmailInput from './EmailInput';
+import NameInput from './NameInput';
 
-type FormData = InferType<typeof registerSchema>;
+type FormData = InferType<typeof registerUserSchema>;
 
 const SignUpForm = () => {
   const navigate = useNavigate();
   const { mutateAsync: signUp, error, isPending } = useSignUp();
 
   const {
-    register,
     handleSubmit,
     control,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: yupResolver(registerSchema),
+    resolver: yupResolver(registerUserSchema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      username: '',
+      password: '',
+    },
   });
 
   const onSubmit = async (data: FormData) => {
-    console.log(data);
     try {
       await signUp(data);
-      navigate('/');
+      navigate(HOME_ROUTE);
     } catch (err) {
       console.log(err);
     }
@@ -35,38 +44,11 @@ const SignUpForm = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="Form">
-      <TextField
-        {...register('firstName')}
-        label="First Name"
-        error={!!errors.firstName}
-        helperText={errors.firstName?.message}
-        sx={{ mb: 2 }}
-      />
+      <NameInput control={control} errors={errors} />
 
-      <TextField
-        {...register('lastName')}
-        label="Last Name"
-        error={!!errors.lastName}
-        helperText={errors.lastName?.message}
-        sx={{ mb: 2 }}
-      />
+      <EmailInput control={control} errors={errors} />
 
-      <TextField
-        {...register('username')}
-        label="Username"
-        error={!!errors.username}
-        helperText={errors.username?.message}
-        sx={{ mb: 2 }}
-      />
-
-      <TextField
-        {...register('email')}
-        type="email"
-        label="Email"
-        error={!!errors.email}
-        helperText={errors.email?.message}
-        sx={{ mb: 2 }}
-      />
+      <UsernameInput control={control} errors={errors} />
 
       <PasswordInput control={control} errors={errors} />
 
@@ -74,6 +56,7 @@ const SignUpForm = () => {
         variant="contained"
         type="submit"
         aria-label="Sign Up"
+        disabled={isPending}
         sx={{ mb: 2 }}
       >
         {isPending ? <LoadingSpinner /> : 'Sign Up'}

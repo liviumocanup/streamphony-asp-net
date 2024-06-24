@@ -7,7 +7,8 @@ using Streamphony.Infrastructure.Persistence.Constants;
 
 namespace Streamphony.Infrastructure.Persistence.Contexts;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<User, Role, Guid, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+    : IdentityDbContext<User, Role, Guid, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>(options)
 {
     public DbSet<Genre> Genres { get; set; }
     public DbSet<Artist> Artists { get; set; }
@@ -15,6 +16,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<AlbumArtist> AlbumArtists { get; set; }
     public DbSet<Song> Songs { get; set; }
     public DbSet<Preference> Preferences { get; set; }
+    public DbSet<BlobFile> BlobFiles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -35,5 +37,30 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<Role>().ToTable("Roles", SchemaConstants.Auth);
         modelBuilder.Entity<RoleClaim>().ToTable("RoleClaims", SchemaConstants.Auth);
         modelBuilder.Entity<UserRole>().ToTable("UserRole", SchemaConstants.Auth);
+    }
+    
+    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+    {
+        OnBeforeSaving();
+        return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+    }
+    
+    private void OnBeforeSaving()
+    {
+        var entries = ChangeTracker.Entries<BaseEntity>();
+        var currentTime = DateTime.UtcNow;
+
+        foreach (var entry in entries)
+        {
+            if (entry.State == EntityState.Added)
+            {
+                entry.Entity.CreatedAt = currentTime;
+            }
+
+            if (entry.State is EntityState.Added or EntityState.Modified)
+            {
+                entry.Entity.UpdatedAt = currentTime;
+            }
+        }
     }
 }

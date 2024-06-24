@@ -11,10 +11,17 @@ const FallbackSectionContainer = ({
 }: FallbackSectionContainerProps) => {
   return (
     <Box sx={{ ml: 2, mb: 4 }}>
-      <Typography variant="h5" sx={{ pb: 1, pt: 2 }} width="10vw">
-        <HomeSkeleton color="background.paper" />
-      </Typography>
-
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Typography variant="h5" sx={{ ml: 4, pb: 1, pt: 2 }} width="10vw">
+          <HomeSkeleton color="background.paper" />
+        </Typography>
+      </Box>
       {children}
     </Box>
   );

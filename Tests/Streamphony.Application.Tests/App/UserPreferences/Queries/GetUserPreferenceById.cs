@@ -2,26 +2,13 @@ using Moq;
 using Streamphony.Application.Abstractions;
 using Streamphony.Application.Abstractions.Mapping;
 using Streamphony.Application.Abstractions.Services;
-using Streamphony.Application.App.UserPreferences.Queries;
-using Streamphony.Application.App.UserPreferences.Responses;
 using Streamphony.Application.Exceptions;
-using Streamphony.Application.Services;
-using Streamphony.Domain.Models;
 
 namespace Streamphony.Application.Tests.App.UserPreferences.Queries;
 
 [TestFixture]
 public class GetUserPreferenceByIdTests
 {
-    private Mock<IUnitOfWork> _unitOfWorkMock;
-    private Mock<IMappingProvider> _mapperMock;
-    private Mock<ILoggingService> _loggerMock;
-    private Mock<IValidationService> _validationServiceMock;
-    private GetUserPreferenceByIdHandler _handler;
-    private User _userEntity;
-    private UserPreference _userPreference;
-    private UserPreferenceDto _userPreferenceDto;
-
     [SetUp]
     public void Setup()
     {
@@ -29,7 +16,8 @@ public class GetUserPreferenceByIdTests
         _mapperMock = new Mock<IMappingProvider>();
         _loggerMock = new Mock<ILoggingService>();
         _validationServiceMock = new Mock<IValidationService>();
-        _handler = new GetUserPreferenceByIdHandler(_unitOfWorkMock.Object, _mapperMock.Object, _loggerMock.Object, _validationServiceMock.Object);
+        _handler = new GetUserPreferenceByIdHandler(_unitOfWorkMock.Object, _mapperMock.Object, _loggerMock.Object,
+            _validationServiceMock.Object);
 
         _userEntity = new User
         {
@@ -55,12 +43,23 @@ public class GetUserPreferenceByIdTests
             Language = _userPreference.Language
         };
 
-        _unitOfWorkMock.Setup(u => u.UserPreferenceRepository.GetById(_userPreference.Id, It.IsAny<CancellationToken>()))
-                       .ReturnsAsync(_userPreference);
-        _validationServiceMock.Setup(v => v.GetExistingEntity(_unitOfWorkMock.Object.UserPreferenceRepository, _userPreference.Id, It.IsAny<CancellationToken>(), It.IsAny<LogAction>()))
-                              .ReturnsAsync(_userPreference);
+        _unitOfWorkMock
+            .Setup(u => u.UserPreferenceRepository.GetById(_userPreference.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_userPreference);
+        _validationServiceMock.Setup(v => v.GetExistingEntity(_unitOfWorkMock.Object.UserPreferenceRepository,
+                _userPreference.Id, It.IsAny<CancellationToken>(), It.IsAny<LogAction>()))
+            .ReturnsAsync(_userPreference);
         _mapperMock.Setup(m => m.Map<UserPreferenceDto>(_userPreference)).Returns(_userPreferenceDto);
     }
+
+    private Mock<IUnitOfWork> _unitOfWorkMock;
+    private Mock<IMappingProvider> _mapperMock;
+    private Mock<ILoggingService> _loggerMock;
+    private Mock<IValidationService> _validationServiceMock;
+    private GetUserPreferenceByIdHandler _handler;
+    private User _userEntity;
+    private UserPreference _userPreference;
+    private UserPreferenceDto _userPreferenceDto;
 
     [Test]
     public async Task Handle_ValidId_ReturnsUserPreferenceDto()
@@ -84,11 +83,13 @@ public class GetUserPreferenceByIdTests
         var getUserPreferenceByIdQuery = new GetUserPreferenceById(newId);
         var notFoundException = new NotFoundException("User preference not found.");
 
-        _validationServiceMock.Setup(v => v.GetExistingEntity(_unitOfWorkMock.Object.UserPreferenceRepository, newId, It.IsAny<CancellationToken>(), It.IsAny<LogAction>()))
-                              .ThrowsAsync(notFoundException);
+        _validationServiceMock.Setup(v => v.GetExistingEntity(_unitOfWorkMock.Object.UserPreferenceRepository, newId,
+                It.IsAny<CancellationToken>(), It.IsAny<LogAction>()))
+            .ThrowsAsync(notFoundException);
 
         // Act & Assert
-        Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(getUserPreferenceByIdQuery, CancellationToken.None));
+        Assert.ThrowsAsync<NotFoundException>(() =>
+            _handler.Handle(getUserPreferenceByIdQuery, CancellationToken.None));
         _loggerMock.Verify(l => l.LogSuccess(nameof(UserPreference), newId, LogAction.Get), Times.Never());
     }
 }

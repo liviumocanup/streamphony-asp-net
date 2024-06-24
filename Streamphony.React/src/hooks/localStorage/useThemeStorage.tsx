@@ -1,8 +1,8 @@
 import useLocalStorage from './useLocalStorage';
-import { lsThemeKey } from '../../shared/constants';
+import { LS_THEME_KEY } from '../../shared/constants';
 
 const useThemeStorage = () => {
-  const { getItem, setItem } = useLocalStorage(lsThemeKey);
+  const { getItem, setItem } = useLocalStorage(LS_THEME_KEY);
 
   const getTheme = getItem;
   const setTheme = (theme: string) => setItem(theme);

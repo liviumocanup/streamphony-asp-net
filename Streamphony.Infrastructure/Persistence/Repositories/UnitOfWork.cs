@@ -4,21 +4,18 @@ using Streamphony.Infrastructure.Persistence.Contexts;
 
 namespace Streamphony.Infrastructure.Persistence.Repositories;
 
-public class UnitOfWork : IUnitOfWork
+public class UnitOfWork(
+    ApplicationDbContext context,
+    IArtistRepository artistRepository,
+    ISongRepository songRepository,
+    IAlbumRepository albumRepository,
+    IGenreRepository genreRepository,
+    IPreferenceRepository preferenceRepository,
+    IBlobRepository blobRepository,
+    IAlbumArtistRepository albumArtistRepository)
+    : IUnitOfWork
 {
-    private readonly ApplicationDbContext _context;
-
-    public UnitOfWork(ApplicationDbContext context, IArtistRepository artistRepository,
-        ISongRepository songRepository, IAlbumRepository albumRepository,
-        IGenreRepository genreRepository, IPreferenceRepository preferenceRepository)
-    {
-        _context = context;
-        ArtistRepository = artistRepository;
-        SongRepository = songRepository;
-        AlbumRepository = albumRepository;
-        GenreRepository = genreRepository;
-        PreferenceRepository = preferenceRepository;
-    }
+    private readonly ApplicationDbContext _context = context;
 
     public async Task SaveAsync(CancellationToken cancellationToken)
     {
@@ -40,9 +37,11 @@ public class UnitOfWork : IUnitOfWork
         await _context.Database.RollbackTransactionAsync(cancellationToken);
     }
 
-    public IArtistRepository ArtistRepository { get; }
-    public ISongRepository SongRepository { get; }
-    public IAlbumRepository AlbumRepository { get; }
-    public IGenreRepository GenreRepository { get; }
-    public IPreferenceRepository PreferenceRepository { get; }
+    public IArtistRepository ArtistRepository { get; } = artistRepository;
+    public ISongRepository SongRepository { get; } = songRepository;
+    public IAlbumRepository AlbumRepository { get; } = albumRepository;
+    public IGenreRepository GenreRepository { get; } = genreRepository;
+    public IPreferenceRepository PreferenceRepository { get; } = preferenceRepository;
+    public IBlobRepository BlobRepository { get; } = blobRepository;
+    public IAlbumArtistRepository AlbumArtistRepository { get; } = albumArtistRepository;
 }
