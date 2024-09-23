@@ -26,7 +26,7 @@ const useGetFilteredSongsForArtist = () => {
           },
           {
             Path: 'OwnerId',
-            Value: artistId,
+            Value: artistId[1],
             ValueType: 1,
           },
           {
@@ -39,6 +39,8 @@ const useGetFilteredSongsForArtist = () => {
     };
 
     try {
+      console.log('Request: ', pagedRequest);
+
       const res = await axios.post(
         `${API_URL}/${SONG_FILTERED_ENDPOINT}`,
         pagedRequest,
@@ -46,7 +48,7 @@ const useGetFilteredSongsForArtist = () => {
 
       return res.data.items;
     } catch (err: any) {
-      console.log(err);
+      console.log(err.response.data);
       if (axios.isAxiosError(err)) {
         throw new Error(err.message);
       } else {
