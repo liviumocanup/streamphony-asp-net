@@ -5,12 +5,27 @@
 This project adheres to clean architecture principle and employs GraphQL for efficient data queries.
 Developed with [ASP.NET](https://dotnet.microsoft.com/en-us/apps/aspnet) for an internship project.
 
+![Diagram1](https://github.com/liviumocanup/streamphony-asp-net/blob/demo/demo/main.png)
+
 ## Prerequisites
 1. .NET SDK: The project requires the .NET 5.0 SDK or later. Check your installed version with `dotnet --version`. If you need to install it or update it, you can download the SDK from [the official .NET download page](https://dotnet.microsoft.com/download).
 
 2. **Docker**: Since the project uses SQL Server running in a Docker container, Docker Desktop must be installed on your machine. Docker is used to create, manage, and run containers on Windows, macOS, and Linux. Download Docker Desktop from [the official Docker website](https://www.docker.com/).
 
 3. **Entity Framework Core CLI**: The EF Core CLI is used for database migrations. It's included with the .NET SDK, but you can ensure it's installed with the command `dotnet ef`.
+
+## The App in Action
+A user can view an artist's profile, albums or songs, without the need to register as another Artist. A user is not required to be logged in to play the songs.
+
+![Diagram2](https://github.com/liviumocanup/streamphony-asp-net/blob/demo/demo/album.png)
+
+If a user signed up as an Artist, they can upload their own songs and albums, view their profile and edit it. The following is the Studio page, where an Artist can upload their songs.
+
+![Diagram3](https://github.com/liviumocanup/streamphony-asp-net/blob/demo/demo/studio.png)
+
+Once the Artist decides to create a release, they can select the songs they want to include in the album and mention all the artist that contributed to the album. The release will be visible to all users on the main page. Whilst looking up the songs, only the Artist's songs that are not already part of an album will be displayed.
+
+![Diagram4](https://github.com/liviumocanup/streamphony-asp-net/blob/demo/demo/release.png)
 
 ## Configuration
 
