@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using Streamphony.Infrastructure.Persistence.Contexts;
 using Streamphony.WebAPI.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,7 +8,11 @@ builder.AddServices();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment()) app.UseSwaggerDocumentation();
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.Migrate();
+}
 
 app.UseCors("ClientPermission");
 app.UseHttpsRedirection();
