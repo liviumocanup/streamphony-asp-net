@@ -1,33 +1,39 @@
+options:
+  logging: CLOUD_LOGGING_ONLY
+
 steps:
 # Build Backend Image
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'europe-central2-docker.pkg.dev/gd-gcp-internship-cd/streamphony-repo/backend', '.']
+  id: 'Build Backend Image'
 
 # Push Backend Image
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'europe-central2-docker.pkg.dev/gd-gcp-internship-cd/streamphony-repo/backend']
+  id: 'Push Backend Image'
 
 # Build Frontend Image
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'europe-central2-docker.pkg.dev/gd-gcp-internship-cd/streamphony-repo/frontend', '.']
   dir: './Streamphony.React'
+  id: 'Build Frontend Image'
 
 # Push Frontend Image
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'europe-central2-docker.pkg.dev/gd-gcp-internship-cd/streamphony-repo/frontend']
+  id: 'Push Frontend Image'
 
-# Deploy to GKE
-- name: 'gcr.io/cloud-builders/kubectl'
+- name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'bash'
   args:
-  - 'apply'
-  - '-f'
-  - 'k8s/backend-deployment.yaml'
-
-- name: 'gcr.io/cloud-builders/kubectl'
-  args:
-  - 'apply'
-  - '-f'
-  - 'k8s/frontend-deployment.yaml'
+    - '-c'
+    - |
+      gcloud container clusters get-credentials streamphony-cluster \
+        --region=europe-central2 \
+        --project=gd-gcp-internship-cd
+      kubectl apply -f k8s/backend-deployment.yaml
+      kubectl apply -f k8s/frontend-deployment.yaml
+  id: 'Authenticate and Deploy to GKE'
 
 images:
 - 'europe-central2-docker.pkg.dev/gd-gcp-internship-cd/streamphony-repo/backend'
