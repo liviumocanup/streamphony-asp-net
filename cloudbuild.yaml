@@ -1,0 +1,34 @@
+steps:
+# Build Backend Image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'europe-central2-docker.pkg.dev/gd-gcp-internship-cd/streamphony-repo/backend', '.']
+
+# Push Backend Image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'europe-central2-docker.pkg.dev/gd-gcp-internship-cd/streamphony-repo/backend']
+
+# Build Frontend Image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'europe-central2-docker.pkg.dev/gd-gcp-internship-cd/streamphony-repo/frontend', '.']
+  dir: './Streamphony.React'
+
+# Push Frontend Image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'europe-central2-docker.pkg.dev/gd-gcp-internship-cd/streamphony-repo/frontend']
+
+# Deploy to GKE
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+  - 'apply'
+  - '-f'
+  - 'k8s/backend-deployment.yaml'
+
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+  - 'apply'
+  - '-f'
+  - 'k8s/frontend-deployment.yaml'
+
+images:
+- 'europe-central2-docker.pkg.dev/gd-gcp-internship-cd/streamphony-repo/backend'
+- 'europe-central2-docker.pkg.dev/gd-gcp-internship-cd/streamphony-repo/frontend'

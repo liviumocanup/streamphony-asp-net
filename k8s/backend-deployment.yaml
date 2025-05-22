@@ -14,8 +14,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: localhost/api
-          imagePullPolicy: Never
+          image: europe-central2-docker.pkg.dev/gd-gcp-internship-cd/streamphony-repo/backend
           ports:
             - containerPort: 80
           env:
@@ -29,7 +28,7 @@ kind: Service
 metadata:
   name: backend
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: backend
   ports:

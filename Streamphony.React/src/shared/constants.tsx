@@ -1,4 +1,4 @@
-export const API_URL = 'http://localhost:30007/api';
+export const API_URL = 'http://34.116.230.17/api';
 // process.env.REACT_APP_DE;
 
 const AUTH_PATH = 'auth';
