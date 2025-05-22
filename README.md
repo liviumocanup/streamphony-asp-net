@@ -2,7 +2,7 @@
 
 ## Abstract
 
-This project adheres to clean architecture principle and employs GraphQL for efficient data queries.
+This project adheres to clean architecture principle and employs REST for efficient data queries.
 Developed with [ASP.NET](https://dotnet.microsoft.com/en-us/apps/aspnet) for an internship project.
 
 ![Diagram1](https://github.com/liviumocanup/streamphony-asp-net/blob/main/demo/main.png)
